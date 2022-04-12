@@ -1,9 +1,19 @@
 # whoobe-ssg
 
-A new version of whoobe-one-studio based on ViteJS and WindiCSS/TailwindCSS, to generate static html pages
+A new version of whoobe-one-studio based on Vue3, ViteJS, WindiCSS/TailwindCSS and Typescript, to generate static html pages (complete website) with auto purge CSS.
 
+
+<blockquote>
 
 **Since the app has access to the local filesystem to run the app safely use a container**
+
+whoobe-ssg uses a basic nodejs server in order to generate static HTML pages starting from your blocks templates. For this reason it can be used safely in a container in a local environment. 
+
+**Do not use whoobe-ssg on production (public server), since filesystem access is not secured**
+
+</blockquote>
+
+
 
 ## DOCKER
 
