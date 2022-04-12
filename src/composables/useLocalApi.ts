@@ -143,7 +143,8 @@ export const saveStaticPage = async ( page: Object ) => {
     if ( page.fonts ){
         fontsLInk = `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=${page.fonts}">`
     }
-    doc.html = `<!DOCTYPE html><html lang="en">
+    doc.html = `<!DOCTYPE html>
+    <html lang="en">
         <head>
             <title>${page.document.name}</title>
             <meta name="description" content="${page.document.description}">
@@ -155,12 +156,13 @@ export const saveStaticPage = async ( page: Object ) => {
             <script src="//unpkg.com/alpinejs" defer></script>
             <meta charset="UTF-8">
             <link rel="stylesheet" href="/assets/css/output.css">
-            <link rel="stylesheet" href="/assets/css/animations.css">   
+            <link rel="stylesheet" href="/assets/css/animations.css">
+            <link rel="icon" href="/favicon.ico" /> 
         </head>
         <body>
         ${page.html}
         </body>
-        </html>`
+    </html>`
     console.log ( doc )
     await fetch ( endpoint + '/save/html/' ,{
         method: 'POST',

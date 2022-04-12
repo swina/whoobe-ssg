@@ -62,7 +62,6 @@ declare module 'vue' {
     SidebarRight: typeof import('./components/SidebarRight.vue')['default']
     Slider: typeof import('./components/editor/blocks/elements/slider.vue')['default']
     SliderPreview: typeof import('./components/preview/SliderPreview.vue')['default']
-    Svelte: typeof import('./components/plugins/svelte/Svelte.vue')['default']
     Toolbar: typeof import('./components/Toolbar.vue')['default']
     Tree: typeof import('./components/common/Tree.vue')['default']
     TreeContainer: typeof import('./components/common/TreeContainer.vue')['default']

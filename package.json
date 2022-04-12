@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "description": "Whoobe Studio Vue3, Vite.js and WindiCSS/TailwindCSS",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 &&",
+    "dev": "vite --host 0.0.0.0",
     "server": "nodemon index.js",
     "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview",
+    "serve": "vite preview"
   },
   "dependencies": {
     "@vue/server-renderer": "^3.2.31",

@@ -22,7 +22,7 @@ VITE_APP_PAGES_URL=http://localhost:8080
 To run in a docker container simply run from the project folder console
 
 ```
-docker-compose run --name myapp -p 3000:3000 -p 9000:9000 -p 8080:8080 -p 24678:24678 --rm app bash
+docker-compose run --name whoobe -p 3000:3000 -p 9000:9000 -p 8080:8080 -p 24678:24678 --rm app bash
 ```
 
 At the first run it will build the container and install all dependencies.
@@ -71,7 +71,7 @@ If you want to add any other package from the container console then
 
 #### Access docker console from another terminal
 
-`docker exec -it _container_name /bin/bash`
+`docker exec -it whoobe /bin/bash`
 
 
 
