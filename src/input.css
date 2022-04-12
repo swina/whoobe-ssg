@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .max-w-screen {
+      max-width: max-content; 
+    }
+}

@@ -1,0 +1,9 @@
+services:
+  app:
+    image: whoobe-vitesome
+    build: .
+    container_name: whoobe-vitesome
+    volumes: 
+      - .:/app
+    ports:
+      - "3000:3000"

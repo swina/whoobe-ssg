@@ -1,0 +1,20 @@
+.fade-in-slide {
+    animation: fadeIn 1.5s;
+}
+.slide-left {
+    animation: slideLeft 1s;
+}
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+@keyframes slideLeft {
+    0% {
+        opacity:0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity:1;
+        transform: translateX(0%);
+    }
+}

@@ -1,0 +1,196 @@
+input[type='text'], input[type='email'], input[type='url'], input[type='password'], input[type='number'], input[type='date'], input[type='datetime-local'], input[type='month'], input[type='search'], input[type='tel'], input[type='time'], input[type='week'], input[multiple]  {
+    border:0;
+    border-bottom:1px solid #eee;
+    @apply border-bluegray-300 border-b p-1 text-xs;
+  }
+  
+  select {
+    @apply border-bluegray-300 rounded p-1;
+  }
+  
+  textarea {
+    @apply border-bluegray-300 p-1 text-xs;
+  }
+.dashboard {
+    @apply fixed inset-0 max-w-max max-h-max w-screen h-screen bg-bluegray-800 text-gray-300 py-10;
+ }
+ 
+ 
+ .bars {
+     @apply fixed bg-bluegray-900 text-gray-300;
+ }
+ 
+ .sidebarLeft {
+     @apply top-0 left-0 max-h-max h-screen w-10 flex flex-col justify-around items-center z-10;
+ }
+ 
+ .sidebarRight {
+     @apply top-0 right-0 max-h-max h-screen w-1/5 text-bluegray-400 flex flex-col z-10 mr-10;
+ }
+ 
+ .toolbar {
+     @apply top-0 left-0 flex max-w-screen pl-10 h-8 z-2 items-center;
+ }
+ 
+ .tab {
+     @apply text-sm h-8 px-2 flex items-center cursor-pointer;
+ }
+ 
+ .tab:hover {
+     @apply bg-black;
+ }
+ 
+ .bottomBar {
+     @apply bottom-0 left-0 w-screen h-10 z-2 flex flex-row items-center;
+ }
+ 
+ .bars .iconify{ 
+     @apply cursor-pointer text-gray-400;
+ }
+ 
+ .bars .iconify:hover { 
+     @apply text-white;
+ }
+ 
+ .editor {
+     @apply bg-gray-100 w-full border overflow-y-auto overflow-x-hidden h-screen;
+ }
+
+.editor-toolbar {
+    @apply fixed top-0 right-0 w-10 h-screen max-h-max flex flex-col justify-around items-center bg-bluegray-900 text-gray-400 z-10;
+}
+
+.editor-toolbar .iconify:hover {
+    @apply text-white cursor-pointer;
+}
+
+.editor-document {
+    @apply shadow-lg m-auto relative mt-6 p-1;
+}
+.editor-document:hover {
+    @apply border-black;
+}
+
+.editor-document::before  {
+    content: attr(data-document-tag);
+    font-size:.6rem;
+    @apply absolute top-0 left-0 -mt-6 p-1 bg-black text-white font-mono;
+}
+
+.editor-block {
+    @apply relative cursor-pointer;
+}
+
+.panelTitle {
+    @apply bg-purple-700 px-2 h-8 text-base text-gray-400 border-b border-gray-100 capitalize;
+}
+
+.titleBar {
+    @apply p-2 text-xs text-gray-400 border-b border-bluegray-700 capitalize;
+}
+
+.titleBar:hover {
+    @apply bg-bluegray-900;
+}
+
+textarea:focus , input:focus , select:focus { @apply outline-none; }
+
+
+.sidebarRight div textarea {
+    @apply font-mono bg-bluegray-800 outline-hidden border-0 text-sm text-bluegray-400 p-1 mb-2 h-48;
+}
+
+.sidebarRight div textarea.small {
+    @apply font-mono bg-bluegray-800 outline-hidden border-0 text-sm text-bluegray-400 p-1 mb-2 h-20;
+}
+
+.sidebarRight div input , .bars input {
+    @apply font-mono bg-bluegray-800 outline-hidden text-sm text-bluegray-400 p-1 text-left;
+}
+
+.bars input   {
+    @apply text-xs p-1 border-none text-left;
+}
+.bottomBar {
+    @apply text-xs;
+}
+
+.modal {
+    @apply fixed inset-0 w-screen h-screen bg-transparent items-center justify-center flex flex-col z-50;
+}
+
+.panelTitle {
+    @apply w-full p-2 bg-purple-700 text-white text-center;
+}
+
+.sidebarRight select {
+    @apply bg-bluegray-800 text-gray-500 p-1 border-0;
+}
+
+.editor-tool-select {
+    @apply bg-bluegray-800 text-gray-500 p-1 border-0;
+}
+
+button {
+    @apply border px-4 py-2 bg-blue-500 text-white text-sm rounded-lg;
+}
+
+button.square {
+    @apply border rounded w-6 h-6 border-gray-600  bg-gray-700 hover:bg-black hover:text-white justify-center flex items-center bg-transparent text-xs p-1;
+}
+
+
+/* *[data-block-tag]:hover::before {
+    content: attr(data-block-tag);
+    font-size:.6rem;
+    @apply absolute top-0 right-0 -mt-6 p-1 bg-gray-600 text-white font-mono;
+}
+
+*[data-element-tag]:hover::after {
+    content: attr(data-element-tag);
+    font-size:.6rem;
+    @apply absolute top-0 right-0 w-10 mt-6 text-center p-1 bg-blue-400 text-white font-mono rounded;
+} */
+ul.tree {
+    list-style:none;
+    padding-left:.5rem;
+    font-size:.7rem;
+  }
+  
+ul.tree li.item {
+    border-bottom-left-radius:.75em;
+    border-top-left-radius:.75em;
+    margin:2px 0;
+    position:relative;
+}
+
+ul.tree li.item a {
+    border-radius:50%;
+    color:#cecece;
+    display:inline-block;
+    height:1.5em;
+    left:-1.5em;
+    line-height:1rem;
+    position:absolute;
+    text-align:center;
+    text-decoration:none;
+    width:2em;
+}
+
+ul.tree li.item a.plus {
+    font-size:1.4rem;
+    margin-top:.2rem;
+}
+
+ul.tree li.item a.minus {
+    font-size:1.4rem;
+        
+}
+ul.tree li.item a:active {
+        top:1px;
+}
+
+ul.tree span {
+    display:inline-block;
+    margin:.25em .5em;
+}

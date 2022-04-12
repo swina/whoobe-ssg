@@ -1,0 +1,31 @@
+.grayscale {
+   filter: grayscale(1);
+}
+
+/* TRANSITIONS */
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .7s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+}
+
+.slideleft-enter-active {
+    transition: transform .8s ease-in-out;
+ }
+ 
+.slideleft-leave-active {
+    transition: transform .8s ease-in-out;
+ }
+ 
+.slideleft-enter-to, . slideleft-leave {
+    transform: translate(0%, 0);
+    overflow: hidden;
+}
+ 
+.slideleft-enter, . slideleft-leave-to {
+    transform: translate(100%, 0);
+    margin-right: 0;
+}
+
