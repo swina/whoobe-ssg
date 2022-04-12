@@ -7,7 +7,37 @@ A new version of whoobe-one-studio based on ViteJS and WindiCSS/TailwindCSS, to 
 
 ## DOCKER
 
-You can also run in a docker without installing node or any other application (**requires docker**)
+Run in a docker without installing node or any other application (**requires docker**)
+
+### Project structure
+
+```|-localses         //locales folder for future implementation
+   |-pages            //SSG folder
+   |---dist           //Static generated folder (you can copy this folder to your hosting)
+   |-----assets
+   |-------css
+   |-------img
+   |-project          //Not used
+   |-public
+   |---icons
+   |-server           //templates folder (where your templates are saved)
+   |---data
+   |-----current
+   |-----projects
+   |-----templates
+   |-----uikits
+   |-src              //application folder
+   |---assets
+   |---components
+   |---composables
+   |---pages
+   |---router
+   |---stores
+   |---styles
+   |---views
+
+```
+
 
 ## Run development in a docker container
 
@@ -44,12 +74,14 @@ From your console
 
 ```
 docker exec -it whoobe /bin/bash
+cd pages/dist
 http-server -g -p 8080 -d
 ```
 
 2. Hot reload and purge of CSS files
 ```
 docker exec -it whoobe /bin/bash
+cd pages
 npx tailwindcss -i ./input.css -o ./dist/assets/css/output.css --watch
 ```
 
