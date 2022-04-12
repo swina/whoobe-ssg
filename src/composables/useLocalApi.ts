@@ -1,7 +1,6 @@
 import { reactive } from 'vue'
 import jp from 'jsonpath'
 const endpoint = import.meta.env.VITE_APP_LOCAL_API
-export const SVELTEURL = import.meta.env.VITE_APP_SVELTE_URL
 export const PAGESURL = import.meta.env.VITE_APP_PAGES_URL
 
 export const paths = { 
