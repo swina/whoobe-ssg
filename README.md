@@ -1,61 +1,9 @@
-# whoobe-vitesome
+# whoobe-ssg
 
-A new version of whoobe-one-studio based on ViteJS and Vitesome
+A new version of whoobe-one-studio based on ViteJS and WindiCSS/TailwindCSS, to generate static html pages
 
 
-
-## Pre-📦
-
-This repo brings few things pre-packed, so you don't need to install them manually everytime.
-
-### Styling
-
-- [Windi CSS](https://github.com/windicss/windicss) with [`vite-plugin-windicss`](https://github.com/windicss/vite-plugin-windicss)
-- Default [Google Fonts](https://github.com/stafyniaksacha/vite-plugin-fonts#readme) with `vite-plugin-fonts`
-
-### Icons
-
-- [Iconify](https://iconify.design) - use icons from any icon sets [🔍Icônes](https://icones.netlify.app/)
-  - [PurgeIcons](https://github.com/antfu/purge-icons) with [`vite-plugin-purge-icons](vite-plugin-purge-icons) Think about TailwindCSS + PurgeCSS, but for Icons.
-  - Custom icons below `./assets/icons` with
-
-### Plugins
-
-- [VueUse](https://github.com/vueuse/vueuse) - collection of useful composition APIs
-- [Vue I18n](https://github.com/intlify/vue-i18n-next) - Internationalization
-- Component auto-import with [`vite-plugin-components`](https://github.com/antfu/vite-plugin-components)
-
-### Dev tools
-
-- [i18n Ally](https://marketplace.visualstudio.com/items?itemName=lokalise.i18n-ally) - All in one i18n support
-- [Windi CSS Intellisense](https://marketplace.visualstudio.com/items?itemName=voorjaar.windicss-intellisense) - IDE support for Windi CSS
-- [Iconify IntelliSense](https://marketplace.visualstudio.com/items?itemName=antfu.iconify) - Icon inline display and autocomplete
-
-### Project setup
-
-```
-yarn
-```
-
-### Use it
-
-```
-yarn dev
-```
-
-This will serve the app at [http://localhost:3000](http://localhost:3000)
-
-### Build it
-
-```
-yarn build
-```
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Vue in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+**Since the app has access to the local filesystem to run the app safely use a container**
 
 ## DOCKER
 
@@ -63,13 +11,57 @@ You can also run in a docker without installing node or any other application (*
 
 ## Run development in a docker container
 
+First you need to create an .env file at the root of the project
+
+```
+VITE_APP_LOCAL_API=http://localhost:9000
+VITE_APP_PAGES=/app/pages/dist
+VITE_APP_PAGES_URL=http://localhost:8080
+```
+
 To run in a docker container simply run from the project folder console
+
 ```
-docker-compose run --name myapp -p 3000:3000 -p 24678:24678 --rm app bash
-//then
-npm run dev
+docker-compose run --name myapp -p 3000:3000 -p 9000:9000 -p 8080:8080 -p 24678:24678 --rm app bash
 ```
+
 At the first run it will build the container and install all dependencies.
+
+## Run the app (from the container)
+
+Open the project folder and run the following commands
+
+```
+docker exec -it whoobe npm run dev
+docker exec -it whoobe nodemon
+```
+
+## Run the http server for website preview and CSS auto purge (from the container)
+
+From your console
+
+1. Start http server
+
+```
+docker exec -it whoobe /bin/bash
+http-server -g -p 8080 -d
+```
+
+2. Hot reload and purge of CSS files
+```
+docker exec -it whoobe /bin/bash
+npx tailwindcss -i ./input.css -o ./dist/assets/css/output.css --watch
+```
+
+At first time you will be asked to
+
+```
+Need to install the following packages:
+  tailwindcss
+Ok to proceed? (y)
+
+Rebuilding...
+```
 
 #### Add new packages 
 If you want to add any other package from the container console then

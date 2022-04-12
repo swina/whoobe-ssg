@@ -1,13 +1,12 @@
 {
-  "name": "whoobe-vitesome",
-  "version": "1.1.0",
-  "description": "A simple opinionated Vue3 Starter Template with Vite.js",
+  "name": "whoobe-ssg",
+  "version": "0.1.0",
+  "description": "Whoobe Studio Vue3, Vite.js and WindiCSS/TailwindCSS",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite --host 0.0.0.0 &&",
     "server": "nodemon index.js",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
-    "dev-server": "node ./server -- --host 0.0.0.0"
   },
   "dependencies": {
     "@vue/server-renderer": "^3.2.31",

@@ -17,9 +17,6 @@ const current   = "./server/data/current/"
 const projects  = "./server/data/projects";
 const templates = "./server/data/templates";
 const uikits    = "./server/data/uikits";
-const build     = "/app/sveltekit/src/lib/pages";
-const svelte    = "/app/sveltekit/src/routes";
-const sveltekit = "/app/sveltekit/src/lib";
 const static    = "/app/pages/dist";
 const local     = "./server/data";
 
@@ -28,8 +25,6 @@ const paths = {
     projects: projects,
     templates: templates,
     uikits: uikits,
-    build: build,
-    svelte: svelte,
     static: static,
     pages: static,
     local: local
@@ -152,14 +147,14 @@ app.post('/file/save' , (req, res) => {
 
 // save svelte page
 // @body.path = file full path (required)
-app.post('/svelte/page' , (req, res) => {
-    let stream = fs.createWriteStream( path.resolve ( paths['svelte'] ) + '/' + req.body.slug + '.svelte' )
-    stream.once('open', function(fd) {
-        stream.write(req.body.html);
-        stream.end();
-    });
-    res.send ( req.body )
-})
+// app.post('/svelte/page' , (req, res) => {
+//     let stream = fs.createWriteStream( path.resolve ( paths['svelte'] ) + '/' + req.body.slug + '.svelte' )
+//     stream.once('open', function(fd) {
+//         stream.write(req.body.html);
+//         stream.end();
+//     });
+//     res.send ( req.body )
+// })
 
 app.post('/save/html' , (req, res) => {
     let stream = fs.createWriteStream( path.resolve ( paths['static'] ) + '/' + req.body.slug + '.html' )
@@ -199,14 +194,14 @@ app.post('/current' , (req, res) => {
 
 // set the svelte project
 // @body.data = json data (required)
-app.post('/sveltekit' , (req, res) => {
-    let stream = fs.createWriteStream( path.resolve ( sveltekit ) + '/config.json' )
-    stream.once('open', function(fd) {
-        stream.write(JSON.stringify(req.body.data));
-        stream.end();
-    });
-    res.send ( req.body )
-})
+// app.post('/sveltekit' , (req, res) => {
+//     let stream = fs.createWriteStream( path.resolve ( sveltekit ) + '/config.json' )
+//     stream.once('open', function(fd) {
+//         stream.write(JSON.stringify(req.body.data));
+//         stream.end();
+//     });
+//     res.send ( req.body )
+// })
 
 
 app.listen(port,'0.0.0.0',(err)=>{
