@@ -16,8 +16,8 @@ import { computed , ref , defineAsyncComponent } from 'vue'
 import classes from '/@/composables/tw.classes'
 import { setCSSValue , matchCSS } from '/@/composables/useActions'
 import { useEditorStore } from '/@/stores/editor'
-
-const editor = useEditorStore()
+import { EDITOR } from '/@/composables/useEditor'
+const editor = EDITOR //useEditorStore()
 const paddingCSS = ref ({})
 let prefix = ref('')
 

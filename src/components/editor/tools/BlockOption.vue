@@ -1,7 +1,7 @@
 <template>
-    <div class="p-2 flex flex-col text-xs">
+    <div class="p-2 flex flex-col text-xs" :key="randomID()">
         <label class="capitalize">{{ option.title }}</label>
-        <select v-model="optionCSS" class="border-none" @change="setCSSValue()">
+        <select v-model="optionCSS" class="border-none text-base text-white" @change="setCSSValue()">
             <option value=""></option>
             <option v-for="item in options" :value="item?.label?item.value:item" :key="item">{{ item?.label ? item.label.replace ( option.prefix ,'') : item.replace ( option.prefix , '' ) }}</option>
         </select>
@@ -10,10 +10,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed , ref  } from 'vue'
+import { computed , ref , watch} from 'vue'
 import classes from '/@/composables/tw.classes'
 import { updateCSS , matchCSS } from '/@/composables/useActions'
 import { useEditorStore } from '/@/stores/editor'
+import { EDITOR , randomID } from '/@/composables/useEditor'
 
 const props = defineProps ({
     option: Object
@@ -21,7 +22,7 @@ const props = defineProps ({
 
 const options = classes[props.option.attr]
 
-const editor = useEditorStore()
+const editor = EDITOR //useEditorStore()
 
 
 
@@ -44,61 +45,34 @@ opts.forEach ( opt => {
     })
 })
 
-let optionCSS = ref ('')
+let optionCSS = ref ( matchCSS( opts , editor.current.css.css  ) )
 let optionVariantsCSS = ref ([])
 
 
-editor.$subscribe ( (mutation,state) => {
-    optionVariantsCSS.value = []
-    optionCSS.value =  matchCSS( opts , editor.current.css.css  )
-    optsVariants.forEach ( a => {
-        editor.current.css.css.split(' ').forEach ( b => {
-            b === a ? optionVariantsCSS.value.push ( b ) : null
-        })
-    })
-    //optionVariantsCSS.value = matchCSS ( optsVariants , editor.current.css.css ) 
-})
+watch( () => editor.current, (block) => {
+    if ( block?.css ){
+        optionVariantsCSS.value = []
+        optionCSS.value =  matchCSS( opts , editor.current.css.css  )
+        optsVariants.forEach ( a => {
+            editor.current.css.css.split(' ').forEach ( b => {
+                b === a ? optionVariantsCSS.value.push ( b ) : null
+            })
+        }) 
+    }
+  }
+)
 
-//const optionCSS = ref ({})
-
-// const paddingCSS = ref ({})
-
-// let prefix = ref('')
-
-// const paddings = ref ( 
-//     [ 
-//         { label: 'padding' , prefix: `${props.prefix.value}-` },
-//         { label: 'Left' , prefix: `${props.prefix.value}l-`},
-//         { label: 'Right' , prefix: `${props.prefix.value}r-` },
-//         { label: 'Top' , prefix: `${props.prefix.value}t-`},
-//         { label: 'Bottom' , prefix: `${props.prefix.value}b-` },
-//         { label: 'Horizontal' , prefix: `${props.prefix.value}x-`},
-//         { label: 'Vertical' , prefix: `${props.prefix.value}y-`} 
-//     ]
-// )
-
-// const options = ref ( classes.padding.map ( padding => padding.replace('p-','') ))
-
-// paddings.value.forEach ( label => {
-//     options.value.forEach ( value => {
-//         console.log ( editor.current.css.css.includes ( `${label.prefix}${value}`) , `${label.prefix}${value}` )
-//         editor.current.css.css.includes ( `${label.prefix}${value}` ) ?
-//             paddingCSS.value[label.label] = value : null
-//     })
-// })
-
-
-
-// const changeCSS = (label:String ,prfx:String )=>{
-//     let css = prfx + paddingCSS.value[label] 
-//     let elementCSS = editor.current.css.css.split(' ')
+// editor.$subscribe ( (mutation,state) => {
+//     if ( editor.current && editor.current?.css ){
+//         optionVariantsCSS.value = []
+//         optionCSS.value =  matchCSS( opts , editor.current.css.css  )
+//         optsVariants.forEach ( a => {
+//             editor.current.css.css.split(' ').forEach ( b => {
+//                 b === a ? optionVariantsCSS.value.push ( b ) : null
+//             })
+//         })
+//     }
     
-//     options.value.forEach ( value => {
-//         console.log (`${prfx}${value}`)
-//         elementCSS = elementCSS.filter ( cl => { return cl != `${prfx}${value}`  } )
-//     })
-//     editor.current.css.css = elementCSS.join(' ') 
-//     if ( paddingCSS.value[label] )
-//         setCSSValue ( css )
-// }
+// })
 </script>
+

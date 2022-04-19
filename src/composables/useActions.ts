@@ -4,12 +4,16 @@ import { useEditorStore } from '/@/stores/editor'
 import Block from '/@/composables/useBlockClass'
 import Element from '/@/composables/useElementClass'
 import jp from 'jsonpath'
+import { EDITOR } from '/@/composables/useEditor'
+import { status } from '/@/composables/useNavigation'
 
-const editor = useEditorStore();
+const editorStore = useEditorStore();
 const navigation = useNavigatorStore();
+
 export const PREVIEW = 'whoobe-preview'
 export const CLIPBOARD = 'whoobe-clipboard'
 export const UNDO = 'whoobe-undo'
+export const ALPINE_DIRECTIVES = ['x-data','x-init','x-show','x-bind','x-bind:class','x-on','x-on:click','x-text','x-html','x-model','x-for','x-transition','x-transition:enter','x-transition:enter-start','x-transition:enter-end','x-transition:leave','x-transition:leave-start','x-transition:leave-end','x-effect','x-ignore','x-ref','x-cloak','x-if']
 // by convention, composable function names start with "use"
 
 export const sliderIndex = reactive ({
@@ -34,7 +38,8 @@ export function randomID(){
 }
 
 export function useStore ( name: String ){
-    return !name ? editor : navigation 
+    return null
+    return !name ? editorStore : navigation 
 }
 
 
@@ -55,20 +60,20 @@ export function setLocalStorage ( storage: string , source: any , json: boolean 
 }
 
 //clone object and reassign any id to a new random id
-export function cloneBlock(o) {
-    if ( typeof o != 'object' || !isBlock(o) ) return 
-    for (var i in o) {
-      //fn.apply(this,[i,o[i]]);  
-      if (o[i] !== null && typeof(o[i])=="object") {
-        cloneBlock(o[i]);
-      } else {
-          if ( i === 'id' ){
-              o[i] = randomID()
-          }
-      }
-    }
-    return o
-}
+// export function cloneBlock(o) {
+//     if ( typeof o != 'object' || !isBlock(o) ) return 
+//     for (var i in o) {
+//       //fn.apply(this,[i,o[i]]);  
+//       if (o[i] !== null && typeof(o[i])=="object") {
+//         cloneBlock(o[i]);
+//       } else {
+//           if ( i === 'id' ){
+//               o[i] = randomID()
+//           }
+//       }
+//     }
+//     return o
+// }
 
 
 export async function action( action: string , params: any) {
@@ -93,6 +98,7 @@ export async function action( action: string , params: any) {
             !editor._current ? editor._current ( document ) : null   
             editor._page ( page ) 
         }
+        EDITOR.document = document
         editor._document ( document )
         //editor._tool ( 'snippets' )
         setLocalStorage ( PREVIEW , document )
@@ -130,6 +136,8 @@ export async function createTemplate ( name:String ){
     document.json.blocks =  block 
     editor._document ( document )
     editor._current ( document )
+    EDITOR.current = document
+    EDITOR.document = document
     return document
 }
 
@@ -138,49 +146,50 @@ export function selectBlock ( block: object , event: object ){
     console.log ( 'Selected Block => '  , block.tag , block.id )
     // block.type === 'container' ?
     //     editor._tool ( 'elements' ) : editor._tool ( 'edit' )
-    editor._current ( block )
+    //editor._current ( block )
+    EDITOR.current = block
     return true
 }
 
-export function removeBlock(id:string , currentNode:Object ){
-    console.log ( currentNode )
-    if (currentNode?.id && id == currentNode.id) {
-        return currentNode;
-    } else {
-        var node = null
-        for(var index in currentNode.blocks){
+// export function removeBlock(id:string , currentNode:Object ){
+//     console.log ( currentNode )
+//     if (currentNode?.id && id == currentNode.id) {
+//         return currentNode;
+//     } else {
+//         var node = null
+//         for(var index in currentNode.blocks){
             
-            node = currentNode.blocks[index];
-            if(node?.id === id){
-                currentNode.blocks.splice(index,1)
-                node.parent = currentNode
-                return node;
-            }
-            removeBlock(id, node );
-        }
-        return node
+//             node = currentNode.blocks[index];
+//             if(node?.id === id){
+//                 currentNode.blocks.splice(index,1)
+//                 node.parent = currentNode
+//                 return node;
+//             }
+//             removeBlock(id, node );
+//         }
+//         return node
+//     }
+// }
 
-    }
-}
-
-export function moveBlock (){
-    if ( !editor.current ) return
-    let component = editor.document
-    var parent = jp.parent ( component , '$..blocks[?(@.id=="' + editor.current.id + '")]' )
-    if ( parent.length === 1 ) return
-    let i
-    parent.forEach ( (p,index) => {
-        if ( p.id === editor.current.id ){
-            i = index
-        }
-    })
-    if ( i > 0 ){
-        let obj = Object.assign({},editor.current)
-        parent.splice(i,1)
-        parent.splice(i-1,0,obj)
-    }
-    editor._document ( component )
-}
+// export function moveBlock (){
+//     if ( !editor.current ) return
+//     let component = editor.document
+//     var parent = jp.parent ( component , '$..blocks[?(@.id=="' + editor.current.id + '")]' )
+//     if ( parent.length === 1 ) return
+//     let i
+//     parent.forEach ( (p,index) => {
+//         if ( p.id === editor.current.id ){
+//             i = index
+//         }
+//     })
+//     if ( i > 0 ){
+//         let obj = Object.assign({},editor.current)
+//         parent.splice(i,1)
+//         parent.splice(i-1,0,obj)
+//     }
+//     editor._document ( component )
+//     EDITOR.document = component
+// }
 
 
 // export function createElement ( name: string , options: object ){
@@ -198,6 +207,7 @@ export function moveBlock (){
 // }
 
 export function createGrid ( cols: number , layout:any ){
+    let editor = EDITOR
     if ( editor.current?.blocks && editor.current.type === 'container' ){
         let grid = new Element().Grid().Cols(this.cols)
         for ( var n=0 ; n < layout.length ; n++ ){
@@ -210,7 +220,9 @@ export function createGrid ( cols: number , layout:any ){
             grid.blocks.push ( el )
         }
         editor.current.blocks.push ( grid )
-        editor._helper ( '' )
+        status.dialog = null
+        //editor._helper ( '' )
+        //editor.helper = ''
         return true
     }
     return false
@@ -240,6 +252,7 @@ export function arrayCSS ( css:string ){
 }
 
 export async function setCSSValue ( css:string ){
+    let editor = EDITOR
     if ( !editor.current ) return
     if ( editor.current.css.css.includes ( css ) ){
         let cl = editor.current.css.css
@@ -304,6 +317,7 @@ export function blockCSS ( block: Object ){
 
 
 export function initColors(){
+    let editor = EDITOR
     let element = document.querySelector ( '#setupColors' )
     Object.keys ( editor.colors ).forEach ( cl => { 
         editor.colors[cl].forEach ( color => {

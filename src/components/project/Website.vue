@@ -22,14 +22,26 @@
             </div> -->
 
     <div v-if="project" class="bg-bluegray-500 p-1 text-white">
-        Project: {{ project.data.name }}
+        Project: {{ project.data.name }} - <span class="capitalize">{{ tab }}</span>
     </div>    
     <div class="flex w-full border" v-if="project">
         <div class="w-1/4">
             <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='settings'" :class="tab==='settings'?'bg-white':''">
                 Settings
             </div>
-            <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='header'" :class="tab==='header'?'bg-white':''">
+            <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='layout'" :class="tab==='layout'?'bg-white':''">
+                Layout
+            </div>
+            <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='analytics'" :class="tab==='analytics'?'bg-white':''">
+                Analytics
+            </div>
+            <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='meta'" :class="tab==='meta'?'bg-white':''">
+                META Tags
+            </div>
+            <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='scripts'" :class="tab==='scripts'?'bg-white':''">
+                Scripts
+            </div>
+            <!-- <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='header'" :class="tab==='header'?'bg-white':''">
                 Header
             </div>
             <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='homepage'" :class="tab==='homepage'?'bg-white':''">
@@ -40,44 +52,103 @@
             </div>
             <div class="px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="tab='footer'" :class="tab==='footer'?'bg-white':''">
                 Footer
-            </div>
+            </div> -->
             <div class="px-2 py-4 border-b border-gray-300 text-gray-500 cursor-pointer text-xs">
                 <div class="flex flex-row justify-around text-2xl">
-                    <icon icon="ic:baseline-save" class="text-2xl" title="Save project" @click="saveFile(project)"/>
+                    <span @click="saveProject"><icon icon="ic:baseline-save" class="text-2xl" title="Save project"/></span>
+                    <icon icon="bx:current-location" class="text-2xl" title="Set as current project" @click="currentProject()"/>
                     <!-- <icon icon="ic:baseline-file-download" class="text-2xl" title="Download project" @click="projectList"/>
                     <icon icon="ic:baseline-file-upload" class="text-2xl" title="Upload project" @click="saveProjects"/> -->
-                    <icon icon="cib:svelte" class="text-2xl" title="Export to SvelteKit" @click="activeProject(project)"/>
+                    <!-- <icon icon="cib:svelte" class="text-2xl" title="Export to SvelteKit" @click="activeProject(project)"/> -->
                 </div>
             </div>
         </div>
         <!-- <div class="px-2 py-4 border-b text-gray-400 cursor-pointer text-xs">
             Use this tool to export a website to other frameworks in order to build static websites
         </div> -->
-        <div class="w-5/6 flex flex-col border-b text-gray-400 overflow-x-hidden">
+        <div class="w-5/6 flex flex-col border-b text-gray-400 bg-white overflow-x-hidden">
             
             <!-- <h5 class="border-b p-4 capitalize text-lg border border-l-0">{{tab}}</h5> -->
 
             <div class="flex flex-col p-4 bg-white" v-if="tab==='settings'">
-                <label class="text-xs mt-2">Framework</label>
+                <!-- <label class="text-xs mt-2">Framework</label>
                 <select v-model="project.data.framework">
                     <option value="sveltekit" selected>Whoobe for SvelteKit</option>
-                </select>
+                </select> -->
                 <label class="text-xs mt-2">Project Name</label>
                 <input type="text" v-model="project.data.name"/>
                 <label class="text-xs mt-2">Website Title</label>
                 <input type="text" v-model="project.data.title"/>
                 <label class="text-xs mt-2">Description</label>
                 <textarea class="w-full" v-model="project.data.description"/>
-                <label class="text-xs mt-2">Analytics</label>
-                <input type="text" v-model="project.data.analytics" placeholder="GA-xxxxx"/>
+                
                 <label class="text-xs mt-2">Demo Website URL</label>
                 <input type="text" class="w-full" v-model="project.data.devServer" placeholder="http://localhost:3000"/>
                 <div class="mt-4 mx-auto">
                     <button @click="saveProject" class="bg-purple-600 rounded hover:bg-purple-800 mx-auto text-white">Save</button>
                 </div>
             </div>
-            <div v-if="tab!='pages' && tab!='settings'">
-                {{ project.data[tab].title }}
+            <div v-if="tab==='analytics'" class="flex flex-col p-4 bg-white">
+                <label class="text-xs mt-2">Analytics</label>
+                <input type="text" v-model="project.data.analytics" placeholder="GA-xxxxx"/>
+            </div>
+            <div v-if="tab==='scripts'" class="flex flex-col p-4 bg-white">
+                <div class="flex">
+                    <label class="text-xs mr-2">AlpineJS</label>
+                    <input type="checkbox" v-model="project.data.alpine"/>
+                </div>
+                <label class="text-xs mt-2">Custom JS URL</label>
+                <input type="text" v-model="project.data.custom_script"/>
+                <label class="text-xs mt-2">Custom CSS URL</label>
+                <input type="text" v-model="project.data.custom_css"/>
+            </div>
+            <div v-if="tab==='meta'" class="flex flex-col p-4 bg-white">
+                <div class="flex items-center">
+                    <label class="text-lg mr-2">Open Graph</label>
+                    <input type="checkbox" v-model="project.data.meta.og.enabled"/>
+                </div>
+                
+                <div v-if="project.data.meta.og.enabled" class="flex flex-col p-2 bg-gray-200 rounded">
+                    <template v-for="item in Object.keys(project.data.meta.og)">
+                        <div v-if="item!='enabled'" class="flex flex-col my-2">
+                            <label class="text-xs capitalize">{{item.replace('_',' ')}}</label>
+                            <input type="text" v-model="project.data.meta.og[item]"/>
+                        </div>
+                    </template>
+                    
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label class="text-lg mr-2">Twitter</label>
+                    <input type="checkbox" v-model="project.data.meta.twitter.enabled"/>
+                </div>
+                
+                <div v-if="project.data.meta.twitter.enabled" class="flex flex-col p-2 bg-gray-200 rounded">
+                    <template v-for="item in Object.keys(project.data.meta.twitter)">
+                        <div v-if="item!='enabled'" class="flex flex-col my-2">
+                            <label class="text-xs capitalize">{{item.replace('_',' ')}}</label>
+                            <input type="text" v-model="project.data.meta.twitter[item]"/>
+                        </div>
+                    </template>
+                    
+                </div>
+            </div>
+            <div v-if="tab==='layout'" class="flex flex-col justify-center items-center">
+                <div v-if="project.data.header || project.data.footer" class="preview-md mx-auto border">
+                    <span v-if="!project.data.header">To create an header to add to all pages, save a template as page type <strong>header</strong></span>
+                    <div v-if="project.data.header" v-html="project.data.header.html"></div>
+                    <div class="h-xl text-2xl flex flex-col items-center justify-center">Your page</div>
+                    <span v-if="project.data.footer">To create a footer to add to all pages, save a template as page type <strong>footer</strong></span>
+                    <div v-if="project.data.footer" v-html="project.data.footer.html"></div>
+                </div>
+                <div v-else class="mx-auto">
+                    <h3 class="mx-auto">No layout defined yet</h3>
+                </div>
+            </div>
+            <!-- <div v-if="tab!='pages' && tab!='settings'">
+                <span v-if="!SSG[tab]">To create an header to add to all pages, save a template as page type <strong>header</strong></span>
+                <div v-if="SSG[tab]" v-html="SSG[tab].html"></div>
+                Fonts : <span v-for="font in SSG[tab].fonts" class="pr-2">{{font}}</span>
                 <div class="scale-25" v-html="project.data[tab].html">
                 </div>
             </div>
@@ -85,23 +156,27 @@
                 <template v-for="page in Object.keys ( project.data.pages )">
                     slug {{ page }} {{ project.data.pages[page].name }}
                 </template>
-            </div>
+            </div> -->
         </div>  
-        <Preview class="hidden" v-if="editor.document"/>
+        
+        <!-- <Preview class="hidden" v-if="editor.document"/> -->
     </div>                      
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { project } from '/@/composables/useProject'
-import { saveFile , activeProject } from '/@/composables/useLocalApi'
+import { saveFile , openPath , activeProject , paths , DATA_PATH , SSG , CONFIG_FILE } from '/@/composables/useLocalApi'
 import { useStore } from '/@/composables/useActions'
+import { slugify , message } from '/@/composables/useUtils'
+import { EDITOR } from '/@/composables/useEditor'
 
-const editor = useStore()
+const editor = EDITOR //useStore()
 const props = defineProps ({
     data:Object
 })
-
+console.log ( 'SSG=>' , SSG )
+project.path = DATA_PATH + '/' + paths.projects
 if ( project ){
     console.log ( project.data )
 }
@@ -111,34 +186,26 @@ const tab = ref ('settings')
 // let projectName = ref ('')
 // let current = ref (null)
 
+
 const tabClass = (tab) => {
     return tab === tab.value ? 'bg-white' : ''
 }
 
+const saveProject = async () => {
+    project.path = CONFIG_FILE
+    const res = await saveFile(project)
+    message.data = await res.message
+}
 
-// const listProjects = async () => {
-//     const list = await  fetch ( 'http://localhost:9000/projects' )
-//     projects.value = await list.json()
-//     console.log( projects )
-// }
 
-// const loadProject = async () => {
-//     const resp = await fetch ( 'http://localhost:9000/projects/' + projectName.value )
-//     current.value = await resp.json()
-// }
+const loadFile = async () => {
+    const config = await openPath ( '/app/pages/whoobe.config.json' ) 
+    project.data = await config.data
+}
 
-// const saveProject = async () =>{
-//     const saved = await fetch ( 'http://localhost:9000/project/' + project.name.replaceAll(' ','-').toLowerCase() ,{
-//         method: 'POST',
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(project) 
-//     })
-//     console.log ( await saved.json() )
-// }
-// listProjects()
+
+loadFile()
+
 </script>
 <!-- 
 <style>

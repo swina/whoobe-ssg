@@ -5,16 +5,10 @@
     
 </template>
 
-<script lang="ts">
-import { defineComponent , ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
-
-export default defineComponent({
-    name: 'EditorPanel',
-    setup() {
-        let show = ref(true)
-        const editor = useEditorStore()        
-        return { editor , show }
-    },
-})
+import { EDITOR } from '/@/composables/useEditor'
+let show = ref(true)
+const editor = EDITOR //useEditorStore()        
 </script>

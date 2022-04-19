@@ -3,6 +3,10 @@ import { useStore } from '/@/composables/useActions'
 
 const editor = useStore()
 
+
+export const FONTS = import.meta.env.VITE_APP_FONTS.split('|').sort()
+
+
 export const message = reactive({
   data:''
 })

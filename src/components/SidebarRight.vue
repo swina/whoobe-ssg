@@ -1,5 +1,5 @@
 <template>
-    <div class="bars sidebarRight z-modal overflow-y-auto border-r border-bluegray-700" v-if="editor.current">
+    <div class="bars sidebarRight z-modal overflow-y-auto border-r border-bluegray-700" v-if="editor.current && editor.tool">
         <!-- @mouseover="disableFloating()" @mouseout="disableFloating()" -->
         <div class="h-8 flex w-full justify-center bg-purple-600 text-white uppercase items-center"> {{ editor.tool.replace ( '-' , ' ') }}</div>
         <BlockElements v-if="editor.tool === 'elements'"/>
@@ -16,15 +16,17 @@
         <BlockWindi v-if="editor.tool === 'customize'" :group="editor.toolGroup"/>
         <BlockSlider v-if="editor.tool === 'slider'"/>
         <BlockTree v-if="editor.tool === 'tree'"/>
-        <BlockAlpine v-if="editor.tool === 'alpine'"/>
+        <BlockAlpine v-if="editor.current && editor.tool === 'alpine'" :id="editor.current.id"/>
+        <BlockUIKits v-if="editor.current && editor.tool === 'library'"/>
         <div id="root" class="ml-4 text-white overflow-y-auto"></div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useEditorStore } from '/@/stores/editor'
+import { EDITOR } from '/@/composables/useEditor'
 
-    const editor = useEditorStore()
+    const editor = EDITOR //useEditorStore()
     
 </script>
 <style>

@@ -19,8 +19,8 @@ import { tabberAddTab , status } from '/@/composables/useNavigation';
       { label: 'New Template' , icon: 'emojione-monotone:new-button' , component: 'Editor' , hasTab: true },
       { label: 'UI Kits' , icon: 'mdi:widgets' , component: 'UIKits' },
       { label: 'Website' , icon: 'mdi:web'  , component: 'Website' },
-      //{ label: 'Svelte' , icon: 'cib:svelte' , component : 'Svelte' },
-      { label: 'Settings' , icon: 'carbon:settings-adjust'  , component: 'Settings'}
+      { label: 'Settings' , icon: 'carbon:settings-adjust'  , component: 'Settings'},
+      { label: 'Projects' , icon: 'file-icons:microsoft-project' , component : 'Projects' },
     ])
     
     const addTab = (component: object) => {

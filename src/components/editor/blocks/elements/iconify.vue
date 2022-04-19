@@ -1,6 +1,6 @@
 <template>
     <div :class="classe"
-        @click="selectBlock(element,$event),contextMenu($event,false)" @contextmenu.prevent="selectBlock(element,$event),contextMenu($event,true)"
+        @click="selectBlock(element,$event),contextMenu($event,false),status.current=element" @contextmenu.prevent="selectBlock(element,$event),contextMenu($event,true)"
         >
         <i class="iconify" :data-icon="element.data.icon" :class="element.class"/>
     </div>
@@ -11,7 +11,9 @@
 import { computed } from 'vue'
 import { useStore , selectBlock } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu';
-const editor = useStore()
+import { status } from '/@/composables/useNavigation';
+import { EDITOR } from '/@/composables/useEditor';
+const editor = EDITOR //useStore()
 
 const props = defineProps ({
     element: Object,

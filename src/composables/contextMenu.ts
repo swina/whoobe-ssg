@@ -15,7 +15,7 @@ export function openContextMenu ( e:object ){
 
 export function toggleContext ( e:object ){
     let ctxMenu = document.querySelector ( '#contextMenu' )
-    ctxMenu.classList.add ( 'hidden' )
+    ctxMenu?.classList.add ( 'hidden' )
 }
 
 export function openContextDialog ( e:object , classe:string ){

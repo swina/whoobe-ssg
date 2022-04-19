@@ -49,8 +49,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useStore , sliderObject , sliderIndex, sliderTabs } from '/@/composables/useActions'
-
-const editor = useStore()
+import { EDITOR } from '/@/composables/useEditor';
+const editor = EDITOR //useStore()
 
 const slider = sliderObject.slider
 

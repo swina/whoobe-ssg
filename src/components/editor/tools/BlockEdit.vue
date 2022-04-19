@@ -19,7 +19,9 @@
 import { computed , ref } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
 import { searchIconify } from '/@/composables/useUtils'
-const editor = useEditorStore()
+import { EDITOR } from '/@/composables/useEditor';
+
+const editor = EDITOR //useEditorStore()
 let search = ref ( '' )
 let icons = ref ( null )
 

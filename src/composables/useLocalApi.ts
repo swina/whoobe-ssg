@@ -2,6 +2,8 @@ import { reactive } from 'vue'
 import jp from 'jsonpath'
 const endpoint = import.meta.env.VITE_APP_LOCAL_API
 export const PAGESURL = import.meta.env.VITE_APP_PAGES_URL
+export const DATA_PATH = import.meta.env.VITE_APP_DATA_PATH
+export const CONFIG_FILE = '/app/pages/whoobe.config.json'
 
 export const paths = { 
     templates : '/templates',
@@ -13,14 +15,19 @@ export const paths = {
     pages: '/pages',
     ssg: '/app/pages/dist',
     url: PAGESURL
-
 }
 
 
 export const fileTree = reactive({
     folders:Object,
     lastSource:Object,
-    lastTarget:Object
+    lastTarget:Object,
+    reload:false
+})
+
+export const SSG = reactive({
+    header:'',
+    footer:''
 })
 
 
@@ -80,7 +87,7 @@ export const openFile = async ( folder , name ) => {
 
 export const saveFile = async ( json:Object ) => {
     let data = { data: json , path: json.path }
-    await fetch ( endpoint + '/file/save' ,{
+    const res = await fetch ( endpoint + '/file/save' ,{
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -88,7 +95,10 @@ export const saveFile = async ( json:Object ) => {
         },
         body: JSON.stringify(data) 
     })
+    return await res.json() ?? res
 }
+
+
 
 export const moveFile = async ( source:String , target: String , filename:String , fs:Object ) => {
     const mv = await fetch ( endpoint + '/move?source=' + source + '&target=' + target + '&filename=' + filename )
@@ -138,10 +148,38 @@ export const saveSveltePage = async ( page: Object ) => {
 
 
 export const saveStaticPage = async ( page: Object ) => {
+    console.log ( page )
     let doc = page
-    let fontsLInk = ''
-    if ( page.fonts ){
-        fontsLInk = `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=${page.fonts}">`
+    if ( page.slug === 'header' ) {
+        SSG.header = {
+            html: page.html,
+            fonts: page.fonts.split(',')
+        }
+        return
+    }
+
+    if ( page.slug === 'footer' ) {
+        SSG.footer = {
+            html: page.html,
+            fonts: page.fonts.split(',')
+        }
+        return
+    }
+    
+    let fonts = page.fonts.split(',')
+    fonts = [ ...fonts , ...SSG.header.fonts , ...SSG.footer.fonts ]
+    fonts = [ ...new Set(fonts) ].join('|')
+
+    let header = ''
+    let footer = ''
+    SSG.header ? header = SSG.header.html : null
+    SSG.footer ? footer = SSG.footer.html : null
+    !page.include.header ? header = '' : null
+    !page.include.footer ? footer = '' :  null
+
+    let fontsLink = ''
+    if ( fonts ){
+        fontsLink = `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=${fonts.replaceAll(',','|')}">`
     }
     doc.html = `<!DOCTYPE html>
     <html lang="en">
@@ -152,15 +190,17 @@ export const saveStaticPage = async ( page: Object ) => {
             <meta name="keywords" content="${page.document.tags.join(',')}">
             <!--Material-icons-->
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-            ${fontsLInk}
-            <script src="//unpkg.com/alpinejs" defer></script>
+            ${fontsLink}
+            <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer=""></script>
             <meta charset="UTF-8">
             <link rel="stylesheet" href="/assets/css/output.css">
             <link rel="stylesheet" href="/assets/css/animations.css">
             <link rel="icon" href="/favicon.ico" /> 
         </head>
         <body>
+        ${header}
         ${page.html}
+        ${footer}
         </body>
     </html>`
     console.log ( doc )

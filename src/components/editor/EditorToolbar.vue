@@ -27,8 +27,9 @@
 import { ref } from 'vue'
 import { useStore } from '/@/composables/useActions'
 import { useEditorSidebar, toolbar } from '/@/composables/useNavigation';
+import { EDITOR } from '/@/composables/useEditor'
 
-const editor = useStore() //useStore()
+const editor = EDITOR //useStore() //useStore()
 
 const icons = ref([
     { icon: 'tabler:template' , tool: 'snippets' , mode: null },
@@ -51,7 +52,8 @@ const sidebar = ( action: String ) => {
         return
     }
     useEditorSidebar.sidebar = true
-    editor._tool ( action , editor.current )
+    editor.tool = action
+    //editor._tool ( action , editor.current )
 }
 
 const isActive = (tool:String) =>{

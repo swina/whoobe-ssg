@@ -6,23 +6,28 @@
         </template>
         <span @click="copyBlock"><icon icon="fa6-regular:copy" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Copy" /></span>
         <span @click="pasteBlock"><icon icon="fa6-regular:paste" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Paste" /></span>
+        <span @click="hideBlock($event)" v-if="filter({filter:['grid','flex']})"><icon icon="akar-icons:eye" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Hide" /></span>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { toggleContext } from '/@/composables/contextMenu'
-import { useStore , updateCSS , moveBlock } from '/@/composables/useActions'
-import { setLocalStorage, getLocalStorage, cloneBlock , CLIPBOARD } from '/@/composables/useActions';
+import { useStore , updateCSS } from '/@/composables/useActions'
+import { setLocalStorage, getLocalStorage, CLIPBOARD } from '/@/composables/useActions';
 import { message } from '/@/composables/useUtils';
+import { status } from '/@/composables/useNavigation';
+import { cloneBlock, moveBlock  } from '/@/composables/useEditor';
+import { EDITOR } from '/@/composables/useEditor'
 
-const editor = useStore()
+const editor = EDITOR //useStore()
 
 const toolbar = ref ( [
     { icon: 'icomoon-free:move-up' , label: 'Move Up' , action: 'move' },
     { icon: 'la:elementor' , label: 'Add element' , action: 'elements' , filter : [ 'grid' , 'flex' ] },
     { icon: 'ic:baseline-edit' , label: 'Edit' , action: 'edit' , filter : ['element' , 'icon' , 'iconify'] },
-    { icon: 'ic:baseline-title' , label: 'Heading' , action: 'heading' , filter : ['h'] },
+    { icon: 'akar-icons:edit' , label: 'RichTextEditor' , action: 'wysiwyg' , filter : ['p' ] },
+    { icon: 'bx:heading' , label: 'Heading' , action: 'heading' , filter : ['h'] },
     { icon: 'fluent:text-direction-horizontal-right-24-regular' , label: 'Direction row' , action: 'flex-row' , filter: ['flex'] },
     { icon: 'fluent:text-direction-rotate-90-ltr-20-regular' , label: 'Direction column' , action: 'flex-col' , filter: ['flex'] },
     { icon: 'clarity:form-line' , label: 'Form settings' , action: 'formSettings' , filter: ['form'] },
@@ -33,7 +38,6 @@ const toolbar = ref ( [
     { icon: 'akar-icons:link-chain' , label: 'Link' , action: 'link' },
     { icon: 'ant-design:download-outlined' , label: 'Import block' , action: 'BlockImport' , filter: ['grid','flex'] },
     { icon: 'ant-design:upload-outlined' , label: 'Export block' , action: 'BlockExport' , filter: ['grid','flex'] } ,
-
 ])
 const filter = ( item: object ) => {
     if ( item?.filter ){
@@ -56,16 +60,28 @@ const loadTool = ( item: Object ) => {
         editor.current.css.css = updateCSS ( ['flex-row' , 'flex-col' ] , editor.current.css.css , item.action )
         return
     }
+    if ( item.action === 'wysiwyg' ){
+        status.dialog = 'wysiwyg'
+        status.dialogTitle = 'Rich Text Editor'
+        status.dialogCss = 'w-3/4 h-xl'
+        return
+    }
     if ( item.action === 'customize' ){
         //open customize with relative tool
-        editor._tool ( item.action , editor.current )
+        editor.tool = item.action
         item?.group ? 
-            editor._toolGroup ( editor.wiTools.filter ( group => group.label === item.group )[0] ) : 
-                editor._toolGroup ( null )
+           editor.toolGroup =  editor.wiTools.filter ( group => group.label === item.group )[0]  : 
+               editor.toolGroup = null
+        //editor._tool ( item.action , editor.current )
+        //item?.group ? 
+        //    editor._toolGroup ( editor.wiTools.filter ( group => group.label === item.group )[0] ) : 
+        //        editor._toolGroup ( null )
         return
     } else {
-        editor._tool ( item.action , editor.current )
-        editor._toolGroup ( null )
+        editor.tool = item.action
+        editor.toolGroup = null
+        // editor._tool ( item.action , editor.current )
+        // editor._toolGroup ( null )
     }
 }
 
@@ -82,5 +98,9 @@ const pasteBlock = () => {
     } else {
         message.data = 'No valid block in clipboard'
     }
+}
+const hideBlock = (e:Object) => {
+    toggleContext(e)
+    editor.current['hide'] = true
 }
 </script>

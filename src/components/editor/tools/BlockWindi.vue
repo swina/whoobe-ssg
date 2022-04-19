@@ -4,14 +4,14 @@
         
         
         <template v-for="group in editor.wiTools">
-            <div v-if="enabledOption(group) && !editor.toolGroup" class="titleBar hover:bg-black text-xs uppercase cursor-pointer" :title="group.label" @click="editor._toolGroup ( group )">
+            <div v-if="enabledOption(group) && !editor.toolGroup" class="titleBar hover:bg-black text-xs uppercase cursor-pointer" :title="group.label" @click="editor.toolGroup = group">
                 {{ group.label }}
             </div>
         </template>
         
         
         <div v-if="editor.toolGroup" class="overflow-y-auto">
-            <div class="titleBar bg-black text-xs flex items-center uppercase cursor-pointer" @click="editor._toolGroup(null)">
+            <div class="titleBar bg-black text-xs flex items-center uppercase cursor-pointer" @click="editor.toolGroup=null">
                 <Icon icon="bi:arrow-left-circle" class="text-xl mr-2"/> {{ editor.toolGroup.label }}
             </div>
             <div class="grid grid-cols-2">
@@ -34,13 +34,14 @@
 //import { useEditorStore } from '/@/stores/editor'
 import { useStore } from '/@/composables/useActions'
 //import twGroups from '/@/composables/tw.groups'
+import { EDITOR } from '/@/composables/useEditor'
 
 //const editor = useEditorStore()
 const props = defineProps({
-    group: String
+    group: Object
 })
 
-const editor = useStore()
+const editor = EDITOR //useStore()
 
 // const wiGroups = ref ( twGroups )
 const enabledOption = ( group ) => {

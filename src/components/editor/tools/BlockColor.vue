@@ -26,8 +26,10 @@
 import { computed , ref } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
 import { updateColorCSS , matchColorCSS , initColors } from '/@/composables/useActions'
+import { EDITOR } from '/@/composables/useEditor';
 
-const editor = useEditorStore()
+
+const editor = EDITOR //useEditorStore()
 const props = defineProps({
   context: String
 })

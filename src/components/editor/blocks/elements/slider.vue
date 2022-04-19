@@ -1,6 +1,6 @@
 <template>
     <div 
-        @click="selectBlock(block,$event)"
+        @click="selectBlock(block,$event),EDITOR.current=block,status.current=block"
         :id="block.id" class="flex flex-col border-yellow-400 border-2 border-dashed m-2 w-full border p-1 relative" 
         :class="'z-' + level">
         <div class="absolute top-0 right-0 m-1 flex items-center">
@@ -12,7 +12,7 @@
         </div>
         <div class="flex flex-row w-full">
             <template v-for="(tab,n) in slider.blocks.length" :key="tab">
-                <span @click="index=n,sliderIndex.index=n,selectBlock(slider.blocks[n],$event)" class="px-1 text-center text-sm" :class="tabCSS(n)">
+                <span @click="index=n,sliderIndex.index=n,selectBlock(slider.blocks[n],$event),EDITOR.current=slider.blocks[n]" class="px-1 text-center text-sm" :class="tabCSS(n)">
                     <span v-if="slider.data.mode==='tabs'">{{ slider.data.slides[n].name }}</span>
                     <span v-else> Slide {{ n + 1 }}</span>
                 </span>
@@ -37,11 +37,13 @@
 
 <script setup lang="ts">
 import { computed, ref  } from 'vue'
-import { createSharedComposable } from '@vueuse/core'
-import { useStore, selectBlock , cloneBlock , blockCSS ,removeBlock, sliderObject , sliderIndex } from '/@/composables/useActions'
+import { useStore, selectBlock , blockCSS , sliderObject , sliderIndex } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu'
+import { status } from '/@/composables/useNavigation'
 import Element from '/@/composables/useElementClass'
-const editor = useStore()
+import { EDITOR , cloneBlock , removeBlock } from '/@/composables/useEditor'
+
+const editor = EDITOR //useStore()
 
 const index = ref(0)
 
@@ -82,6 +84,7 @@ const newSlide = () =>{
     let slide = new Element().Flexbox().setCss('p-8 w-full')
     slider.value.data.slides.push ( { name: 'new slide' } ) 
     slider.value.blocks.push ( slide )
+    editor.current = slide
     selectBlock ( slide , editor.current )
 }
 

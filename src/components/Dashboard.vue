@@ -4,7 +4,9 @@
       <Editor   v-if="loadthis() === 'Editor'"/>
       <UIKits   v-if="loadthis() === 'UIKits'"/>
       <Pages    v-if="loadthis() === 'Website'"/>
-      <Svelte   v-if="loadthis() === 'Svelte'"/>
+      <Website  v-if="loadthis() === 'Settings'"/>
+      <Project  v-if="loadthis() === 'Project'"/>
+      <!-- <Svelte   v-if="loadthis() === 'Svelte'"/> -->
       <!-- <div v-if="tabber.tabs">
       {{ tabber.tabs[tabber.tab].component }}
       </div> -->
@@ -44,8 +46,11 @@
       if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Website' ){
         return 'Website'
       }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Svelte' ){
-        return 'Svelte'
+      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Project' ){
+        return 'Project'
+      }
+      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Settings' ){
+        return 'Settings'
       }
     }
     return false

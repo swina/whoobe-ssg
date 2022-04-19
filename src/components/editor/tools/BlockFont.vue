@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col p-2 col-span-2">
         Font Family
-        <select v-model="selectedFont" @change="setFont" class="border-none text-xs">
+        <select v-model="selectedFont" @change="setFont" class="border-none text-base text-white opacity-100">
             <option v-for="(font,index) in options" :value="font" :key="font"> {{ font }}</option>
         </select>
         <div class="flex flex-wrap justify-around py-2">
@@ -15,10 +15,10 @@ import { ref , computed } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
 import classes from '/@/composables/tw.classes'
 import { updateCSS , matchCSS, setCSSValue } from '/@/composables/useActions'
-
+import { EDITOR } from '/@/composables/useEditor'
 const sizes = classes.textSize
 const weights = classes.fontWeight
-const editor = useEditorStore()
+const editor = EDITOR //useEditorStore()
 const fonts = editor.fonts
 const options = fonts.replaceAll('+',' ').split('|')
 let buttons = ref ( [

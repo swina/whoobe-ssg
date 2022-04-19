@@ -1,12 +1,12 @@
 <template>
     <component 
-        v-if="block" 
+        v-if="block && !block?.hide" 
         :is="component"
         :ref="block.id" 
         :key="block.id" 
         class="editor-block relative p-2" 
         :class="current(block,false)" 
-        :data-block-tag="block.semantic || block.element + ' ' + level"
+        :data-block-tag="block.semantic || block.element"
         :id="block.id"
         :style="blockStyle">
 
@@ -36,8 +36,11 @@
                 :level="parseInt(level)+1"></Iconify>
         </template>
         
-        <div class="absolute inset-0" v-if="block.type==='container'" :class="selector" @click="selectBlock(block,$event),contextMenu($event,false)" @contextmenu.prevent="selectBlock(block,$event),contextMenu($event,true)"></div>
+        <div class="absolute inset-0" v-if="block.type==='container'" :class="selector" @click="selectBlock(block,$event),contextMenu($event,false),status.current = block,EDITOR.current=block" @contextmenu.prevent="selectBlock(block,$event),contextMenu($event,true),EDITOR.current=block"></div>
     </component>
+    <div v-if="block?.hide" :id="block.id" class="w-full my-2 left-0 border-2 border-dashed border-red-500 h-10 z-modal bg-gray-300 p-2 flex items-center"  @click="block.hide=false,selectBlock(block,$event),EDITOR.current=block">
+        Hidden {{ block.tag }} <span><icon icon="akar-icons:eye" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="View" /></span>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -47,8 +50,10 @@ import { useNavigatorStore } from '/@/stores/navigator';
 import '/@/styles/editor.css'
 import { dispatch , selectBlock } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu';
+import { status } from '/@/composables/useNavigation'
+import { EDITOR } from '/@/composables/useEditor'
 
-    const editor = useEditorStore()
+    const editor = EDITOR//useEditorStore()
     const navigation = useNavigatorStore()
 
     const props = defineProps ({
@@ -73,13 +78,14 @@ import { openContextMenu , toggleContext } from '/@/composables/contextMenu';
     }
 
     const selector = computed( () => {
-        return editor.current.id === props.block.id ?
+        return editor.current?.id && editor.current.id === props.block.id ?
             ' border border-red-500 ' + ' z-' + props.level :
             ' border hover:border-red-500 border-dashed '  + ' z-' + props.level
     })
 
     const contextMenu = ( event: object , flag: boolean )=>{
-        flag ?
+
+        document.querySelector('#contextMenu') && flag ?
             openContextMenu(event) :
             toggleContext(event)
     }

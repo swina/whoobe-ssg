@@ -8,8 +8,6 @@
             :class="classe" 
             class="relative"
             :style="stile" 
-            v-model="element.content"
-            :value="element.value" 
             v-html="element.content"
             :src="element.image && element.image.url?element.image.url:'no-image.png'" 
             :placeholder="element.placeholder" 
@@ -17,9 +15,9 @@
             @blur="handleInput"
             :data-id="element.id"
             data-type="element"
-            :data-element-tag="element.type + ' ' +  element.element"
+            :data-element-tag="element.element"
             :data-icon="element.tag==='iconify' || element.tag === 'icon'?element.data.icon:null"
-            @click="selectBlock(element,$event),contextMenu($event,false)" @contextmenu.prevent="selectBlock(element,$event),contextMenu($event,true)"
+            @click="selectBlock(element,$event),contextMenu($event,false),status.current=element,EDITOR.current=element" @contextmenu.prevent="selectBlock(element,$event),contextMenu($event,true)"
             >
             
         </component>
@@ -32,7 +30,10 @@ import { useEditorStore } from '/@/stores/editor'
 import { computed , useAttrs, ref } from 'vue'
 import { selectBlock } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu';
-const editor = useEditorStore()
+import { status } from '/@/composables/useNavigation';
+import { EDITOR } from '/@/composables/useEditor';
+
+const editor = EDITOR //useEditorStore()
 const attrs = useAttrs()
 
 const props = defineProps ({
@@ -60,6 +61,7 @@ const handleInput = (e) => {
     props.element.content = text 
 }
 const selector = computed( () => {
+    if ( !editor.current || !editor.current?.id ) return
         return editor.current.id === props.element.id ?
             ' border border-green-500 ' + ' z-' + props.level :
             ' border hover:border-green-500 border-dashed '  + ' z-' + props.level

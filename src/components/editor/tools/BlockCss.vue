@@ -18,7 +18,8 @@
 <script setup lang="ts">
 import { useEditorStore } from '/@/stores/editor'
 import classes from '/@/composables/tw.classes'
+import { EDITOR } from '/@/composables/useEditor';
 
-const editor = useEditorStore()
+const editor = EDITOR //useEditorStore()
 const semantic = classes.semantics
 </script>

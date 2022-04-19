@@ -25,10 +25,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
+import { EDITOR } from '/@/composables/useEditor';
 //import classes from '/@/composables/tw.classes'
 //import { updateCSS } from '/@/composables/useActions'
 
-const editor = useEditorStore()
+const editor = EDITOR //useEditorStore()
 const canHaveImage = computed ( () => {
     return editor.current && ( editor.current.type === 'container' || editor.current.element === 'img' ) ?
         true :

@@ -140,17 +140,18 @@ button.square {
 }
 
 
-/* *[data-block-tag]:hover::before {
+*[data-block-tag]:hover::before {
     content: attr(data-block-tag);
     font-size:.6rem;
-    @apply absolute top-0 right-0 -mt-6 p-1 bg-gray-600 text-white font-mono;
+    z-index: 999999999999999;
+    @apply absolute bottom-0 left-0 px-2 h-6 text-center flex items-center justify-center font-mono rounded;
 }
 
-*[data-element-tag]:hover::after {
+*[data-element-tag]:hover::before {
     content: attr(data-element-tag);
     font-size:.6rem;
-    @apply absolute top-0 right-0 w-10 mt-6 text-center p-1 bg-blue-400 text-white font-mono rounded;
-} */
+    @apply absolute top-0 left-0 px-2 h-6 -mt-6 text-center flex items-center justify-center bg-blue-400 text-white font-mono rounded;
+}
 ul.tree {
     list-style:none;
     padding-left:.5rem;
@@ -193,4 +194,39 @@ ul.tree li.item a:active {
 ul.tree span {
     display:inline-block;
     margin:.25em .5em;
+}
+
+iframe.small, .preview-sm {
+    width: 65rem;
+    height: 50rem;
+    transform: scale(.25);
+    transform-origin: 0 0;
+}
+
+.preview-md {
+    margin:0 auto;
+    width: 55rem;
+    height: 70rem;
+    transform: scale(.5);
+    transform-origin: 50% 0;
+}
+
+.toolbar-icon {
+    @apply w-10 h-10 bg-white text-black flex items-center justify-center border border-gray-300 rounded text-lg cursor-pointer mr-1;
+}
+
+.toolbar-icon:hover {
+    @apply bg-gray-400;
+}
+
+.toolbar-icon.is-active {
+    @apply bg-bluegray-300;
+}
+
+.tree-root , .ctxMenus > ul > li { 
+    margin:0;
+    padding:0px;
+}
+.tree-item , .ctxMenus > ul > li {
+    list-style: none;
 }

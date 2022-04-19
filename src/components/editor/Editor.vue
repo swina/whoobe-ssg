@@ -13,7 +13,7 @@
     
     <EditorToolbar/>
     
-    <SidebarRight v-if="useEditorSidebar.sidebar"/>
+    <SidebarRight v-if="useEditorSidebar.sidebar && editor.tool"/>
 
     <transition name="fade">
       <EditorPanel/>
@@ -32,19 +32,21 @@
 import {  computed  } from 'vue';
 import { useEditorStore } from '/@/stores/editor';
 import { useNavigatorStore } from '/@/stores/navigator';
-import { moveBlock , useStore , updateCSS } from '/@/composables/useActions'
+import { useStore , updateCSS } from '/@/composables/useActions'
 import twGroups from '/@/composables/tw.groups'
 import { hotKeys } from '/@/composables/hotKeys';
 import { useEditorSidebar } from '/@/composables/useNavigation';
-
+import { moveBlock } from '/@/composables/useEditor';
+import { EDITOR } from '/@/composables/useEditor';
     const hk = hotKeys()
 
-    const editor = useStore()
+    const editor = EDITOR //useStore()
     const navigation = useStore('navigation')
     console.log ( editor.document )
-    editor._wiTools ( twGroups )
+    //editor._wiTools ( twGroups )
+    editor.wiTools = twGroups 
     const size = computed(()=>{
-        return useEditorSidebar.sidebar ? 'w-3/4' : ''
+        return useEditorSidebar.sidebar && editor.current ? 'w-3/4' : 'mr-12'
         //return navigation.sidebar ? 'w-3/4' : 'w-full'
     })
 

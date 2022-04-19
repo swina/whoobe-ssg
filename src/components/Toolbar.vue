@@ -12,8 +12,8 @@
 <script setup lang="ts">
 import { useStore } from '/@/composables/useActions'
 import { tabber , tabberRemoveTab } from '/@/composables/useNavigation'
-
-const editor = useStore()
+import { EDITOR } from '../composables/useEditor';
+const editor = EDITOR //useStore()
 
 const active = ( index: number ) => {
     return parseInt(tabber.tab) === parseInt(index) ? 'bg-purple-600' : 'bg-bluegray-700'
@@ -31,9 +31,10 @@ const selectTab = ( index: Number ) => {
         //switch tab
         
         tabber.tab = index 
-        editor._document ( tabber.tabs[index].object )
-        editor._current ( tabber.tabs[index].object.json.blocks )
-        
+        // editor._document ( tabber.tabs[index].object )
+        // editor._current ( tabber.tabs[index].object.json.blocks )
+        editor.document = tabber.tabs[index].object 
+        editor.current = tabber.tabs[index].object.json.blocks 
         try {
             target.scrollTo(0,tabber.tabs[tabber.tab].scroll)
         } catch (err) {

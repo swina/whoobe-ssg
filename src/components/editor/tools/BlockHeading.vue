@@ -12,7 +12,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
-const editor = useEditorStore()
+import { EDITOR } from '/@/composables/useEditor';
+const editor = EDITOR //useEditorStore()
 
 const heading = computed ( () => {
     return [ 1 , 2 , 3 , 4 , 5 , 6 ]

@@ -1,7 +1,7 @@
 <template>
-    <div class="w-1/3 bg-white relative flex flex-col shadow border">
-        <Icon icon="mdi:close" class="absolute top-0 right-0 text-3xl text-white z-modal cursor-pointer" @click="editor._helper('')"/>
-        <div class="panelTitle">Grid Layout</div>
+    <div class="bg-white relative flex flex-col shadow border">
+        <!-- <Icon icon="mdi:close" class="absolute top-0 right-0 text-3xl text-white z-modal cursor-pointer" @click="editor.helper('')"/>
+        <div class="panelTitle">Grid Layout</div> -->
         <div class="flex items-center p-4">
             Columns 
             <select v-model="cols" class="h-8 w-16 ml-2">
@@ -21,14 +21,13 @@
     </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
 import { createGrid } from '/@/composables/useActions'
+import { EDITOR } from '/@/composables/useEditor';
 
-export default defineComponent({
-    setup() {
-        const editor = useEditorStore()
+        const editor = EDITOR //useEditorStore()
         let n = ref(1)
         let cols = ref(3)
         let colSpans = ref ( {
@@ -39,8 +38,4 @@ export default defineComponent({
             "5" : [ [1,1,1,1,1],[1,1,1,2] , [1,1,3] , [1,4] , [1,1,2,1] , [1,2,1,1] , [ 1, 3 ,1] , [ 2,1,1,1] , [3,1,1] , [3,2] , [4,1] ],
             "6" : [ [1,1,1,1,1,1],[1,1,1,1,2] , [1,1,1,3] , [1,1,4] , [1,5] , [1,1,1,2,1] , [1,1,2,1,1] , [1,1,3,1] , [1,2,1,1,1] , [1,3,1,1] , [1,4,1] , [2,1,1,1,1] , [3,1,1,1] , [4,1,1] , [5,1] ],
         })
-
-        return { editor , n , cols , colSpans , createGrid }
-    },
-})
 </script>

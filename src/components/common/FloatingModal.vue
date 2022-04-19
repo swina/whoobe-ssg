@@ -8,6 +8,8 @@
             <CreateFile v-if="status.dialog === 'CreateFile'"/>
             <DeleteFile v-if="status.dialog === 'Delete'"/>
             <DocumentSettings v-if="status.dialog === 'DocumentSettings'" :mode="status.mode"/>
+            <BlockTipTap v-if="status.dialog==='wysiwyg'"/>
+            <BlockGrid v-if="status.dialog==='Grid'"/>
         </div>
     </div>
 </template>

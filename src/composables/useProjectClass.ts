@@ -10,7 +10,9 @@ export default class Project {
     pages: object
     fonts: object
     animations: object
+    scripts:Object
     analytics: string
+    meta: Object
     init: boolean
 
 
@@ -27,6 +29,28 @@ export default class Project {
         this.fonts = []
         this.animations = []
         this.analytics = ''
+        this.scripts = {
+            js : [],
+            css: []
+        }
+        this.meta = {
+            og: {
+                enabled: false,
+                image: '',
+                url: '',
+                site_name: '',
+                locale: 'en_US',
+                user_id: '',
+                app_id: ''
+            },
+            twitter: {
+                enabled: false,
+                publisher: '',
+                author: '',
+                image: '',
+                video: ''
+            }
+        }
         this.init = true
     }
 

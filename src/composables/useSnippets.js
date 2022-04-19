@@ -267,10 +267,10 @@ export default class Template {
     }
 
     feature(){
-        let container = new Element().Flexbox({direction:'col'}).setCss ( 'w-full md:w-56 justify-center items-center shadow px-6 py-4')
-        let icon = new Element().Iconify().setCss('text-3xl')
+        let container = new Element().Flexbox({direction:'col'}).setCss ( 'w-sm justify-center items-center shadow px-6 py-4 bg-gray-100 rounded-xl')
+        let icon = new Element().Iconify().setCss('text-3xl bg-blue-400 rounded-full h-12 w-12 text-center flex items-center justify-center text-white')
         icon.data.icon = 'mi:laptop'
-        let title = new Element().Heading(4).setContent('Feature').setCss('my-8')
+        let title = new Element().Heading(3).setContent('Feature').setCss('my-8 text-xl font-bold')
         let description = new Element().Paragraph().setCss ( 'text-center' )
         container.blocks.push ( icon )
         container.blocks.push ( title )

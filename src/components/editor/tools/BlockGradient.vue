@@ -26,19 +26,16 @@
         </template>
     </div>
     <div class="h-20 w-full my-2 border border-bluegray-900" :class="getGradient()"/>
-    <!-- Direction
-    <select v-model="gradient.direction">
-        <option v-for="direction in gradientSet" :value="direction.value">{{ direction.label }}</option>
-    </select> -->
+    <button class="bg-bluegray-800 border-0" @click="randomGradient">Randomize</button>
 </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useStore , blockCSS , updateColorCSS } from '/@/composables/useActions'
+import { useStore , blockCSS , updateColorCSS, matchCSS } from '/@/composables/useActions'
 import classes from '/@/composables/tw.classes'
-
-const editor = useStore()
+import { EDITOR } from '/@/composables/useEditor';
+const editor = EDITOR //useStore()
 
 //const bggradient = ref ( classes.bggradient )
 
@@ -61,8 +58,10 @@ const setColor = (color) => {
 }
 
 const getGradient = ()=>{
-    console.log ( Object.values ( gradient.value ).join ( ' ' ) )
-    return Object.values ( gradient.value ).join ( ' ' ) 
+    //console.log ( Object.values ( gradient.value ).join ( ' ' ) )
+    let direction = editor.current.css.css.split(' ').filter ( gr => gr.includes('bg-gradient') )
+    //console.log ( direction )
+    return Object.values ( gradient.value ).join ( ' ' )  + ' ' + direction ?? direction[0]
 }
 
 Object.keys ( gradient.value ).forEach ( prefix => {
@@ -70,6 +69,45 @@ Object.keys ( gradient.value ).forEach ( prefix => {
     if ( found ) 
         gradient.value[prefix] = found 
 })
+let allColors = ref ( Object.values ( editor.colors ).reduce ( (a,b) => [ ...a , ...b] , []).filter(c=> !c.includes('hover')) )
+let colors = allColors.value
 
+const randomGradient = () => {
+    matchGradient('from-',true)
+    matchGradient('via-',true)
+    matchGradient('to-',true)
+    let color1 = colors[parseInt(Math.random() * (colors.length - 0) + 0)].replace('bg-','from-');
+    let color2 = colors[parseInt(Math.random() * (colors.length - 0) + 0)].replace('bg-','to-');
+    let color3 = colors[parseInt(Math.random() * (colors.length - 0) + 0)].replace('bg-','via-');
+    gradient.value.from = color1
+    gradient.value.via = color3
+    gradient.value.to = color2
+    setColor ( color1 )
+    setColor ( color2 )
+    setColor ( color3 )
+}
+
+const matchGradient = (prefix:String,reset:Boolean=false) => {
+    let cl = editor.current.css.css.split ( ' ' )
+        let arr = colors.map ( a => a.replace('bg-',prefix) )
+        arr.forEach ( color => {
+            if ( cl.includes ( color ) ) {
+                console.log ( color )
+                reset ? 
+                    editor.current.css.css = editor.current.css.css.replace ( color , '' ) :
+                        gradient.value[prefix.replace('-','')] = color
+            }
+        })
+    
+}
+
+const clearGradient = () => {
+    setColor ( 'from-transparent' )
+    setColor ( 'to-transparent' )
+}
+
+matchGradient ( 'from-' )
+matchGradient ( 'via-')
+matchGradient ( 'to-' )
 </script>
 

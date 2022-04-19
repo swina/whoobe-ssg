@@ -6,9 +6,6 @@ import { createPinia } from 'pinia'
 //import store  from '/@/stores'
 
 
-import './styles/base.css';
-import './styles/custom.css';
-
 // Router
 import { Router } from '/@/router';
 
@@ -24,6 +21,9 @@ const i18n = createI18n({
 import 'virtual:windi.css';
 import 'virtual:windi-devtools';
 //import './input.css'
+
+import './styles/base.css';
+import './styles/custom.css';
 
 const app = createApp(App);
 

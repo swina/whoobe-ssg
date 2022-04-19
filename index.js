@@ -4,21 +4,23 @@ const port = 9000
 const fs = require('fs-extra')
 const path = require('path')
 const bodyParser = require("body-parser");
-var cors = require('cors')
-
 const dree = require('dree')
+var cors = require('cors')
+require('dotenv').config()
+
 
 const options = {
     followLinks: true,
     depth: 5
 };
 
-const current   = "./server/data/current/" 
-const projects  = "./server/data/projects";
-const templates = "./server/data/templates";
-const uikits    = "./server/data/uikits";
-const static    = "/app/pages/dist";
-const local     = "./server/data";
+const DATA_PATH = process.env.VITE_APP_DATA_PATH
+const current   = `${DATA_PATH}/current` //"./server/data/current/" 
+const projects  = `${DATA_PATH}/projects` //"./server/data/projects";
+const templates = `${DATA_PATH}/templates` //"./server/data/templates";
+const uikits    = `${DATA_PATH}/uikits` //"./server/data/uikits";
+const static    = process.env.VITE_APP_PAGES;
+const local     = `${DATA_PATH}` ///"./server/data";
 
 const paths = {
     current: current,
@@ -34,20 +36,16 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json({limit: '50mb'}));
 app.use(cors())
 
-//var config = require ( path.resolve ( current ) + '/config.json' )
-// return templates 
-// app.get ( '/templates' , ( req , res ) => {
-//     const tree = dree.scan ( path.resolve ( templates) )
-//     const files = dree.parseTree ( tree , options )
-//     res.json ( tree )
-// })
-
+// get filesystem structure 
+// @name : paths
 app.get ( '/tree/:name' , ( req , res ) => {
     let dirToScan = paths[req.params.name]
     const tree = dree.scan ( path.resolve ( dirToScan ) )
     res.json ( tree )
 })
 
+// load file
+// @req.query.path : full file path
 app.get('/file' , ( req , res ) => {
     if ( req.query.path && path.resolve ( req.query.path ) && fs.existsSync ( req.query.path ) ){
         const rawdata = fs.readFileSync ( path.resolve ( req.query.path ) )
@@ -67,6 +65,10 @@ app.get('/' , ( req, res ) => {
     res.json ( rawdata )
 })
 
+//move file
+//@req.query.source : file source full path
+//@req.query.target : folder target full path
+//@req.query.filename : filename
 app.get ('/move' , ( req, res ) => {
     //if ( fs.statSync( req.query.target ).isDirectory() ){
     if ( fs.statSync( req.query.target ).isDirectory() && path.resolve ( req.query.source ) ){    
@@ -82,7 +84,8 @@ app.get ('/move' , ( req, res ) => {
     }
 })
 
-
+//delete file
+//@req.query.path : full path to delete
 app.get ( '/delete' , ( req , res ) => {
     if ( path.resolve ( req.query.path ) ){
         fs.removeSync ( path.resolve ( req.query.path ) )
@@ -90,39 +93,10 @@ app.get ( '/delete' , ( req , res ) => {
     }
 })
 
-// app.get('/projects', (req, res) => {
-//     const files = fs.readdirSync ( path.resolve ( projects ) )
-//     res.json ( files )
-// })
 
-
-// app.get('/projects/:name', (req, res) => {
-//     const rawdata = fs.readFileSync ( path.resolve ( projects ) + '/' + req.params.name )
-//     res.json ( JSON.parse(rawdata) )
-// })
-
-// app.get('/templates', (req, res) => {
-//     const files = fs.readdirSync ( path.resolve ( templates ) )
-//     console.log ( files )
-//     res.json ( files )
-// })
-
-// app.get('/templates/:name', (req, res) => {
-//     const rawdata = fs.readFileSync ( path.resolve ( templates ) + '/' + req.params.name )
-//     res.json ( JSON.parse(rawdata) )
-// })
-
-// app.get('/uikits', (req, res) => {
-//     const files = fs.readdirSync ( path.resolve ( uikits ) )
-//     res.json ( files )
-// })
-
-// app.get('/uikits/:name', (req, res) => {
-//     const rawdata = fs.readFileSync ( path.resolve ( uikits ) + '/' + req.params.name )
-//     res.json ( JSON.parse(rawdata) )
-// })
-
-
+//save template
+//@req.params.name : template name
+//@req.body : template content
 app.post('/template/:name' , (req, res) => {
     let stream = fs.createWriteStream( path.resolve ( templates ) + '/' + req.params.name + '.json' )
     stream.once('open', function(fd) {
@@ -141,20 +115,10 @@ app.post('/file/save' , (req, res) => {
         stream.end();
     });
     console.log ( 'save file => ' , req.body.path   )
-    res.send ( req.body )
+    //res.send ( req.body )
+    res.json ( { message: 'File saved' } )
 })
 
-
-// save svelte page
-// @body.path = file full path (required)
-// app.post('/svelte/page' , (req, res) => {
-//     let stream = fs.createWriteStream( path.resolve ( paths['svelte'] ) + '/' + req.body.slug + '.svelte' )
-//     stream.once('open', function(fd) {
-//         stream.write(req.body.html);
-//         stream.end();
-//     });
-//     res.send ( req.body )
-// })
 
 app.post('/save/html' , (req, res) => {
     let stream = fs.createWriteStream( path.resolve ( paths['static'] ) + '/' + req.body.slug + '.html' )
@@ -191,18 +155,6 @@ app.post('/current' , (req, res) => {
     });
     res.send ( req.body )
 })
-
-// set the svelte project
-// @body.data = json data (required)
-// app.post('/sveltekit' , (req, res) => {
-//     let stream = fs.createWriteStream( path.resolve ( sveltekit ) + '/config.json' )
-//     stream.once('open', function(fd) {
-//         stream.write(JSON.stringify(req.body.data));
-//         stream.end();
-//     });
-//     res.send ( req.body )
-// })
-
 
 app.listen(port,'0.0.0.0',(err)=>{
     if ( err ){

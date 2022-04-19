@@ -11,26 +11,21 @@
     </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent , ref } from 'vue'
 import Template from '/@/composables/useSnippets'
 import { useEditorStore } from '/@/stores/editor'
+import { EDITOR } from '/@/composables/useEditor'
 
-export default defineComponent({
-    name: 'BlockSnippets',
-    setup() {
-        const editor = useEditorStore()
-        const snippets = ref (  new Template().templates )
-        const items = ref ( new Template().templatesIcon )
+const editor = EDITOR //useEditorStore()
+const snippets = ref (  new Template().templates )
+const items = ref ( new Template().templatesIcon )
 
-        const createSnippet = ( snippet: object ) => {
-            let template =  new Template().Build(snippet)
-            if ( !template || !editor.current || !editor.current?.blocks ) return 
-            template.blocks.forEach ( block => {
-                editor.current.blocks.push ( block )
-            })
-        }
-        return { snippets , items , createSnippet}
-    },
-})
+const createSnippet = ( snippet: object ) => {
+    let template =  new Template().Build(snippet)
+    if ( !template || !editor.current || !editor.current?.blocks ) return 
+    template.blocks.forEach ( block => {
+        editor.current.blocks.push ( block )
+    })
+}
 </script>

@@ -9,6 +9,7 @@
         :style="element.style"
         :value="element.value" 
         v-html="element.content"
+        :href="element.link?element.link:''"
         :src="element.image && element.image.url?element.image.url:'no-image.png'" 
         :placeholder="element.placeholder" 
         :data-id="element.id"
@@ -19,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed , ref , onMounted } from 'vue'
 
 const props = defineProps (
     {
@@ -29,11 +30,28 @@ const props = defineProps (
 )
 
 const component = computed ( () => {
-    return props.element.level ? props.element.element + props.element.level : props.element.element
+    
+    return props.element.link ? 
+        'a' : 
+        props.element.level ? 
+        props.element.element + props.element.level : 
+        props.element.element
 })
 
 
 const classe = computed ( () => {
     return Object.values ( props.element.css ).join ( ' ' )
+})
+
+const blockId = ref(props.id)
+onMounted( () => {
+    if ( props.element?.alpine ) {
+        let element = document.querySelector ( '#' + blockId.value )
+        console.log ( element , blockId.value )
+        Object.keys ( props.element.alpine ).forEach ( attr => {
+            console.log  ( attr )
+            //element.setAttribute(attr,props.block.alpine[attr])
+        })
+    }
 })
 </script>

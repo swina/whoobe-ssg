@@ -17,33 +17,31 @@
         </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 
-import { defineComponent , ref } from 'vue';
+import {  ref } from 'vue';
 //import { useStore } from 'vuex'
 import { useEditorStore } from '/@/stores/editor';
 import Element from '../../../composables/useElementClass';
-//import { getCurrent , getEditor } from '/@/composables/useActions'
-
-export default defineComponent({
-  name: 'BlockElements',
-  setup() {
-    const editor:any = useEditorStore()//useStore().state.editor;
+import { EDITOR } from '/@/composables/useEditor';
+import { status } from '/@/composables/useNavigation';
+    const editor:any = EDITOR //useEditorStore()//useStore().state.editor;
     const tab = ref('')
     const newElement = async ( name: string )=>{
+        console.log ( 'adding => ' , name)
         if ( editor.current ){
             if ( name != 'Grid' ){
                 const el = await new Element().createElement(name)
-                const current: any = editor.current    
-                current.blocks.push ( el )
+                //const current: any = editor.current    
+                editor.current.blocks.push ( await el )
                 //editor.current = el 
             } 
             if ( name === 'Grid' ){
-                editor._helper ( name )
+                status.dialog = name
+                status.dialogTitle = 'Create Grid'
+                //editor._helper ( name )
+                editor.helper = name
             }
         }
     }
-    return { editor , tab, newElement };
-  },
-});
 </script>

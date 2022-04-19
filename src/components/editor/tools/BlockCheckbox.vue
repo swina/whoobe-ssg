@@ -7,8 +7,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useStore , blockCSS , setCSSValue } from '/@/composables/useActions'
+import { EDITOR } from '/@/composables/useEditor';
 
-const editor = useStore()
+const editor = EDITOR //useStore()
 
 const props = defineProps ({
     option: Object

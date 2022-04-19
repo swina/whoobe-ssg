@@ -1,18 +1,18 @@
 
 <template>
-  <li class="ml-2 px-1 text-base drop-container">
+  <li class="ml-2 text-base tree-item">
     <div
         :id="model.hash"
         :data-path="model.path"
         :class="current(model)"
-        @reloadTree="refreshTree"
+        @reloadTree="$emit(reloadTree)"
         @click="toggle(model)"
         @openTemplate="loadFile"
         @drop="handleDrop($event,model)"
         @dragover.prevent
         @dragenter.prevent
         >
-        <span class="flex tree-item items-center hover:bg-purple-800 p-1" @contextmenu="openContextMenu($event)" @dragend="handleDragEnd($event,model)" draggable="true" >
+        <span class="flex tree-item items-center hover:bg-purple-800 p-1" @contextmenu="openContextMenu($event,model)" @dragend="handleDragEnd($event,model)" draggable="true" >
             <icon icon="ant-design:folder-filled" class="mr-2 text-lg" v-if="isFolder && !isOpen"/>
             <icon icon="ant-design:folder-open-filled" class="mr-2 text-lg" v-if="isFolder && isOpen"/>
             <i :data-icon="'bi:filetype-' + model.name.split('.')[model.name.split('.').length-1]" class="iconify mr-1 text-lg" v-if="model.type==='file'"/>
@@ -20,7 +20,7 @@
         </span>
       <!-- <span class="absolute right-0" v-if="model.type==='directory'">[+]</span> -->
     </div>
-    <ul v-show="isOpen" v-if="isFolder">
+    <ul class="tree-root" v-show="isOpen" v-if="isFolder">
       <!--
         A component can recursively render itself using its
         "name" option (inferred from filename if using SFC)
@@ -34,14 +34,7 @@
       <!-- <li class="p-1 flex add ml-3" @click="addChild">+ <icon icon="carbon:document" class="mr-1 text-lg"></icon></li> -->
     </ul>
   </li>
-  <div class="fixed hidden z-modal cursor-pointer shadow-lg pr-10 text-white p-2 bg-black text-xm" id="archiveCtx" @mouseleave="closeCtx('archiveCtx')">
-    <ul>
-        <li class="py-1 p-1 hover:text-blue-400" @click="addFolder">Create folder</li>
-        <li class="py-1 p-1 hover:text-blue-400" @click="addFile">Create file</li>
-        <li class="py-1 p-1 hover:text-blue-400" @click="deleteItem">Delete ...</li>
-        <li class="py-1 p-1 hover:text-blue-400" @click="refreshTree">Refresh</li>
-    </ul>
-    </div>
+  
 </template>
 
 <script setup lang="ts">
@@ -95,12 +88,11 @@ const addFolder = () => {
     openContextDialog() 
 }
 
-const deleteItem = () => {
+const deleteItem = async () => {
     status.dialog = 'Delete'
     status.dialogTitle = 'Delete'
     openContextDialog() 
-    let element = document.getElementById ( props.model.hash )
-    element.remove()
+    emit ( 'reloadTree' )
 }
 
 const current = ()=>{
@@ -126,21 +118,25 @@ const handleDragEnd = async (e,item) => {
     let targetPath = dragDrop.target.path
     let srcElement = document.getElementById(item.hash)
     srcElement?.setAttribute('data-path' , dragDrop.target.path + '/' + item.name )
-    let targetElement = document.getElementById(dragDrop.target.hash).parentElement
-    targetElement = targetElement?.querySelector('ul')
-    let li = document.createElement('li')
-    li.setAttribute('class','ml-2 px-1 text-sm drop-container item')
-    li.append ( srcElement )
-    targetElement.prepend ( li )
-    console.log ( srcElement , targetElement )
-    if ( dragDrop.target.type === 'file' ){
-        targetPath = dragDrop.target.path.replace(item.name,'')
-    }
-    const result = await moveFile ( item.path , targetPath , item.name , fs.value )
-    message.data = await result.message
+    let targetElement = document.getElementById(dragDrop.target.hash)?.parentElement
+    try {
+        targetElement = targetElement?.querySelector('ul')
+        let li = document.createElement('li')
+        li.setAttribute('class','ml-2 px-1 text-sm drop-container item')
+        li.append ( srcElement )
+        targetElement.prepend ( li )
+        console.log ( srcElement , targetElement )
+        if ( dragDrop.target.type === 'file' ){
+            targetPath = dragDrop.target.path.replace(item.name,'')
+        }
+        const result = await moveFile ( item.path , targetPath , item.name , fs.value )
+        message.data = await result.message
 
-    fileTree.lastSource = item
-    fileTree.lastTarget = dragDrop.target
+        fileTree.lastSource = item
+        fileTree.lastTarget = dragDrop.target
+    } catch ( err ) {
+        message.data = "No drop area found"
+    }
     //emit ( 'reloadTree' )
 }
 
@@ -149,10 +145,26 @@ const handleDrop = (e:any,item:Object) => {
     dragDrop.target = item
 }
 
-const openContextMenu = (e:any) => {
-    
+const openContextMenu = (e:any,model:Object) => {
+    console.log ( 'open context' )
+    status.current = model
     e.preventDefault()
+    //e.preventDefault()
+    // let ctxMenu = document.querySelector ( `#archiveCtx` )
+    // ctxMenu.classList.remove ( 'hidden' )
+    // ctxMenu.style.left = `${e.pageX||e.clientX}px`
+    // ctxMenu.style.top =`${e.pageY||e.clientY}px`
     openCtx('archiveCtx', e)
 }
 
 </script>
+<!-- 
+<style>
+.tree-root { 
+    margin:0;
+    padding:0px;
+}
+.tree-item {
+    list-style: none;
+}
+</style> -->

@@ -8,13 +8,14 @@
 
 <script setup lang="ts">
 import { status } from '/@/composables/useNavigation'
-import { openPath , saveFile , deleteFile, currentFolder } from '/@/composables/useLocalApi';
+import { openPath , saveFile , deleteFile, currentFolder, fileTree } from '/@/composables/useLocalApi';
 import { message } from '/@/composables/useUtils';
 
 
 const deleteItem = async () =>{
     const res = await deleteFile ( status.current.path )
     message.data = await res.message
+    fileTree.reload = true
     status.dialog = null
 }
 

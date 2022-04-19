@@ -3,7 +3,7 @@ import Project from '/@/composables/useProjectClass'
 import jp from 'jsonpath'
 
 export const project = reactive ( {
-    data: new Project() ,
+    data: Object ,
     path: ''
 })
 

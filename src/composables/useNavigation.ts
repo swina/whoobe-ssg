@@ -5,6 +5,7 @@ import Element from '/@/composables/useElementClass'
 import Block from '/@/composables/useBlockClass'
 
 import { PREVIEW , setLocalStorage } from '/@/composables/useActions'
+import { EDITOR } from '/@/composables/useEditor'
 
 const editor = useStore()
 
@@ -45,10 +46,12 @@ export async function tabberAddTab( params: any) {
             document.name = 'A new template'
             document.json.blocks =  block 
             obj = document
-            await editor._document ( document )
-            await editor._current ( block )
-            await editor._tool ( 'elements' , block )
-            console.log ( editor.document )
+            //await editor._document ( document )
+            //await editor._current ( block )
+            EDITOR.document = document
+            EDITOR.current = block
+            //await editor._tool ( 'elements' , block )
+            //console.log ( editor.document )
             tabber.tabs.push (  {
                 label: params.label,
                 component: params.component,
@@ -57,8 +60,10 @@ export async function tabberAddTab( params: any) {
         } else {
             document = params.object
             obj = document
-            editor._document ( obj )
-            editor._current ( obj )  
+            //editor._document ( obj )
+            //editor._current ( obj ) 
+            EDITOR.document = obj
+            EDITOR.current = obj 
             tabber.tabs.push (  {
                 label: params.label,
                 component: params.component,
@@ -101,7 +106,7 @@ export async function saveCurrentTab(){
     if ( tabber.tabs.length ){
         if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Editor' ){
             let target = document.querySelector ( '.editor-container' )
-            tabber.tabs[tabber.tab].object = editor.document
+            tabber.tabs[tabber.tab].object = EDITOR.document //editor.document
             tabber.tabs[tabber.tab].scroll = target.scrollTop
         }
     }
@@ -130,7 +135,7 @@ export async function switchToEditor (){
 
 //EDITOR REACTIVE
 export const useEditorSidebar = reactive ({
-    sidebar: true,
-    tool: 'css',
+    sidebar: false,
+    tool: '',
     group: ''
 })

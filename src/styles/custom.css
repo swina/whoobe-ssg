@@ -29,3 +29,20 @@
     margin-right: 0;
 }
 
+.slideright-enter-active {
+    transition: transform .8s ease-in-out;
+ }
+ 
+.slideright-leave-active {
+    transition: transform .8s ease-in-out;
+ }
+ 
+.slideright-enter-to, . slideright-leave {
+    transform: translate(0%, 0);
+    overflow: hidden;
+}
+ 
+.slideright-enter, . slideright-leave-to {
+    transform: translate(-100%, 0);
+    margin-right: 0;
+}

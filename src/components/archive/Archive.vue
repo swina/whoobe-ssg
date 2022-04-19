@@ -19,7 +19,7 @@
                 <li>Folder: {{ currentFolder.data }}</li>
                 <!-- <li>Path: {{ fileInfo.path }}</li> -->
             </ul>
-            <div class="bg-transparent mx-auto w-full">
+            <div class="bg-transparent relative mx-auto w-full">
                 <BlockPreview v-if="fileInfo?.json" :block="fileInfo.json.blocks" :level="2"/>
             </div>
 
@@ -40,8 +40,8 @@ import { localData , openFolder , openPath, openSubFolder , openFile , saveFile,
 import EditorPanelVue from '../editor/EditorPanel.vue';
 import { useStore } from '/@/composables/useActions';
 import { message, dragDrop } from '/@/composables/useUtils'
-
-const editor = useStore()
+import { EDITOR } from '/@/composables/useEditor';
+const editor = EDITOR //useStore()
 
 const emits = defineEmits ( {
     disable:String
@@ -58,8 +58,9 @@ const loadFile = async ( file:Object , filePath:String ) => {
     
     fileInfo.value = file 
     fileInfo.value.path = filePath
-    editor._document ( file )
     
+    //editor._document ( file )
+    editor.document = file
 }
 
 const editFile = () => {

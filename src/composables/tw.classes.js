@@ -35,6 +35,7 @@ const percs =  [ 'full','1/2',
 ]
 
 const dimensions = [
+          
     'none',
     'px',
     'full',
@@ -45,7 +46,32 @@ const dimensions = [
     'xs',
     'sm',
     'md',
-    'lg','xl','2xl','3xl','screen-sm','screen-md','screen-lg','screen-xl','screen-2xl','0','1','1.5','2','4','8','10','12','14','18','20','24','1/2','1/3','3/5','11/12','4rem','60px']
+    'lg',
+    'xl',
+    '2xl',
+    '3xl',
+    'screen-sm',
+    'screen-md',
+    'screen-lg',
+    'screen-xl',
+    'screen-2xl',
+    '0',
+    '1','1.5','2','4','8','10','12','14','18','20','24',
+    '1/5',
+    '1/4',
+    '1/3',
+    '2/5',
+    '1/2',
+    '2/3',
+    '3/5',
+    '3/4',
+    '4/5',
+    '11/12',
+    '4rem',
+    '60px',
+    '85' ,
+    '90' ,
+    '95' ]
 
 const colors = [ 'gray' , 'bluegray' , 'brown' , 'red', 'yellow' , 'orange' , 'green' , 'lime' , 'teal' , 'blue' , 'indigo' , 'purple' , 'pink' ]
 

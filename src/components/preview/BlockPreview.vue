@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed , ref , onMounted } from 'vue'
 import { blockCSS } from '/@/composables/useActions'
 const props = defineProps (
     {
@@ -37,5 +37,17 @@ const semantic = computed( () => {
 const classe = computed( ()  => {
     return Object.values ( props.block.css ).join ( ' ' )
 })
+
+const blockId = ref(props.block.id)
+onMounted( () => {
+    if ( props.block?.alpine ) {
+        let element = document.querySelector ( '#' + blockId.value )
+        console.log ( element , blockId.value )
+        Object.keys ( props.block.alpine ).forEach ( attr => {
+            element.setAttribute(attr,props.block.alpine[attr])
+        })
+    }
+})
+
 
 </script>

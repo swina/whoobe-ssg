@@ -1,7 +1,8 @@
 import { onMounted } from 'vue'
 import { useEditorStore } from '/@/stores/editor'
 import { useNavigatorStore } from '/@/stores/navigator'
-import { removeBlock, cloneBlock , getLocalStorage , setLocalStorage , CLIPBOARD , UNDO , PREVIEW } from '/@/composables/useActions'
+import { getLocalStorage , setLocalStorage , CLIPBOARD , UNDO , PREVIEW } from '/@/composables/useActions'
+import { cloneBlock, removeBlock } from '/@/composables/useEditor';
 
 const editor = useEditorStore()
 const navigation = useNavigatorStore()

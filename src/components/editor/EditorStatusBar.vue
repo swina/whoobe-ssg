@@ -19,15 +19,19 @@
             <Icon icon="codicon:save-as" class="mt-1 text-xl"/>
         </span>
 
-        <span @click="blockToProject($event)" class="mx-2" title="Add to project">
-            <Icon icon="mdi:web" class="text-xl"/>
+        <span @click="addToUIKit($event)" class="mx-2" title="Add to UIKit">
+            <Icon icon="mdi:widgets" class="mt-1 text-xl"/>
         </span>
+
+        <!-- <span @click="blockToProject($event)" class="mx-2" title="Add to project">
+            <Icon icon="mdi:web" class="text-xl"/>
+        </span> -->
         
         <span @click="preview" class="mx-2" title="Preview">
             <Icon icon="icon-park-outline:preview-open" class="text-xl"/>
         </span>
 
-        <span @click="editor._tool('css')" class="mx-2" title="CSS">
+        <span @click="editor.tool('css')" class="mx-2" title="CSS">
             <Icon icon="ic:baseline-css" class="text-xl"/>
         </span>
         <input 
@@ -47,15 +51,16 @@ import { status } from '/@/composables/useNavigation'
 import { project } from '/@/composables/useProject'
 import { saveFile , fileExplorer } from '/@/composables/useLocalApi';
 import { message } from '/@/composables/useUtils'
+import { EDITOR } from '/@/composables/useEditor'
 
-const editor = useStore()
+const editor = EDITOR //useStore()
 
 const selectFolder = ref(false)
 let tree = ref({})
 let folders = ref({})
 const preview = () => {
     setLocalStorage ( PREVIEW , editor.document )
-    editor._preview()
+    editor.preview = true
 }
 
 const blockToProject = (e) => {
@@ -69,24 +74,17 @@ const saveTemplate = async () => {
     if ( editor.document?.path ){
         await saveFile ( editor.document )
         message.data = 'File saved'
-    } else {
-        selectFolder.value = true 
     }
-    message.data = 'File saved'
-    console.log ( 'File saved' )
 }
 
 const saveTemplateAs = async () => {
-    // if ( editor.document?.path ){
-    //     await saveFile ( editor.document )
-    //     message.data = 'File saved'
-    // } else {
-    //     selectFolder.value = true 
-    // }
-    // message.data = 'File saved'
-    // console.log ( 'File saved' )
-    selectFolder.value = true
-    console.log ( tree.value )
+    status.dialog = 'DocumentSettings'
+    status.dialogTitle = 'Save as'
+    status.mode = 'saveAsTemplate'
+}
+
+const addToUIKit = async () => {
+    return
 }
 
 const loadTree = async ( context:String = "templates" ) => {
