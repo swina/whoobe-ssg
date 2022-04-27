@@ -1,14 +1,15 @@
 <template>
     <component 
         :ref="block.id" 
-        :key="block.id" 
+        :key="randomID" 
         :class="classe" 
         :id="block.id"
         :style="stile"
         :is="semantic">
         <template v-for="element in block.blocks" :key="element.id">
-            <BlockPreview :block="element" v-if="element.type === 'container'"/>
-            <ElementPreview :element="element" v-if="element.type != 'container' && element.type != 'slider' && element.tag != 'icon' && element.tag != 'iconify'"/>
+            <BlockPreview :block="element" v-if="element.type === 'container' && !element.data?.provider" :data="$attrs.data"/>
+            <BlockLoopPreview :block="element" v-if="element.data?.isLoop && element.data?.provider"/>
+            <ElementPreview :element="element" :key="randomID" v-if="element.type != 'container' && element.type != 'slider' && element.tag != 'icon' && element.tag != 'iconify'" :data="$attrs.data"/>
             <IconPreview :element="element" v-if="element.tag === 'icon' || element.tag === 'iconify'"/>
             <SliderPreview :block="element" v-if="element.type === 'slider'"/>
         </template>
@@ -17,7 +18,8 @@
 
 <script setup lang="ts">
 import { computed , ref , onMounted } from 'vue'
-import { blockCSS } from '/@/composables/useActions'
+import { blockCSS , randomID } from '/@/composables/useActions'
+import { message } from '/@/composables/useUtils';
 const props = defineProps (
     {
         block: Object
@@ -40,12 +42,22 @@ const classe = computed( ()  => {
 
 const blockId = ref(props.block.id)
 onMounted( () => {
-    if ( props.block?.alpine ) {
-        let element = document.querySelector ( '#' + blockId.value )
-        console.log ( element , blockId.value )
-        Object.keys ( props.block.alpine ).forEach ( attr => {
-            element.setAttribute(attr,props.block.alpine[attr])
-        })
+    try {
+        if ( props.block?.alpine ) {
+            //message.console = 'Settings AlpineJS directives'
+            let element = document.querySelector ( '#' + blockId.value )
+            Object.keys ( props.block.alpine ).forEach ( attr => {
+                element.setAttribute(attr,props.block.alpine[attr])
+            })
+        }
+        if ( props.block.data?.attributes ) {
+            let element = document.querySelector ( '#' + blockId.value )
+            Object.keys ( props.block.data.attributes ).forEach ( attr => {
+                element.setAttribute ( attr , props.block.data.attributes[attr] )
+            })
+        }
+    } catch( err ) {
+        message.console = err
     }
 })
 

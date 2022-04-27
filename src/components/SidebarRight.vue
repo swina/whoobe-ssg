@@ -1,5 +1,5 @@
 <template>
-    <div class="bars sidebarRight z-modal overflow-y-auto border-r border-bluegray-700" v-if="editor.current && editor.tool">
+    <div class="bars sidebarRight z-modal overflow-y-auto border-r border-bluegray-700" v-if="editor.current && editor.current?.tag && editor.tool">
         <!-- @mouseover="disableFloating()" @mouseout="disableFloating()" -->
         <div class="h-8 flex w-full justify-center bg-purple-600 text-white uppercase items-center"> {{ editor.tool.replace ( '-' , ' ') }}</div>
         <BlockElements v-if="editor.tool === 'elements'"/>
@@ -15,9 +15,11 @@
         <BlockHeading v-if="editor.tool==='heading'"/>
         <BlockWindi v-if="editor.tool === 'customize'" :group="editor.toolGroup"/>
         <BlockSlider v-if="editor.tool === 'slider'"/>
+        <BlockGraphQL v-if="editor.tool === 'graphql'"/>
         <BlockTree v-if="editor.tool === 'tree'"/>
         <BlockAlpine v-if="editor.current && editor.tool === 'alpine'" :id="editor.current.id"/>
         <BlockUIKits v-if="editor.current && editor.tool === 'library'"/>
+        <BlockAttributes v-if="editor.current && editor.tool === 'attributes'"/>
         <div id="root" class="ml-4 text-white overflow-y-auto"></div>
     </div>
 </template>

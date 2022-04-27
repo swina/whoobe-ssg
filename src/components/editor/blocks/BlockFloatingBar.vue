@@ -6,6 +6,7 @@
         </template>
         <span @click="copyBlock"><icon icon="fa6-regular:copy" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Copy" /></span>
         <span @click="pasteBlock"><icon icon="fa6-regular:paste" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Paste" /></span>
+        <span @click="deleteBlock"><icon icon="ep:delete" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Delete" /></span>
         <span @click="hideBlock($event)" v-if="filter({filter:['grid','flex']})"><icon icon="akar-icons:eye" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Hide" /></span>
     </div>
 </template>
@@ -17,7 +18,7 @@ import { useStore , updateCSS } from '/@/composables/useActions'
 import { setLocalStorage, getLocalStorage, CLIPBOARD } from '/@/composables/useActions';
 import { message } from '/@/composables/useUtils';
 import { status } from '/@/composables/useNavigation';
-import { cloneBlock, moveBlock  } from '/@/composables/useEditor';
+import { cloneBlock, moveBlock , removeBlock } from '/@/composables/useEditor';
 import { EDITOR } from '/@/composables/useEditor'
 
 const editor = EDITOR //useStore()
@@ -25,7 +26,7 @@ const editor = EDITOR //useStore()
 const toolbar = ref ( [
     { icon: 'icomoon-free:move-up' , label: 'Move Up' , action: 'move' },
     { icon: 'la:elementor' , label: 'Add element' , action: 'elements' , filter : [ 'grid' , 'flex' ] },
-    { icon: 'ic:baseline-edit' , label: 'Edit' , action: 'edit' , filter : ['element' , 'icon' , 'iconify'] },
+    { icon: 'ic:baseline-edit' , label: 'Edit' , action: 'edit' , filter : ['element' , 'button' , 'icon' , 'iconify'] },
     { icon: 'akar-icons:edit' , label: 'RichTextEditor' , action: 'wysiwyg' , filter : ['p' ] },
     { icon: 'bx:heading' , label: 'Heading' , action: 'heading' , filter : ['h'] },
     { icon: 'fluent:text-direction-horizontal-right-24-regular' , label: 'Direction row' , action: 'flex-row' , filter: ['flex'] },
@@ -37,7 +38,7 @@ const toolbar = ref ( [
     { icon: 'akar-icons:image' , label: 'Image' , action: 'customize' , group: 'background' },
     { icon: 'akar-icons:link-chain' , label: 'Link' , action: 'link' },
     { icon: 'ant-design:download-outlined' , label: 'Import block' , action: 'BlockImport' , filter: ['grid','flex'] },
-    { icon: 'ant-design:upload-outlined' , label: 'Export block' , action: 'BlockExport' , filter: ['grid','flex'] } ,
+    { icon: 'ant-design:upload-outlined' , label: 'Export block' , action: 'BlockExport' , filter: ['grid','flex'] } 
 ])
 const filter = ( item: object ) => {
     if ( item?.filter ){
@@ -102,5 +103,10 @@ const pasteBlock = () => {
 const hideBlock = (e:Object) => {
     toggleContext(e)
     editor.current['hide'] = true
+}
+const deleteBlock = async () => {
+    const res = await removeBlock ( editor.current.id , editor.document.json.blocks )
+    message.data = 'Block removed'
+    
 }
 </script>

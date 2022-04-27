@@ -8,7 +8,7 @@
             </div>
             
         </div>
-        <iframe class="w-full h-screen" v-if="slug && !edit" :src="slug"></iframe>
+        <iframe class="w-full h-screen" v-if="slug && !edit" :src="slug +'?preview=' + randomID()"></iframe>
         <textarea class="w-full h-screen text-sm font-mono" v-if="edit" v-model="rawdata"/>
         <!-- <textarea v-model="rawdata" v-if="rawdata" class="w-full p-2 font-mono text-xs h-full"/> -->
     </div>
@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import { ref , computed } from 'vue'
+import { randomID } from '/@/composables/useEditor';
 import { PAGESURL , paths  } from '/@/composables/useLocalApi'
 import { status } from '/@/composables/useNavigation'
 

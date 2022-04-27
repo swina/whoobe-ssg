@@ -20,8 +20,8 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { useStore } from '/@/composables/useActions'
   import { tabberAddTab , status , tabber } from '../composables/useNavigation'
+  import { getCMSPages } from '/@/composables/useGraphCMS'
 
   const props = defineProps ({
     comp: String,
@@ -31,7 +31,7 @@
   let open = ref ( true )
   let what = ref ( props.comp )
   let uikit = ref ({})
-
+  
   const loadthis = () => {
     if ( tabber.tabs && tabber.tab > -1 ){
       if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Editor' ){
@@ -73,6 +73,7 @@
     open.value = !open.value
     uikit.value = file
   }
-  const editor = useStore()
+
+  getCMSPages()
 </script>
 

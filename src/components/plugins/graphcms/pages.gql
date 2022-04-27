@@ -1,0 +1,7 @@
+{
+    pages {
+        id
+        title
+        slug
+    }
+}

@@ -1,7 +1,7 @@
 <template>
     <div v-if="editor.current" class="flex flex-col p-2">
         Edit {{ editor.current.tag }}
-        <textarea v-if="editor.current.tag === 'element'" v-model="editor.current.content" class="my-2 font-mono text-xs"/>
+        <textarea v-if="editor.current.tag === 'element' || editor.current.tag === 'button'" v-model="editor.current.content" class="my-2 font-mono text-xs"/>
         <input v-if="editor.current.tag === 'icon'" v-model="editor.current.data.icon"/>
         <input v-if="editor.current.tag === 'icon'" v-model="search" @keydown="searchIcon" placeholder="search icon ..." class="my-2"/>
         

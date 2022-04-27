@@ -4,6 +4,8 @@ const endpoint = import.meta.env.VITE_APP_LOCAL_API
 export const PAGESURL = import.meta.env.VITE_APP_PAGES_URL
 export const DATA_PATH = import.meta.env.VITE_APP_DATA_PATH
 export const CONFIG_FILE = '/app/pages/whoobe.config.json'
+import { message } from './useUtils'
+import { fstat } from 'fs'
 
 export const paths = { 
     templates : '/templates',
@@ -49,7 +51,7 @@ export const template = reactive ( {
 export async function Archive ( path:string ) {
     const res = await fetch ( endpoint + paths[path] )
     localData.folders = await res.json()
-    console.log ( localData )
+    //console.log ( localData )
 }
 
 export async function fileExplorer ( path:string ){
@@ -76,7 +78,7 @@ export const openSubFolder = async ( folder , subfolder )=>{
     const res = await fetch ( endpoint + '/folders/' + folder + '?folder=' + subfolder )
     const json = await res.json()
     localData.files[folder][subfolder] = json
-    console.log ( localData )
+    //console.log ( localData )
 }
 
 export const openFile = async ( folder , name ) => {
@@ -146,48 +148,78 @@ export const saveSveltePage = async ( page: Object ) => {
     })
 }
 
+export const loadConfig = async () => {
+    let config = await openPath ( CONFIG_FILE )
+    return await config
+}
+export const buildClear = async () => {
+    const message = await fetch ( endpoint + '/build/clear ')
+    return 'Build cleared'
 
+}
 export const saveStaticPage = async ( page: Object ) => {
-    console.log ( page )
+    let config = await openPath ( CONFIG_FILE )
     let doc = page
-    if ( page.slug === 'header' ) {
-        SSG.header = {
-            html: page.html,
-            fonts: page.fonts.split(',')
-        }
-        return
-    }
-
-    if ( page.slug === 'footer' ) {
-        SSG.footer = {
-            html: page.html,
-            fonts: page.fonts.split(',')
-        }
-        return
-    }
+    let headerFonts = []
+    let footerFonts = []
     
-    let fonts = page.fonts.split(',')
-    fonts = [ ...fonts , ...SSG.header.fonts , ...SSG.footer.fonts ]
-    fonts = [ ...new Set(fonts) ].join('|')
 
+    let fonts = jp.query ( page.document.json.blocks , '$..blocks..font' )
+    config.data?.header ?
+        headerFonts = jp.query ( config.data.header.blocks.json.blocks , '$..blocks..font' ) : null
+    config.data?.footer ?
+        footerFonts = jp.query ( config.data.footer.blocks.json.blocks , '$..blocks..font' ) : null
+    fonts =  [ ...new Set( [ ...fonts , ...footerFonts , ...headerFonts ] ) ].filter( a => a ).join('|').replaceAll(' ','+')
+    //console.log ( fonts )
+    
     let header = ''
     let footer = ''
-    SSG.header ? header = SSG.header.html : null
-    SSG.footer ? footer = SSG.footer.html : null
-    !page.include.header ? header = '' : null
-    !page.include.footer ? footer = '' :  null
-
+    
+    config.data.header ? header = config.data.header.html : null
+    config.data.footer ? footer = config.data.footer.html : null
+    
+    // !page.layout ? header = '' : null
+    // !page.layout ? footer = '' :  null
+    
+   let mainCSS = ''
+   if ( config.data?.main ){
+        let main = jp.query ( config.data.main.blocks.json.blocks.css , '$..css').filter( a => a) 
+        let mainContainer = [ ...main , ...jp.query ( config.data.main.blocks.json.blocks.css , '$..container' ).filter ( a => a )]
+        mainContainer ?
+            mainCSS = mainContainer.join( ' ' ) : null
+   }
     let fontsLink = ''
     if ( fonts ){
-        fontsLink = `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=${fonts.replaceAll(',','|')}">`
+        fontsLink = `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=${fonts}">`
     }
+    let seo = {
+        title: page.document.name,
+        description: page.document.description,
+        keywords: page.document?.tags ? page.document.tags : null
+    }
+    if ( page?.seo ){
+        seo = page.seo
+    }
+    let analytics = ''
+    if ( config.data.analytics ){
+        analytics = `<!-- Global site tag (gtag.js) - Google Analytics -->
+                    <script async src="https://www.googletagmanager.com/gtag/js?id=${config.data.analytics}"></script>
+                    <script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){window.dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', '${config.data.analytics}');
+                </script> `
+    }
+    //message.console += seo.title + ' created \n'
+    //<meta name="keywords" content="${page?.document?.tags.join(',')}">
     doc.html = `<!DOCTYPE html>
     <html lang="en">
         <head>
-            <title>${page.document.name}</title>
-            <meta name="description" content="${page.document.description}">
+            <title>${seo.title}</title>
+            <meta name="description" content="${seo.description}">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta name="keywords" content="${page.document.tags.join(',')}">
+            <meta name="keywords" content="${seo.keywords?seo.keywords.join(','):seo.title}">
             <!--Material-icons-->
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
             ${fontsLink}
@@ -195,15 +227,17 @@ export const saveStaticPage = async ( page: Object ) => {
             <meta charset="UTF-8">
             <link rel="stylesheet" href="/assets/css/output.css">
             <link rel="stylesheet" href="/assets/css/animations.css">
-            <link rel="icon" href="/favicon.ico" /> 
+            <link rel="icon" href="/favicon.ico" />
+            ${analytics}
         </head>
         <body>
         ${header}
+        <div class="${mainCSS} whoobe-layout-container">
         ${page.html}
+        </div>
         ${footer}
         </body>
     </html>`
-    console.log ( doc )
     await fetch ( endpoint + '/save/html/' ,{
         method: 'POST',
         headers: {
@@ -212,4 +246,54 @@ export const saveStaticPage = async ( page: Object ) => {
         },
         body: JSON.stringify(doc)
     })
+}
+
+export async function buildProject (){
+    let config = await openPath ( CONFIG_FILE )
+    message.console = "Whoobe SSG\n"
+    message.console += "Building website ...\n"
+    let page =  {
+        html: config.data.homepage.html,
+        slug: 'index',
+        document: config.data.homepage.blocks,
+        fonts: config.data.homepage.blocks,
+        layout: false
+    }
+    let saved = await saveStaticPage ( page )
+    message.console += '- created homepage\n'
+    if ( config.data.pages ){
+        Object.keys(config.data.pages).forEach ( async (pg) => {
+            page = {
+                html: config.data.pages[pg].html,
+                slug: config.data.pages[pg].slug,
+                document: config.data.pages[pg].blocks,
+                fonts: config.data.pages[pg].blocks,
+                layout: true
+            }
+            saved = await saveStaticPage ( page )
+            message.console += '- created ' + config.data.pages[pg].slug + '\n'
+        })
+    }
+}
+
+export async function fileExists( path ){
+    try {
+        await openPath ( path ) 
+        return true
+    } catch ( err ) {
+        return false
+    }
+}
+
+export async function  layoutMainClass () {
+    let config = await openPath ( CONFIG_FILE )
+    if ( config.data?.main ){
+        let mainCSS = ''
+        let main = jp.query ( config.data.main.blocks.json.blocks.css , '$..css').filter( a => a) 
+        let mainContainer = [ ...main , ...jp.query ( config.data.main.blocks.json.blocks.css , '$..container' ).filter ( a => a )]
+        mainContainer ?
+            mainCSS = mainContainer.join( ' ' ) : null
+        return mainCSS
+   }
+   return ''
 }

@@ -34,7 +34,8 @@ export default class Element {
         this.link = ''
         this.anchor = ''
         this.image = {
-            url: null
+            url: null,
+            alt: 'image'
         }
         this.type = 'element'
         this.tag = 'element'
@@ -533,6 +534,7 @@ export default class Element {
         this.tag = 'button'
         this.content = 'button'
         this.value = 'button'
+        this.editable = true
         return this
     }
     

@@ -6,7 +6,7 @@ import Block from '/@/composables/useBlockClass'
 
 import { PREVIEW , setLocalStorage } from '/@/composables/useActions'
 import { EDITOR } from '/@/composables/useEditor'
-
+import { CONFIG_FILE } from './useLocalApi'
 const editor = useStore()
 
 export const status = reactive ({
@@ -16,7 +16,13 @@ export const status = reactive ({
     dialog: null ,
     dialogCss : 'w-1/3',
     dialogTitle: '',
-    current: null
+    current: null,
+    previewMode: false
+})
+
+export const settings = reactive({
+    file: CONFIG_FILE,
+    tab: 'settings',
 })
 
 export const toolbar = reactive({

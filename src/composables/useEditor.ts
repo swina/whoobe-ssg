@@ -97,3 +97,49 @@ export function moveBlock (){
     }
     EDITOR.document = component
 }
+
+export function usedFonts ( target:Object ) {
+    let fonts = jp.query ( target , '$..blocks..font')
+    if ( target.font ){
+        fonts.push ( target.font )
+    }
+    let fnts = [ ...new Set ( fonts.filter ( a => { return a } ) )]
+    if ( fnts ){
+        return fnts.join('|').replaceAll(' ','+')
+    }
+    return ''
+}
+
+
+
+export async function BlockData (qry:Object,provider:String) {
+    let editor = EDITOR
+    let foundData = jp.parent ( editor.document.json , '$..blocks..data..provider')
+    console.log ( foundData )
+    // editor.current.blocks.forEach ( block => {
+    //     if ( block.data?.field ){
+    //         if ( qry[block.data.field]?.html ){
+    //             block.content = qry[block.data.field].html ? qry[block.data.field].html : ''
+    //         } else {
+    //             if ( block.tag === 'button' ){
+    //                 if  ( block.data?.field ) {
+    //                     block.link = qry[block.data.field]
+    //                 }
+    //             } else {
+    //                 if ( qry[block.data.field]?.url ){
+    //                     block.image.url = qry[block.data.field].url
+    //                 } else {
+    //                     if ( qry[block.data.field] ){
+    //                         block.content = qry[block.data.field]
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // })
+}
+
+export async function usedLinks ( target:Object ){
+    let links = await jp.query ( target , '$..blocks..link' )
+    return links
+}

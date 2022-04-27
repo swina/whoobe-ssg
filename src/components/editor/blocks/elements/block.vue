@@ -10,15 +10,21 @@
         :id="block.id"
         :style="blockStyle">
 
-        <div v-if="!block.blocks.length && level < 3">
+        <div v-if="!block.blocks.length">
             Start adding an element or a snippet !
         </div>
         <template v-for="element in block.blocks" :key="element.id">
             <block
-                v-if="element.type === 'container'"
+                :data="$attrs.data"
+                v-if="element.type === 'container' && !element.data?.isLoop"
+                :block="element"
+                :level="level+1"/>
+            <blockloop
+                v-if="element.type === 'container' && element.data?.isLoop"
                 :block="element"
                 :level="level+1"/>
             <Element
+                :data="$attrs.data"
                 :id="element.id"
                 :element="element"
                 v-if="element.type !='container' && element.type != 'slider' && element.tag != 'icon' && element.tag != 'iconify'"
@@ -52,6 +58,7 @@ import { dispatch , selectBlock } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu';
 import { status } from '/@/composables/useNavigation'
 import { EDITOR } from '/@/composables/useEditor'
+import { CMS_SCHEMA , CMS ,  getCMSQuery, getCMSSingleQuery } from "/@/composables/useGraphCMS"
 
     const editor = EDITOR//useEditorStore()
     const navigation = useNavigatorStore()
@@ -60,7 +67,7 @@ import { EDITOR } from '/@/composables/useEditor'
         block: Object,
         level: Number
     })
-
+    let data = ref([])
     const component = computed( () => {
         return props.block.semantic ? props.block.semantic : props.block.element
     })
@@ -88,6 +95,14 @@ import { EDITOR } from '/@/composables/useEditor'
         document.querySelector('#contextMenu') && flag ?
             openContextMenu(event) :
             toggleContext(event)
+    }
+    const getData = async () => {
+        const res = await getCMSQuery ( props.block.data.provider )
+        console.log ( 'risposta' ,  await res )
+        data.value = await CMS[props.block.data.provider]
+    }
+    if ( props.block.data?.provider ){
+        getData()        
     }
     
 </script>

@@ -20,10 +20,12 @@ const i18n = createI18n({
 // WindiCSS
 import 'virtual:windi.css';
 import 'virtual:windi-devtools';
-//import './input.css'
 
 import './styles/base.css';
 import './styles/custom.css';
+
+//import './input.css'
+import '/@/composables/useGraphCMS'
 
 const app = createApp(App);
 

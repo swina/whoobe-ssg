@@ -16,11 +16,12 @@ import { useEditorStore } from '/@/stores/editor'
 import classes from '/@/composables/tw.classes'
 import { updateCSS , matchCSS, setCSSValue } from '/@/composables/useActions'
 import { EDITOR } from '/@/composables/useEditor'
+import { FONTS } from '/@/composables/useUtils'
 const sizes = classes.textSize
 const weights = classes.fontWeight
 const editor = EDITOR //useEditorStore()
-const fonts = editor.fonts
-const options = fonts.replaceAll('+',' ').split('|')
+const fonts = FONTS
+const options = fonts //fonts.replaceAll('+',' ').split('|')
 let buttons = ref ( [
     { label: 'I' , css: 'italic' },
     { label: 'U' , css: 'underline' },

@@ -11,7 +11,10 @@
   <Message/>
   <Loading v-if="status.loading"/>
   <FloatingModal/>
-  
+  <div class="fixed z-modal bottom-0 right-0 w-1/3 h-1/2" v-if="message.console">
+    <div class="p-1 bg-purple-700 text-white flex items-center">Console <icon icon="mdi:close" class="absolute right-0" @click="message.console=''"/></div>
+    <textarea class="bg-black w-full h-screen-sm font-mono text-white">{{ message.console }}</textarea>
+  </div>
   <Preview v-if="editor.preview"/>
   <div ref="setupColors" id="setupColors" class="h-10 absolute left-0 bottom-0 w-full"></div>
  

@@ -1,32 +1,11 @@
 body {
   @apply text-gray-700 dark:bg-gray-800 dark:text-gray-200 font-sans;
 }
-@layer base {
-  
-  h1 {
-    @apply text-7xl font-normal;
-  }
 
-  h2 {
-    @apply text-5xl font-normal;
-  }
-
-  h3 {
-    @apply text-3xl font-normal;
-  }
-
-  h4 {
-    @apply text-2xl font-normal;
-  }
-
-  h5 {
-    @apply text-xl font-normal;
-  }
-
-  h6 {
-    @apply text-lg font-normal;
-  }
+h1 {
+  @apply text-7xl font-normal;
 }
+
 
 
 input[type='text'], input[type='email'], input[type='url'], input[type='password'], input[type='number'], input[type='date'], input[type='datetime-local'], input[type='month'], input[type='search'], input[type='tel'], input[type='time'], input[type='week'], input[multiple]  {
@@ -50,4 +29,40 @@ ul > li {
 
 hr {
   @apply border-t border-gray-300;
+}
+
+
+
+@layer base {
+  
+  h1 {
+    @apply text-7xl font-normal;
+  }
+
+  h2 {
+    @apply text-5xl font-normal;
+  }
+
+  h3 {
+    @apply text-3xl font-bold;
+  }
+
+  h4 {
+    @apply text-2xl font-normal;
+  }
+
+  h5 {
+    @apply text-xl font-normal;
+  }
+
+  h6 {
+    @apply text-lg font-normal;
+  }
+  button {
+    @apply border px-4 py-2 bg-blue-500 text-white text-sm rounded-lg;
+  }
+
+  button.square {
+      @apply border rounded w-6 h-6 border-gray-600  bg-gray-700 hover:bg-black hover:text-white justify-center flex items-center bg-transparent text-xs p-1;
+  }
 }

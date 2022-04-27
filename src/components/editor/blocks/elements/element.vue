@@ -8,8 +8,8 @@
             :class="classe" 
             class="relative"
             :style="stile" 
-            v-html="element.content"
-            :src="element.image && element.image.url?element.image.url:'no-image.png'" 
+            v-html="getContent"
+            :src="getImage" 
             :placeholder="element.placeholder" 
             :contenteditable="element.editable"
             @blur="handleInput"
@@ -39,7 +39,8 @@ const attrs = useAttrs()
 const props = defineProps ({
     element: Object,
     level: Number,
-    id: String
+    id: String,
+    data:Object
 })
 
 const classe = computed(() => {
@@ -54,6 +55,24 @@ const stile = computed(() => {
 
 const component = computed ( () => {
     return props.element.level ? props.element.element + props.element.level : props.element.element
+})
+
+const getContent = computed(()=>{
+    if ( props.data && props.element.tag === 'button'){
+        props.element.link = props.data[props.element.data.field]
+        return props.element.content
+    }
+    if ( props.data && props.element.data?.field ){
+        return props.data[props.element.data.field]
+    }
+    return props.element.content
+})
+
+const getImage = computed(()=>{
+    if ( props.data && props.element.data?.field ){
+        return props.data[props.element.data.field].url
+    }
+    return props.element.image && props.element.image.url ? props.element.image.url : 'no-image.png'
 })
 
 const handleInput = (e) => {

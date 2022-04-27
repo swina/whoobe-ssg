@@ -119,9 +119,23 @@ app.post('/file/save' , (req, res) => {
     res.json ( { message: 'File saved' } )
 })
 
+app.get ( '/build/clear' , ( req, res ) => {
+    let targetPath = path.resolve ( paths.static )
+    fs.readdirSync(path.resolve(paths.static)).forEach(f => { if ( f.includes('.html') ) {
+        fs.removeSync ( targetPath + '/' + f )
+        console.log ( 'removed ' , targetPath + '/' + f )
+    }});
+    res.json ( { message: 'build cleared'})
+})
 
 app.post('/save/html' , (req, res) => {
-    let stream = fs.createWriteStream( path.resolve ( paths['static'] ) + '/' + req.body.slug + '.html' )
+    let destFolder = ''
+    if ( req.body.folder ){
+        destFolder = '/' + req.body.folder
+        fs.ensureDir ( path.resolve ( paths['static'] ) + destFolder )
+    }
+    
+    let stream = fs.createWriteStream( path.resolve ( paths['static'] ) + destFolder + '/' + req.body.slug + '.html' )
     stream.once('open', function(fd) {
         stream.write(req.body.html);
         stream.end();

@@ -37,6 +37,7 @@ const icons = ref([
     { icon: 'file-icons:windi' , tool: 'customize' , mode: null },
     { icon: 'ic:baseline-css' , tool: 'css' , mode: null },
     { icon: 'simple-icons:alpinedotjs' , tool: 'alpine' , mode: null },
+    { icon: 'file-icons:graphql' , tool: 'graphql' , mode: null },
     { icon: 'clarity:cursor-hand-click-line' , tool: 'events' , mode: null },
     { icon: 'ic:outline-edit-attributes' , tool: 'attributes' , mode: 'editor' },
     { icon: 'mdi:widgets-outline' , tool: 'library' , mode: null },

@@ -18,14 +18,14 @@
                     <option v-for="isType in pageTypes" :value="isType">{{ isType }}</option>
                 </select>
             </div>
-            <div>
-                <label class="mr-2">Include Header Template</label>
-                <input type="checkbox" v-model="includeHeader"/> <small>{{ !SSG.header ? 'available' : '' }}</small>
+            <div v-if="!status.previewMode">
+                <label class="mr-2">Use layout</label>
+                <input type="checkbox" v-model="useLayout"/>
             </div>
-            <div>
+            <!-- <div>
                 <label class="mr-2">Include Footer Template</label>
                 <input type="checkbox" v-model="includeFooter"/> <small>{{ !SSG.footer ? '(not available)' : ''}}</small>
-            </div>
+            </div> -->
             <!-- <label>Category</label>
             <select class="w-full" v-model="editor.document.category">
                 <option v-for="category in categories" :value="category">{{ category }}</option>
@@ -66,14 +66,9 @@ let newTag = ref ( '' )
 let isHomepage = ref ( false )
 let pageTypes = ref ( ['page','homepage' , 'header' , 'footer'] )
 let pageType = ref('page')
+let useLayout = ref ( status.previewMode )
 let includeHeader = ref (true)
 let includeFooter = ref ( true )
-
-!SSG.header ? 
-    includeHeader.value = false : includeHeader.value = true
-
-!SSG.footer ? 
-    includeFooter.value = false : includeFooter.value = true
 
 const editor = EDITOR //useStore()
 
@@ -132,7 +127,8 @@ const saveAsStaticPage = async () => {
     if ( slug.value === 'header' || slug.value === 'footer' ){
         project.data[slug.value] = {
             html: documentHTML(),
-            fonts: getFonts()
+            fonts: getFonts(),
+            blocks: editor.document.json.blocks
         }
         project.path = CONFIG_FILE
         const res = await saveFile(project)
@@ -144,11 +140,9 @@ const saveAsStaticPage = async () => {
         slug: slug.value,
         document: editor.document,
         fonts: getFonts(),
-        include: {
-            header: includeHeader.value,
-            footer: includeFooter.value
-        }
+        layout: false
     }
+    console.log ( page )
     await saveStaticPage ( page )
     message.data = 'Saved as HTML page'
     status.dialog = null
@@ -191,7 +185,13 @@ const saveAsSveltePage = async () => {
 }
 
 const documentHTML = () => {
-    let doc = document.querySelector ('.whoobePreview')
+    let doc = null
+    if ( useLayout.value ){
+        doc = document.querySelector ('#' + editor.document.json.blocks.id )
+    } else {
+        doc = document.querySelector ('.whoobePreview')
+    }
+    
     let html = doc.innerHTML.replaceAll('<!--v-if-->','')
     
     return html
@@ -199,6 +199,10 @@ const documentHTML = () => {
 
 const getFonts = () => {
     let fonts = jp.query ( editor.document.json.blocks , '$..blocks..font')
+    console.log ( "FONTS=>" , fonts )
+    if ( editor.document.json.blocks.font ){
+        fonts.push ( editor.document.json.blocks.font )
+    }
     let fnts = [ ...new Set ( fonts.filter ( a => { return a } ) )]
     if ( fnts ){
         return fnts.join('|').replaceAll(' ','+')

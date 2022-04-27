@@ -6,18 +6,16 @@
         </div> -->
         <TreeContainer context="templates" :open="open" @close="open=!open" @file="loadFile"/>
         <!-- <FileExplorer context="templates" :open="open" @close="open=!open" @file="loadFile"/> -->
-        <div class="p-2 bg-bluegray-800 w-full text-gray-500 text-xs" v-if="fileInfo?.path">
-            {{fileInfo.path}} 
+        <div class="p-2 bg-bluegray-800 w-full flex text-gray-500 text-xs" v-if="fileInfo?.path">
+            <chip class="">{{fileInfo.path}}</chip>
             <span @click="editFile" class="absolute cursor-pointer right-0 top-0 text-2xl m-1 text-white" >
                 <icon icon="mdi:edit" title="edit"/>
             </span>
         </div>
-        <div v-if="fileInfo" class="relative flex flex-col p-2">
+        <div v-if="fileInfo?.name" class="relative flex flex-col p-2">
             <ul class="border-b mb-4 sticky">
-                <li>Template name : {{fileInfo.name }}</li>
-                <li>Description : {{ fileInfo.description }}</li>
-                <li>Folder: {{ currentFolder.data }}</li>
-                <!-- <li>Path: {{ fileInfo.path }}</li> -->
+                <li class="flex">Template name <chip css="ml-2">{{fileInfo.name }}</chip></li>
+                <li class="flex">Description : {{ fileInfo.description }}</li>
             </ul>
             <div class="bg-transparent relative mx-auto w-full">
                 <BlockPreview v-if="fileInfo?.json" :block="fileInfo.json.blocks" :level="2"/>
@@ -36,7 +34,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { tabberAddTab , tabber, status, switchToEditor } from '/@/composables/useNavigation'
-import { localData , openFolder , openPath, openSubFolder , openFile , saveFile, moveFile,  template , currentFolder } from '/@/composables/useLocalApi'
+import { localData , openFolder , openPath, openSubFolder , openFile , saveFile, moveFile,  template , currentFolder , DATA_PATH} from '/@/composables/useLocalApi'
 import EditorPanelVue from '../editor/EditorPanel.vue';
 import { useStore } from '/@/composables/useActions';
 import { message, dragDrop } from '/@/composables/useUtils'

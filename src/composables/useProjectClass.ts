@@ -25,9 +25,14 @@ export default class Project {
         this.homepage = {}
         this.header = {}
         this.footer = {}
+        this.layout = {}
         this.pages = {}
         this.fonts = []
         this.animations = []
+        this.headless = {
+            cms: false,
+            store: false
+        },
         this.analytics = ''
         this.scripts = {
             js : [],

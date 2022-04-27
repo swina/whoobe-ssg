@@ -116,24 +116,24 @@ const handleDragEnd = async (e,item) => {
     source.value = item.path
     dragDrop.source = item
     let targetPath = dragDrop.target.path
-    let srcElement = document.getElementById(item.hash)
-    srcElement?.setAttribute('data-path' , dragDrop.target.path + '/' + item.name )
-    let targetElement = document.getElementById(dragDrop.target.hash)?.parentElement
+    // let srcElement = document.getElementById(item.hash)
+    // srcElement?.setAttribute('data-path' , dragDrop.target.path + '/' + item.name )
+    // let targetElement = document.getElementById(dragDrop.target.hash)?.parentElement
     try {
-        targetElement = targetElement?.querySelector('ul')
-        let li = document.createElement('li')
-        li.setAttribute('class','ml-2 px-1 text-sm drop-container item')
-        li.append ( srcElement )
-        targetElement.prepend ( li )
-        console.log ( srcElement , targetElement )
-        if ( dragDrop.target.type === 'file' ){
-            targetPath = dragDrop.target.path.replace(item.name,'')
-        }
+        // targetElement = targetElement?.querySelector('ul')
+        // let li = document.createElement('li')
+        // li.setAttribute('class','ml-2 px-1 text-sm drop-container item')
+        // li.append ( srcElement )
+        // targetElement.prepend ( li )
+        // console.log ( srcElement , targetElement )
+        // if ( dragDrop.target.type === 'file' ){
+        //     targetPath = dragDrop.target.path.replace(item.name,'')
+        // }
         const result = await moveFile ( item.path , targetPath , item.name , fs.value )
         message.data = await result.message
-
-        fileTree.lastSource = item
-        fileTree.lastTarget = dragDrop.target
+        fileTree.reload = true
+        // fileTree.lastSource = item
+        // fileTree.lastTarget = dragDrop.target
     } catch ( err ) {
         message.data = "No drop area found"
     }
