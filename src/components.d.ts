@@ -5,6 +5,7 @@
 declare module 'vue' {
   export interface GlobalComponents {
     Archive: typeof import('./components/archive/Archive.vue')['default']
+    Assets: typeof import('./components/plugins/assets/Assets.vue')['default']
     Block: typeof import('./components/editor/blocks/elements/block.vue')['default']
     BlockAlpine: typeof import('./components/editor/tools/BlockAlpine.vue')['default']
     BlockAttributes: typeof import('./components/editor/tools/BlockAttributes.vue')['default']
@@ -38,6 +39,7 @@ declare module 'vue' {
     BlockWindi: typeof import('./components/editor/tools/BlockWindi.vue')['default']
     Chip: typeof import('./components/common/Chip.vue')['default']
     Close: typeof import('./components/common/Close.vue')['default']
+    ConfirmAction: typeof import('./components/common/ConfirmAction.vue')['default']
     Container: typeof import('./components/editor/blocks/elements/container.vue')['default']
     CreateFile: typeof import('./components/common/CreateFile.vue')['default']
     CreateFolder: typeof import('./components/common/CreateFolder.vue')['default']
@@ -77,6 +79,7 @@ declare module 'vue' {
     TreeItem: typeof import('./components/common/TreeItem.vue')['default']
     TreeList: typeof import('./components/common/TreeList.vue')['default']
     UIKits: typeof import('./components/uikits/UIKits.vue')['default']
+    UploadFile: typeof import('./components/common/UploadFile.vue')['default']
     Website: typeof import('./components/project/Website.vue')['default']
   }
 }
