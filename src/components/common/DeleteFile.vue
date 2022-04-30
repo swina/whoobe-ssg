@@ -1,16 +1,19 @@
 <template>
     <div class="p-2 flex flex-col text-sm">
         <label class="text-xs">Path: {{ status.current.path }}</label>
-        <h3>File: {{ status.current.name }}</h3>
+        <h3 v-if="status.current.type==='file'">File: {{ status.current.name }}</h3>
         <button class="hover:bg-black bg-red-500 text-white w-20 mx-auto mt-4" @click="deleteItem">Delete</button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { status } from '/@/composables/useNavigation'
+//import { status } from '/@/composables/useNavigation'
 import { openPath , saveFile , deleteFile, currentFolder, fileTree } from '/@/composables/useLocalApi';
-import { message } from '/@/composables/useUtils';
+//import { message } from '/@/composables/useUtils';
+import { store } from '/@/composables/useStore'
 
+let status = store.status
+let message = store.message
 
 const deleteItem = async () =>{
     const res = await deleteFile ( status.current.path )

@@ -5,7 +5,7 @@
           <div :class="n===1?'border-l':''" class="border-r h-4 h-screen"></div>
         </template>
       </div>
-      <div v-if="editor.document" class="editor-container mt-4 border-2 mr-10 h-screen border-purple-600 overflow-y-auto pb-40" 
+      <div v-if="editor.document" class="editor-container mt-4 border-0 mr-10 h-screen border-purple-600 overflow-y-auto pb-40" 
         @click="editor.current = editor.document.json.blocks[0]" @contextmenu.prevent="openMenu($event)">
         <BlockContainer/>
       </div>
@@ -13,7 +13,7 @@
     
     <EditorToolbar/>
     
-    <SidebarRight v-if="useEditorSidebar.sidebar && editor.tool"/>
+    <SidebarRight v-if="editor.tool"/>
 
     <transition name="fade">
       <EditorPanel/>
@@ -42,8 +42,8 @@ import { EDITOR } from '/@/composables/useEditor';
 
     const editor = EDITOR //useStore()
     const navigation = useStore('navigation')
-    console.log ( editor.document )
-    //editor._wiTools ( twGroups )
+    editor.tool = 'customize'
+    useEditorSidebar.sidebar = true
     editor.wiTools = twGroups 
     const size = computed(()=>{
         return useEditorSidebar.sidebar && editor.current ? 'w-3/4' : 'mr-12'

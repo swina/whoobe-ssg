@@ -7,9 +7,11 @@ import Components from 'unplugin-vue-components/vite'
 import PurgeIcons from 'vite-plugin-purge-icons';
 import ViteFonts from 'vite-plugin-fonts';
 import svgLoader from 'vite-svg-loader';
-const fonts = ['Alfa+Slab+One','Asap+Condensed','Abel','Alice','Alegreya','Amethysta','Archivo+Black','Barlow','Barlow+Condensed','Bungee+Inline','Expletus+Sans','Lora','Montserrat','Nunito+Sans','Oi','Open+Sans','PT+Sans','Roboto','Roboto+Condensed','Quattrocento','Raleway','Ultra','Yatra+One']
-
+const fonts = ['Alfa+Slab+One','Asap+Condensed','Abel','Alice','Alegreya','Amethysta','Archivo+Black','Barlow','Barlow+Condensed','Bungee+Inline','Expletus+Sans','Lora','Montserrat','Nunito+Sans','Oi','Open+Sans','PT+Sans','Roboto','Roboto+Condensed','Quattrocento','Raleway','Tenor+Sans','Ultra','Yatra+One']
+import Unocss from 'unocss/vite'
+import presetUno from '@unocss/preset-uno'
 // export default defineConfig({
+import { shortcuts } from './src/styles/unocss'
 
 export default ({ mode }) => {
     process.env = {...process.env, ...loadEnv(mode, process.cwd())};
@@ -26,6 +28,16 @@ export default ({ mode }) => {
     },
   },
   plugins: [
+    // Unocss({ 
+    //   shortcuts : shortcuts,
+    //   // shortcuts: {
+    //   //   'sidebarLeft' : 'top-0 left-0 max-h-max h-screen w-10 flex flex-col justify-around items-center z-10',
+    //   //   'bars' : 'fixed bg-bluegray-900 text-gray-300'
+    //   // },
+    //   presets: [
+    //     presetUno(),
+    //   ], 
+    // }),
     vue(),
     // https://github.com/jpkleemans/vite-svg-loader
     svgLoader(),

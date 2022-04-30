@@ -11,7 +11,10 @@ export const store = reactive({
         dialog: null ,
         dialogCss : 'w-1/3',
         dialogTitle: '',
+        dialogConfirm: false,
+        dialogAction: '',
         current: null,
+        currentFile: null,
         previewMode: false 
     },
     message : {
@@ -39,7 +42,8 @@ export const store = reactive({
     project: {
         data: Object ,
         path: ''
-    }
+    },
+    clipboard : null
 })
 
 export const loading = ()=>{

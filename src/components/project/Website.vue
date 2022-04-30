@@ -9,11 +9,7 @@
             <template v-for="option in options">
                 <div class="capitalize px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" @click="settings.tab=option.tab" :class="option.tab===settings.tab?'bg-white':''">
                     {{ option.tab }}
-                    <transition name="fade" v-if="option.tab==='pages'">
-                        <ul class="m-0" v-if="option.tab==='pages' && settings.tab==='pages'">
-                            <li class="ml-0 list-none cursor-pointer lowercase" :class="previewPage.slug === page?'font-bold':''" v-for="page in Object.keys(project.data.pages)" @click="setPreviewPage(page)">{{page}}</li>
-                        </ul>
-                    </transition>
+                    
                 </div>
             </template>
            
@@ -124,15 +120,25 @@
                 </div>
             </div>
             <div v-if="settings.tab==='pages'" class="flex flex-col overflow-y-auto h-screen">
-                <div v-if="project.data.pages" class="mx-auto">
-                <!-- <ul class="m-0 w-1/4">
-                    <li class="ml-0 list-none cursor-pointer" :class="previewPage.slug === page?'font-bold':''" v-for="page in Object.keys(project.data.pages)" @click="setPreviewPage(page)">{{page}}</li>
-                </ul> -->
-                <!-- <div class="overflow-y-auto h-screen-md overflow-x-hidden">
-                <template v-if="previewPage"> -->
-                    <div v-if="previewPage" v-html="previewPage.html" class="preview-lg"></div>
-                <!-- </template>
-                </div> -->
+                <div v-if="project.data.pages" class="flex">
+                    <div class="w-1/3 p-2">
+                        <span @click="cms_context='pages',open=!open" class="ml-2 text-4xl mt-1" title="Select template"><button>Add</button></span>
+                        <ul class="m-0">
+                            <li class="ml-0 list-none cursor-pointer lowercase flex items-center" :class="previewPage.slug === page?'font-bold':''" v-for="page in Object.keys(project.data.pages)">
+                                <span @click="removePage(page)" class="pt-0" title="Remove"><icon icon="ci:off-close" class="text-red-500 text-xl mr-2"/></span><span title="Click to preview" @click="setPreviewPage(page)">{{page}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-2/3 flex flex-col items-center justify-center" v-if="previewPage?.blocks || previewPage?.html">
+                        <div class="flex items-center justify-start w-full p-2 pt-4"><input class="mr-2 w-3/4" type="text" v-model="newPageSlug"/><button @click="updateSlug">Change Slug</button><button @click="cms_context='compose',open=!open">Compose Page</button></div>
+                        <div class="flex items-center justify-center">
+                            <div v-if="previewPage && previewPage.html" v-html="previewPage.html" class="preview-md"></div>
+                            <div class="preview-md" v-if="previewPage && !previewPage.html">
+                                <BlockPreview  :block="previewPage.blocks.json.blocks"/>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
             <div v-if="settings.tab==='graphQL'" class="p-2 flex overflow-y-auto h-screen">
@@ -210,29 +216,31 @@
                 </div>
             </div>
         </div>  
-        <TreeContainer context="templates" :open="open" @close="open=!open" @file="setGraphQLTemplate"/> 
+        <TreeContainer context="templates" :open="open" @close="open=!open" @file="addTemplate"/> 
         
     </div>  
     </div>                    
 </template>
 
 <script setup lang="ts">
-import { ref , onMounted } from 'vue'
+import { ref , onMounted, watch } from 'vue'
 import { project } from '/@/composables/useProject'
 import { saveFile , buildClear , openPath , activeProject , paths , DATA_PATH , SSG , PAGESURL, CONFIG_FILE , buildProject , saveStaticPage , fileExists , layoutMainClass } from '/@/composables/useLocalApi'
 import { useStore } from '/@/composables/useActions'
-import { slugify , message } from '/@/composables/useUtils'
+import { slugify } from '/@/composables/useUtils'
 import { EDITOR , usedFonts , BlockData , usedLinks , randomID } from '/@/composables/useEditor'
 import { CMS_SCHEMA , CMS, getCMSQuery , getCMSSingleQuery ,} from '/@/composables/useGraphCMS'
-import { tabberAddTab , settings } from '/@/composables/useNavigation'
+import { tabberAddTab } from '/@/composables/useNavigation'
 import jp from 'jsonpath'
 import { getHTMLFromFragment } from '@tiptap/core'
+import { store } from '/@/composables/useStore'
 
+let settings = store.settings 
 const editor = EDITOR //useStore()
 const props = defineProps ({
     data:Object
 })
-
+let message = store.message 
 project.path = DATA_PATH + '/' + paths.projects
 
 const options = ref ([
@@ -264,9 +272,11 @@ const tabClass = (tab) => {
 }
 
 const saveProject = async () => {
+    store.status.loading =! store.status.loading
     project.path = CONFIG_FILE
     const res = await saveFile(project)
-    message.data = await res.message
+    store.status.loading =! store.status.loading
+    //message.data = await res.message
 }
 
 
@@ -287,6 +297,7 @@ const editCMSTemplate = () => {
 loadFile()
 
 let previewPage = ref({})
+let newPageSlug = ref('')
 const setPreviewPage = async (page:String) => {
     previewPage.value = project.data.pages[page]
 }
@@ -349,22 +360,65 @@ const setGraphQLSchema = ( e:Object , context:String ) => {
     }
 }
 
-const setGraphQLTemplate = (template:Object) =>{
-    if ( cms_context.value === 'homepage' ){
+const addTemplate = (template:Object) =>{
+    if ( cms_context.value === 'compose' ){
+        console.log ( template.json.blocks )
+        project.data.pages[previewPage.value.slug].blocks.json.blocks.blocks.push ( template.json.blocks )
+    }
+    if ( settings.tab === 'homepage' ){
         project.data.homepage.blocks = template
         homepage.value = template
         open.value = !open.value
+        previewPage.value = {
+            blocks: template ,
+            html: '',
+            slug: 'index',
+            fonts: ''
+        }
+        saveProject()
         return
     }
-    if ( project.data.graphql[cms_context.value] ){
-        project.data.graphql[cms_context.value] = { template : template }
+    if ( settings.tab === 'pages' ){
+        
+            let page = {
+                blocks: template,
+                html: '',
+                fonts: '',
+                slug: slugify(template.name)
+            }
+            project.data.pages[slugify(template.name)] = page
+            previewPage.value = {
+                blocks: template ,
+                html: '',
+                slug: slugify(template.name),
+                fonts: ''
+            }
+        open.value = !open.value
+        saveProject()
+        return
     }
-    open.value = !open.value
+    if ( settings.tab === 'graphQL' ){
+        if ( project.data.graphql[cms_context.value] ){
+            project.data.graphql[cms_context.value] = { template : template }
+            open.value = !open.value
+            saveProject()
+            return
+        }
+    }
 }
+
+const removePage = ( slug:String )=> {
+    let confirm = window.confirm ( 'Confirm to remove the page?')
+    confirm ?
+        delete project.data.pages[slug] : null
+    saveProject()
+}
+
+
 
 const getCMSData = async (  context: String ) => {
     cms_context.value = context
-    if ( !CMS[context] ){
+    if ( !CMS[context].length ){
         let data = await getCMSQuery ( context )
     } else {
         console.log ( 'data in memory')
@@ -436,8 +490,10 @@ const saveWebsitePage = async ( slug:String ) => {
     message.console += '- ' + slug + ' created \n'
 }
 let buildFolder = ref('')
+
 const buildGraphQLPages = async () => {
     //buildFolder.value = prompt ('Destination folder',buildFolder.value)
+    message.console += 'Creating GraphQL contents \n\n'
     if ( project.data.graphql ){
         let contextKeys = Object.keys ( project.data.graphql )
         contextKeys.forEach ( async ( context ) => {
@@ -519,6 +575,14 @@ const documentHTML = async (id:String) => {
     return doc.innerHTML.replaceAll('<!--v-if-->','')
 }
 
+const updateSlug = async () => {
+    alert ( newPageSlug.value )
+    project.data.pages[newPageSlug.value] = project.data.pages[previewPage.value.slug]
+    delete project.data.pages[previewPage.value.slug]
+    previewPage.value.slug = newPageSlug.value
+    saveProject()
+}
 
+console.log( project )
 
 </script>

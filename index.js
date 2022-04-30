@@ -5,6 +5,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const bodyParser = require("body-parser");
 const dree = require('dree')
+const multer = require('multer')
 var cors = require('cors')
 require('dotenv').config()
 
@@ -13,14 +14,17 @@ const options = {
     followLinks: true,
     depth: 5
 };
+var destination
 
 const DATA_PATH = process.env.VITE_APP_DATA_PATH
-const current   = `${DATA_PATH}/current` //"./server/data/current/" 
-const projects  = `${DATA_PATH}/projects` //"./server/data/projects";
-const templates = `${DATA_PATH}/templates` //"./server/data/templates";
-const uikits    = `${DATA_PATH}/uikits` //"./server/data/uikits";
+const current   = `${DATA_PATH}/current`
+const projects  = `${DATA_PATH}/projects`
+const templates = `${DATA_PATH}/templates`
+const uikits    = `${DATA_PATH}/uikits`
+const assets    = `${process.env.VITE_APP_PAGES}/assets`
 const static    = process.env.VITE_APP_PAGES;
-const local     = `${DATA_PATH}` ///"./server/data";
+const local     = `${DATA_PATH}`
+const tmp       = `./.whoobe/tmp`
 
 const paths = {
     current: current,
@@ -28,6 +32,7 @@ const paths = {
     templates: templates,
     uikits: uikits,
     static: static,
+    assets: assets,
     pages: static,
     local: local
 }
@@ -35,6 +40,19 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json({limit: '50mb'}));
 app.use(cors())
+
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        console.log ( req.body )
+        cb(null, tmp )
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+})
+var upload = multer({ storage: storage })
 
 // get filesystem structure 
 // @name : paths
@@ -119,6 +137,7 @@ app.post('/file/save' , (req, res) => {
     res.json ( { message: 'File saved' } )
 })
 
+
 app.get ( '/build/clear' , ( req, res ) => {
     let targetPath = path.resolve ( paths.static )
     fs.readdirSync(path.resolve(paths.static)).forEach(f => { if ( f.includes('.html') ) {
@@ -147,14 +166,16 @@ app.post('/save/html' , (req, res) => {
 // @body.path = file full path (required)
 app.get('/folder/add' , (req, res) => {
     console.log ( req.query.context , req.query.name )
-    let dir = paths[req.query.context] + '/' + req.query.name 
+    let dir = req.query.context + '/' + req.query.name 
+    //let dir = req.query.name
     console.log ( dir )
-
     if ( !fs.existsSync( path.resolve(dir) )){
-        fs.mkdirSync(dir);
-        res.json(true)
+        fs.ensureDir ( dir )
+        //fs.mkdirSync(dir);
+        res.json({success:true})
+    } else {
+        res.json({success:false})
     }
-    res.json(false)
 })
 
 
@@ -168,6 +189,14 @@ app.post('/current' , (req, res) => {
         stream.end();
     });
     res.send ( req.body )
+})
+
+app.post('/upload-single', upload.single('file'), function (req, res, next) {
+    // req.file is the `profile-file` file
+    // req.body will hold the text fields, if there were any
+    var filename = req.file.filename;
+    fs.move ( tmp + '/' + filename , req.body.path + '/' + filename )
+    return res.send('ok')
 })
 
 app.listen(port,'0.0.0.0',(err)=>{

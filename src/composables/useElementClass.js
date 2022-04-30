@@ -56,11 +56,15 @@ export default class Element {
                 elements: [ 
                     {
                         name: 'Grid',
-                        icon: 'grid_on' 
+                        icon: 'bi:grid-3x3' 
                     }, 
                     {
                         name: 'Flexbox' ,
-                        icon: 'highlight_alt'
+                        icon: 'arcticons:orange-flex'
+                    },
+                    {
+                        name: 'Container' ,
+                        icon: 'octicon:container-24'
                     }
                 ],
             } ,
@@ -69,27 +73,27 @@ export default class Element {
                 elements: [ 
                     { 
                         name: 'Heading' ,
-                        icon: 'title' ,
+                        icon: 'bx:heading' ,
                     }, 
                     {
                         name: 'Paragraph',
-                        icon: 'subject' 
+                        icon: 'bi:text-paragraph' 
                     },
                     { 
                         name: 'Inline Text',
-                        icon: 'text_format'
+                        icon: 'carbon:string-text'
                     }, 
                     {
                         name: 'Span',
-                        icon: 'text_format'
+                        icon: 'fluent:dual-screen-span-20-regular'
                     },
                     {
                         name: 'Blockquote',
-                        icon: 'text_format'
+                        icon: 'tabler:blockquote'
                     },
                     {
                         name: 'Code',
-                        icon: 'code'
+                        icon: 'bi:code-slash'
                     }
 
                 ]
@@ -99,35 +103,35 @@ export default class Element {
                 elements: [ 
                     {
                         name: 'Image' ,
-                        icon: 'insert_photo' 
+                        icon: 'akar-icons:image' 
                     }, 
                     {
                         name: 'Slider' ,
-                        icon: 'video_library' 
+                        icon: 'ri:slideshow-line' 
                     },
                     { 
                         name: 'Video',
-                        icon: 'movie'
+                        icon: 'bx:movie'
                     },
                     { 
                         name: 'Youtube',
-                        icon: 'movie' 
+                        icon: 'foundation:social-youtube' 
                     }, 
                     {
                         name: 'Vimeo',
-                        icon: 'movie' 
+                        icon: 'fa6-brands:vimeo' 
                     },
-                    {
-                        name: 'MIcon',
-                        icon: 'crop_original'
-                    },
+                    // {
+                    //     name: 'MIcon',
+                    //     icon: 'crop_original'
+                    // },
                     {
                         name: 'Iconify',
-                        icon: 'crop_original'
+                        icon: 'line-md:iconify2'
                     },
                     {
                         name: 'Download',
-                        icon: 'download'
+                        icon: 'ant-design:download-outlined'
                     }
                 ]
             },
@@ -136,15 +140,15 @@ export default class Element {
                 elements: [ 
                     {
                         name: 'Form' ,
-                        icon: 'call_to_action' 
+                        icon: 'mdi:form-select' 
                     }, 
                     { 
                         name: 'Input Text',
-                        icon: 'input'
+                        icon: 'bi:input-cursor'
                     },
                     { 
                         name: 'Email',
-                        icon: 'email' 
+                        icon: 'carbon:email' 
                     }, 
                     // {
                     //     name: 'Hidden',
@@ -152,31 +156,31 @@ export default class Element {
                     // },
                     {
                         name: 'Number',
-                        icon: 'input'
+                        icon: 'carbon:character-whole-number'
                     },
                     {
                         name: 'Checkbox',
-                        icon: 'check_box'
+                        icon: 'bx:checkbox-checked'
                     },
                     {
                         name: 'Textarea',
-                        icon: 'text_format'
+                        icon: 'bi:textarea-resize'
                     },
                     {
                         name: 'Select',
-                        icon: 'input'
+                        icon: 'entypo:select-arrows'
                     },
                     {
                         name: 'Submit',
-                        icon: 'smart_button'
+                        icon: 'ic:baseline-smart-button'
                     },
                     {
                         name: 'Reset',
-                        icon: 'smart_button'
+                        icon: 'ic:baseline-smart-button'
                     },
                     {
                         name: 'Button',
-                        icon: 'smart_button'
+                        icon: 'ic:baseline-smart-button'
                     }
                 ]
             }
@@ -187,6 +191,7 @@ export default class Element {
     createElement(element,options){
         return element === 'Grid'       ? this.Grid(options) : 
             element === 'Flexbox'       ? this.Flexbox(options) :
+            element === 'Container'     ? this.Container(options) :
             element === 'Heading'       ? this.Heading(options) : 
             element === 'Paragraph'     ? this.Paragraph() :
             element === 'Inline Text'   ? this.InlineText() :
@@ -264,6 +269,14 @@ export default class Element {
         // for ( let n=0; n < cols ; n++){
         //     this.blocks.push ( new Element().Flexbox() )
         // }       
+        return this
+    }
+
+    Container(options){
+        this.blocks = []
+        this.type = 'container'
+        this.tag = 'container'
+        this.element = 'div'
         return this
     }
 

@@ -1,5 +1,8 @@
 @tailwind base;
 @tailwind components;
+body { 
+  @apply w-screen;
+}
 @layer base {
   
     h1 {

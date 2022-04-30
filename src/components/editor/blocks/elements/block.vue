@@ -15,7 +15,7 @@
         </div>
         <template v-for="element in block.blocks" :key="element.id">
             <block
-                :data="$attrs.data"
+                :data="$attrs.data?$attrs.data:null"
                 v-if="element.type === 'container' && !element.data?.isLoop"
                 :block="element"
                 :level="level+1"/>
@@ -24,7 +24,7 @@
                 :block="element"
                 :level="level+1"/>
             <Element
-                :data="$attrs.data"
+                :data="$attrs.data?$attrs.data:null"
                 :id="element.id"
                 :element="element"
                 v-if="element.type !='container' && element.type != 'slider' && element.tag != 'icon' && element.tag != 'iconify'"
@@ -81,13 +81,20 @@ import { CMS_SCHEMA , CMS ,  getCMSQuery, getCMSSingleQuery } from "/@/composabl
         return props.block.style + ';' + stile
     })
     const current = ( block:object , flag: boolean = false ) => {
+        
         return Object.values ( props.block.css ).join ( ' ' )
     }
 
     const selector = computed( () => {
+        let borderColor = ' border-2 border-red-500 '
+        let borderHover = ' border-2 hover:border-red-500 border-dashed '
+        if ( props.level === 2 ){
+            borderColor = ' border-4 border-purple-500'
+            borderHover = ' border-2 hover:border-purple-500 border-dashed '
+        }
         return editor.current?.id && editor.current.id === props.block.id ?
-            ' border border-red-500 ' + ' z-' + props.level :
-            ' border hover:border-red-500 border-dashed '  + ' z-' + props.level
+            borderColor  + ' z-' + props.level :
+            borderHover + ' z-' + props.level
     })
 
     const contextMenu = ( event: object , flag: boolean )=>{

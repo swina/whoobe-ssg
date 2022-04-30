@@ -1,9 +1,9 @@
 <template>
     <div class="p-4">
-        <div v-if="status.mode==='saveAsTemplate'">
+        <!-- <div v-if="status.mode==='saveAsTemplate'">
             <label>Filename</label>
-            <input class="w-full mb-2" type="text" v-model="saveAsPath"/>    
-        </div>
+            <input class="w-full mb-2" type="text" v-model="saveAs"/>    
+        </div> -->
         <label>Title</label>
         <input class="w-full mb-2" type="text" v-model="editor.document.name"/>
         <label>Description</label>
@@ -53,6 +53,7 @@ import { slugify , message } from '/@/composables/useUtils';
 import { status } from '/@/composables/useNavigation'
 import { EDITOR } from '/@/composables/useEditor';
 import jp from 'jsonpath'
+import { store } from '/@/composables/useStore'
 
 const props = defineProps ({
     mode:String
@@ -72,7 +73,9 @@ let includeFooter = ref ( true )
 
 const editor = EDITOR //useStore()
 
-let saveAsPath = ref ( DATA_PATH + paths.templates + '/' + slugify(editor.document.name) )
+let saveAsPath = ref ( '' )
+let saveAs = ref ( '' )
+
 const addTag = (e) => {
     if ( e.keyCode === 13 ){
         if ( newTag.value ){
@@ -113,14 +116,16 @@ const setSlug = () => {
 }
 
 const saveAsTemplate = async () => {
-    if ( saveAsPath.value ){
-        editor.document.path = saveAsPath.value + '.json'
-        await saveFile ( editor.document )
-        message.data = 'File saved'
-    }
-    message.data = 'File saved'
-    console.log ( 'File saved' )
-    status.dialog = null
+    // if ( !saveAs.value ) {
+    //     store.message.data = 'A name is required'
+    //     return
+    // }
+    let filePath = DATA_PATH + paths.templates + '/' 
+    editor.document.path = filePath + slugify(editor.document.name.toLowerCase()) + '.json'
+    //editor.document.name = saveAs.value
+    await saveFile ( editor.document )
+    store.message.data = 'File saved'
+    store.status.dialog = null
 }
 
 const saveAsStaticPage = async () => {
@@ -132,7 +137,8 @@ const saveAsStaticPage = async () => {
         }
         project.path = CONFIG_FILE
         const res = await saveFile(project)
-        message.data = await res.message
+        store.message.data = await res.message
+        store.status.dialog = null
         return
     }
     let page = await {
@@ -144,8 +150,8 @@ const saveAsStaticPage = async () => {
     }
     console.log ( page )
     await saveStaticPage ( page )
-    message.data = 'Saved as HTML page'
-    status.dialog = null
+    store.message.data = 'Saved as HTML page'
+    store.status.dialog = null
     emits ('close' )
 }
 
@@ -158,7 +164,7 @@ const addToProjectPages = async () => {
     slug = slugify ( slug )
     project.data.pages[slug] = page
     await activeProject ( project )
-    message.data = 'Added to project'
+    store.message.data = 'Added to project'
     await saveFile ( project )
     emits ( 'close' )
 }
@@ -167,7 +173,7 @@ const addToProjectHomepage = async () => {
     let page = await exportDocument ( documentHTML() , editor.document )
     project.data.homepage = page
     await activeProject ( project )
-    message.data = 'Added to project'
+    store.message.data = 'Added to project'
     await saveFile ( project )
     emits ('close' )
 }
@@ -180,7 +186,7 @@ const saveAsSveltePage = async () => {
         slug: slug
     }
     await saveSveltePage ( page )
-    message.data = 'Saved as SvelteKit page'
+    store.message.data = 'Saved as SvelteKit page'
     emits ('close' )
 }
 

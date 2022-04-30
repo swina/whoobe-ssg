@@ -1,5 +1,5 @@
 <template>
-    <div class="bars sidebarRight z-modal overflow-y-auto border-r border-bluegray-700" v-if="editor.current && editor.current?.tag && editor.tool">
+    <div class="bars sidebarRight z-modal overflow-y-auto border-r border-bluegray-700">
         <!-- @mouseover="disableFloating()" @mouseout="disableFloating()" -->
         <div class="h-8 flex w-full justify-center bg-purple-600 text-white uppercase items-center"> {{ editor.tool.replace ( '-' , ' ') }}</div>
         <BlockElements v-if="editor.tool === 'elements'"/>
@@ -25,7 +25,6 @@
 </template>
 
 <script setup lang="ts">
-import { useEditorStore } from '/@/stores/editor'
 import { EDITOR } from '/@/composables/useEditor'
 
     const editor = EDITOR //useEditorStore()

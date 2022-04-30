@@ -1,5 +1,5 @@
 <template>
-    <div v-if="editor.document" class="z-1 relative min-h-screen border-black" data-document-tag="template" @click="setCurrent">
+    <div v-if="editor.document" class="z-1 relative min-h-screen" data-document-tag="template" @click="setCurrent">
         <!-- <container class="editor-block relative" :id="editor.document.json.blocks[0].id" :block="editor.document.json.blocks[0]" level="2" data-block-tag="template"/> -->
         <block :block="editor.document.json.blocks" :level="2"/>
     </div>

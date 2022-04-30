@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed inset-0 bg-white h-screen w-screen z-modal preview overflow-y-auto whoobePreview" @contextmenu="openContextMenu($event)" v-if="editor.document?.json">
+    <div class="fixed inset-0 bg-white h-screen w-screen max-w-screen z-modal preview overflow-y-auto whoobePreview" @contextmenu="openContextMenu($event)" v-if="editor.document?.json">
         <BlockPreview :block="project.data.header.blocks.json.blocks" v-if="previewLayout && project.data.header?.blocks"/>
         <div :class="previewLayout?previewCSS:''" id="templatePreview">
             <BlockPreview :block="editor.document.json.blocks" :level="2"/>
@@ -38,19 +38,20 @@ import { status } from '/@/composables/useNavigation'
 import { loadConfig , CONFIG_FILE , saveFile , layoutMainClass } from '/@/composables/useLocalApi'
 import { project , exportDocument } from '/@/composables/useProject'
 import { EDITOR , usedFonts } from '/@/composables/useEditor'
+import { store } from '/@/composables/useStore'
 
 const editor = EDITOR //useStore()
 
 let settings = ref ( false )
 let mode = ref ('layoutPreview')
-let previewLayout = ref ( true )
+let previewLayout = ref ( false )
 
 const saveHTMLPage = async () =>{
     //mode.value = 'saveHTML'
-    status.dialog = 'DocumentSettings'
-    status.dialogTitle = 'Save'
-    status.mode = 'saveHTML' 
-    status.previewMode = previewLayout.value
+    store.status.dialog = 'DocumentSettings'
+    store.status.dialogTitle = 'Save'
+    store.status.mode = 'saveHTML' 
+    store.status.previewMode = previewLayout.value
     settings.value = true
 }
 

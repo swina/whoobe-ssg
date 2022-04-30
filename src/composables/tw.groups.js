@@ -16,7 +16,7 @@ const twgroups = [
     { label: 'grid' , filter: ['grid'] , components: [
         { name: 'Options' , attr: 'gridgap' , title: 'grid gap'}
     ]},
-    { label: 'flex' , filter: ['flex','mansory' ] , components: [
+    { label: 'flex' , filter: ['flex','mansory' , 'container' ] , components: [
         { name: 'Options' , attr: 'colspan' , title: 'grid column span' , prefix: 'md:col-span-'},
         { name: 'Options' , attr: 'flexdirection' , title: 'direction' , prefix: 'flex-' },
         { name: 'Options' , attr: 'flexwrap' , title: 'wrap' , prefix: 'flex-'},
@@ -25,7 +25,7 @@ const twgroups = [
         { name: 'Options' , attr: 'flexorder' , title: 'order' , prefix: 'flex-'}
     ]},
     {
-        label: 'box align / justify' , filter: ['grid','flex','menu','document'] , components: [
+        label: 'box align / justify' , filter: ['grid','flex','menu','document' , 'container'] , components: [
             { name: 'Options' , attr: 'alignitems' , title: 'Align items' ,  prefix: 'items-' },
             { name: 'Options' , attr: 'aligncontent' , title: 'Align content' , prefix: 'content-' },
             { name: 'Options' , attr: 'alignself' , title: 'Align self' ,  prefix: 'self-'},

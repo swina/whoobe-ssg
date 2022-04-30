@@ -24,7 +24,6 @@
 
 <script setup lang="ts">
 import { computed , ref } from 'vue'
-import { useEditorStore } from '/@/stores/editor'
 import { updateColorCSS , matchColorCSS , initColors } from '/@/composables/useActions'
 import { EDITOR } from '/@/composables/useEditor';
 

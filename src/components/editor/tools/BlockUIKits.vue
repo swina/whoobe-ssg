@@ -20,10 +20,11 @@ import { computed, ref, reactive } from 'vue'
 import { tabberAddTab , loading , switchToEditor } from '/@/composables/useNavigation'
 import { openPath } from '/@/composables/useLocalApi'
 import { useStore } from '/@/composables/useActions'
+import { EDITOR } from '/@/composables/useEditor'
 
 const uikit = ref ( '')
 let open = ref ( true )
-const editor = useStore()
+const editor = EDITOR //useStore()
 
 const loadFile = async ( file ) => {
     uikit.value = file

@@ -23,7 +23,7 @@ import 'virtual:windi-devtools';
 
 import './styles/base.css';
 import './styles/custom.css';
-
+//import 'uno.css'
 //import './input.css'
 import '/@/composables/useGraphCMS'
 

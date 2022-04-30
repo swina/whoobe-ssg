@@ -10,7 +10,7 @@
         </span>
         
         Template <input type="text" v-model="editor.document.name"/>
-        
+        {{ editor.current ? editor.current.id : '' }}
         <span @click="saveTemplate($event)" class="mx-2" title="Save template">
             <Icon icon="ic:baseline-save" class="text-xl"/>
         </span>
@@ -52,6 +52,7 @@ import { project } from '/@/composables/useProject'
 import { saveFile , fileExplorer } from '/@/composables/useLocalApi';
 import { message } from '/@/composables/useUtils'
 import { EDITOR } from '/@/composables/useEditor'
+import { store } from '/@/composables/useStore'
 
 const editor = EDITOR //useStore()
 
@@ -73,14 +74,14 @@ const blockToProject = (e) => {
 const saveTemplate = async () => {
     if ( editor.document?.path ){
         await saveFile ( editor.document )
-        message.data = 'File saved'
+        store.message.data = 'File saved'
     }
 }
 
 const saveTemplateAs = async () => {
-    status.dialog = 'DocumentSettings'
-    status.dialogTitle = 'Save as'
-    status.mode = 'saveAsTemplate'
+    store.status.dialog = 'DocumentSettings'
+    store.status.dialogTitle = 'Save as'
+    store.status.mode = 'saveAsTemplate'
 }
 
 const addToUIKit = async () => {

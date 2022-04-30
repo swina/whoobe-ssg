@@ -15,9 +15,8 @@
 	 		"</template>",
 			"",
 			"<script setup lang=\"ts\">",
-			"import { useStore } from '/@/composables/useActions'",
+			"import { store } from '/@/composables/useStore'",
 			"",
-			"const editor = useStore()",
 			"</script>"
 	 	],
 	 	"description": "Log output to console"

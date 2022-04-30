@@ -7,11 +7,15 @@ export const CONFIG_FILE = '/app/pages/whoobe.config.json'
 import { message } from './useUtils'
 import { fstat } from 'fs'
 
+export const API_URL = import.meta.env.VITE_APP_LOCAL_API
+
+
 export const paths = { 
     templates : '/templates',
     uikits: '/uikits',
     projects: '/projects',
     current: '/current',
+    assets: '/assets',
     build: '/build',
     svelte: '/svelte',
     pages: '/pages',
@@ -126,8 +130,8 @@ export const activeProject = async ( json:Object ) => {
 export const addFolder = async ( context: String , name: String ) => {
     const folder = name ? name : prompt ( 'Folder name ?')
     const res = await fetch ( endpoint + '/folder/add?name=' + folder + '&context=' + context )
-    const ok = await res.json()
-    return ok
+    const result = await res.json()
+    return result
 }
 
 export const newFolder = async ( path: String , name : String ) => {
@@ -211,6 +215,7 @@ export const saveStaticPage = async ( page: Object ) => {
                         gtag('config', '${config.data.analytics}');
                 </script> `
     }
+    page.html = page.html.replaceAll('http://localhost:8080','')
     //message.console += seo.title + ' created \n'
     //<meta name="keywords" content="${page?.document?.tags.join(',')}">
     doc.html = `<!DOCTYPE html>
@@ -228,6 +233,7 @@ export const saveStaticPage = async ( page: Object ) => {
             <link rel="stylesheet" href="/assets/css/output.css">
             <link rel="stylesheet" href="/assets/css/animations.css">
             <link rel="icon" href="/favicon.ico" />
+            <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
             ${analytics}
         </head>
         <body>

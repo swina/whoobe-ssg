@@ -1,37 +1,24 @@
 <template>
-    <div :class="size" class="ml-10 mt-8">
+    <div :class="props.size" class="ml-10 mt-8">
       <Archive  v-if="loadthis() === 'Archive'"/>
       <Editor   v-if="loadthis() === 'Editor'"/>
       <UIKits   v-if="loadthis() === 'UIKits'"/>
       <Pages    v-if="loadthis() === 'Website'"/>
       <Website  v-if="loadthis() === 'Settings'"/>
-      <Project  v-if="loadthis() === 'Project'"/>
-      <!-- <Svelte   v-if="loadthis() === 'Svelte'"/> -->
-      <!-- <div v-if="tabber.tabs">
-      {{ tabber.tabs[tabber.tab].component }}
-      </div> -->
-      <!-- <Editor v-if="tabber.tabs && tabber.tab > -1 && tabber.tabs[tab]?.component && tabber.tabs[tab].component==='Editor'"/> -->
-      <!-- <FileExplorer v-if="what==='Archive'" context="templates"  :open="open" @close="open=!open" @file="openTemplate"/>
-      <UIKits v-if="what === 'UIKits'"/> -->
+      <Assets   v-if="loadthis() === 'Assets'"/>
     </div>
-    
-    
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import { tabberAddTab , status , tabber } from '../composables/useNavigation'
-  import { getCMSPages } from '/@/composables/useGraphCMS'
+  import { store } from '/@/composables/useStore'
 
   const props = defineProps ({
     comp: String,
     size: String
   })
 
-  let open = ref ( true )
-  let what = ref ( props.comp )
-  let uikit = ref ({})
-  
+  let tabber = store.tabber
+
   const loadthis = () => {
     if ( tabber.tabs && tabber.tab > -1 ){
       if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Editor' ){
@@ -46,8 +33,8 @@
       if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Website' ){
         return 'Website'
       }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Project' ){
-        return 'Project'
+      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Assets' ){
+        return 'Assets'
       }
       if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Settings' ){
         return 'Settings'
@@ -56,24 +43,5 @@
     return false
   }
 
-  const openTemplate = async (file) => {
-    console.log ( 'file=>' , file )
-    what.value = ''
-    const res = await openPath ( file.path )
-    const template = await res.json()
-    tabberAddTab ( {
-      component: 'Editor',
-      label: template.json.name,
-      object: template.json
-    })
-  }
-
-  const openUIKits = ( file ) => {
-    console.log ( 'UIKIT => ' , file )
-    open.value = !open.value
-    uikit.value = file
-  }
-
-  getCMSPages()
 </script>
 

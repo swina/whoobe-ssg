@@ -1,6 +1,6 @@
 <template>
     <div :class="editor.current.type === 'container' ? ' ' : ''" class="flex border items-center px-2  justify-around h-10 bg-white shadow z-modal cursor-pointer w-auto py-1">
-        <div class="-mt-1"><Chip class="mr-2" :text="editor.current.semantic||editor.current.element"/></div>
+        <div class="-mt-1"><chip class="mr-2">{{editor.current.semantic||editor.current.element}}</chip></div>
         <template v-for="item in toolbar" :key="item.icon">
             <span v-if="filter(item)" @click="loadTool(item)"><icon :icon="item.icon" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" :title="item.label" /></span>
         </template>

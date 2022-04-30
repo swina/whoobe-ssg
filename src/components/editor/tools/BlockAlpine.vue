@@ -6,9 +6,10 @@
             <option v-for="directive in data.directives" :value="directive">{{directive}}</option>
         </select>
         
-        <input type="text" class="w-full mb-2" placeholder="add a directive not listed"  v-model="data.extraDirective" @keydown="addExtraDirective=true"/>
-        <input type="text" class="w-full mb-2" v-model="data.newDirective" @keydown="addDirective($event,false)"/>
-
+        <!-- <input type="text" class="w-full mb-2" placeholder="add a directive not listed"  v-model="data.extraDirective" @keydown="addExtraDirective=true"/> -->
+        <div class="flex items-center mb-2">
+        <textarea type="text" class="w-full small" placeholder="add your code" v-model="data.newDirective" @keydown="addDirective($event,false)"/><button @click="addDirective($event,true)" class="btn border-0 ml-1 h-8 bg-bluegray-700 rounded">OK</button>
+        </div>
         <strong>Current directives</strong>
         
         <div class="flex flex-wrap" v-if="status.current.alpine">
@@ -20,6 +21,7 @@
             <span class="chip w-auto text-black px-1 flex items-center m-1 rounded-full cursor-pointer">{{ data.currentDirective }}</span>
             <textarea style="font-family:monospace" class="w-full text-xs h-52" v-model="status.current.alpine[data.currentDirective]"/>
         </div>
+        <button class="btn border-0 bg-bluegray-800 rounded mt-10" @click="addTransition">Add Transition</button>
         <p class="text-xs text-gray-300 absolute bottom-0 mb-20"><b>Add an AlpineJS directive selecting from the list and add your code</b>.
         <!-- <br><br>AlpineJS is disabled in smartphone/tablet preview -->
         </p>
@@ -39,7 +41,6 @@ const editor = EDITOR //useStore()
 
 let element = ref({})
 let data = ref ({
-        
         directive: '',
         currentDirective : null,
         currentData : null,
@@ -47,10 +48,23 @@ let data = ref ({
         newDirective: '',
         directives: ALPINE_DIRECTIVES
 })
+
+
+let alpineTransitions = { 
+    standard : {
+        'x-transition:enter' : 'transition ease-out duration-1000',
+        'x-transition:enter-start' : 'opacity-0',
+        'x-transition:enter-end' : 'opacity-100',
+        'x-transition:leave' : 'transition ease-in duration-1000',
+        'x-transition:leave-start' : 'opacity-100',
+        'x-transition:leave-end' : 'opacity-0'
+    }
+}
+
 element.value = status.current 
 let addExtraDirective = ref(false)
-function addDirective(e:Object ){
-    if ( e.keyCode === 13 ){
+function addDirective(e:Object,mode:Boolean=false ){
+    if ( (!mode && e.keyCode === 13) || mode ){
         if ( !status.current?.alpine ){
             status.current.alpine = {}
         }
@@ -69,5 +83,13 @@ function addDirective(e:Object ){
 function removeDirective(key){
     delete status.current.alpine[key]
     editor.current.alpine = status.current.alpine
+}
+
+const addTransition = async ( name:String ) => {
+    let data = alpineTransitions.standard
+    console.log ( 'transition' , data )
+    Object.keys(data).forEach ( tr => {
+        status.current.alpine[tr] = data[tr]
+    })
 }
 </script>

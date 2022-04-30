@@ -6,9 +6,11 @@ import Element from '/@/composables/useElementClass'
 import jp from 'jsonpath'
 import { EDITOR } from '/@/composables/useEditor'
 import { status } from '/@/composables/useNavigation'
+import { store } from '/@/composables/useStore'
 
 const editorStore = useEditorStore();
 const navigation = useNavigatorStore();
+let editor = EDITOR
 
 export const PREVIEW = 'whoobe-preview'
 export const CLIPBOARD = 'whoobe-clipboard'
@@ -82,15 +84,15 @@ export async function action( action: string , params: any) {
     if ( params.component === 'Editor' ){
         if ( !params.object ){
             document = await new Block();
-            block = await new Element().Flexbox()
+            block = await new Element().Flexbox({direction:'col'})
             //element = await new Element().Paragraph()
             block.semantic = 'main'
             //block.blocks.push ( element )
             document.name = 'A new template'
             document.json.blocks =  block 
             obj = document
-            editor._current ( block )
-            editor._tool ( 'elements' , block )
+            //editor._current ( block )
+            //editor._tool ( 'elements' , block )
         } else {
             page = params.object
             document = params.object
@@ -99,7 +101,7 @@ export async function action( action: string , params: any) {
             editor._page ( page ) 
         }
         EDITOR.document = document
-        editor._document ( document )
+        //editor._document ( document )
         //editor._tool ( 'snippets' )
         setLocalStorage ( PREVIEW , document )
     }
@@ -148,6 +150,7 @@ export function selectBlock ( block: object , event: object ){
     //     editor._tool ( 'elements' ) : editor._tool ( 'edit' )
     //editor._current ( block )
     EDITOR.current = block
+    store.editor.current = block
     return true
 }
 

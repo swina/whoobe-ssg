@@ -1,7 +1,7 @@
 <template>
     <div class="bars sidebarLeft">
         <template v-for="item in items" :key="item.label">
-            <span @click="addTab(item)" :title="item.label"><i class="iconify text-2xl" :data-icon="item.icon" :title="item.label"/></span>
+            <span class="hover:text-purple-700" @click="addTab(item)" :title="item.label"><i class="iconify text-2xl" :data-icon="item.icon" :title="item.label"/></span>
         </template>
 
     </div>
@@ -20,7 +20,7 @@ import { tabberAddTab , status } from '/@/composables/useNavigation';
       { label: 'UI Kits' , icon: 'mdi:widgets' , component: 'UIKits' },
       { label: 'Website' , icon: 'mdi:web'  , component: 'Website' },
       { label: 'Settings' , icon: 'carbon:settings-adjust'  , component: 'Settings'},
-      { label: 'Projects' , icon: 'file-icons:microsoft-project' , component : 'Projects' },
+      { label: 'Assets' , icon: 'file-icons:microsoft-project' , component : 'Assets' },
     ])
     
     const addTab = (component: object) => {

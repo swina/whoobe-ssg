@@ -15,8 +15,8 @@
         <span class="flex tree-item items-center hover:bg-purple-800 p-1" @contextmenu="openContextMenu($event,model)" @dragend="handleDragEnd($event,model)" draggable="true" >
             <icon icon="ant-design:folder-filled" class="mr-2 text-lg" v-if="isFolder && !isOpen"/>
             <icon icon="ant-design:folder-open-filled" class="mr-2 text-lg" v-if="isFolder && isOpen"/>
-            <i :data-icon="'bi:filetype-' + model.name.split('.')[model.name.split('.').length-1]" class="iconify mr-1 text-lg" v-if="model.type==='file'"/>
-            <span class="tree-item text-vase" :title="model.type==='directory'?'double click to add a folder':''">{{ model.type === 'file' ? model.name.split('.').slice(0,-1).join('.') : model.name  }}</span>
+            <i data-icon="arcticons:file" class="iconify mr-1 text-lg" v-if="model.type==='file'"/>
+            <span class="tree-item text-vase" :title="model.name">{{ model.type === 'file' ? model.name.split('.').slice(0,-1).join('.') : model.name  }}</span>
         </span>
       <!-- <span class="absolute right-0" v-if="model.type==='directory'">[+]</span> -->
     </div>
@@ -39,18 +39,20 @@
 
 <script setup lang="ts">
 import { ref, computed  } from 'vue'
-import { status } from '/@/composables/useNavigation'
+//import { status } from '/@/composables/useNavigation'
 import { openContextDialog, openCtx , closeCtx } from '/@/composables/contextMenu'
 import { moveFile , fileTree } from '/@/composables/useLocalApi';
 import { dragDrop , message } from '/@/composables/useUtils';
+import { store } from '/@/composables/useStore'
 
 const props = defineProps({
   model: Object,
   open: Boolean
 })
 
+let status = store.status
 
-const emit = defineEmits(['openTemplate','reloadTree'])
+const emit = defineEmits(['openTemplate','reloadTree','selectedFolder'])
 
 const isOpen = ref(props.open?props.open:false)
 
@@ -63,7 +65,8 @@ function toggle(model,open=true) {
     if ( model.type === 'file' && open ){
         emit('openTemplate',model)
     }
-    status.current = model 
+    
+    model.type === 'file' ? status.currentFile = model : status.current = model
     isOpen.value = !isOpen.value
 }
 
@@ -147,7 +150,7 @@ const handleDrop = (e:any,item:Object) => {
 
 const openContextMenu = (e:any,model:Object) => {
     console.log ( 'open context' )
-    status.current = model
+    store.status.current = model
     e.preventDefault()
     //e.preventDefault()
     // let ctxMenu = document.querySelector ( `#archiveCtx` )

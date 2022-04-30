@@ -1,13 +1,20 @@
 <template>
-    <div v-if="open && show" :class="isShowed()" class="pt-2 md:w-1/4 lg:w-1/5 text-xs cursor-pointer top-0 mt-8 fixed h-screen z-modal bg-bluegray-800 text-gray-300 overflow-y-auto">
+    <div v-if="open && show" :class="isShowed()" class="pt-2 md:w-1/4 lg:w-1/5 text-xs cursor-pointer top-0 mt-8 fixed h-screen z-2xtop bg-bluegray-800 text-gray-300 overflow-y-auto">
         <ul>
-            <TreeItem :key="fileTree.folders.name" v-if="fileTree && fileTree?.folders" :open="true" :model="fileTree.folders" @openTemplate="loadFile" @reloadTree="reload"/>
+            <TreeItem 
+                :key="fileTree.folders.name" 
+                v-if="fileTree && fileTree?.folders" 
+                :open="true" 
+                :model="fileTree.folders" 
+                @openTemplate="loadFile" 
+                @reloadTree="reload"/>
         </ul>
     </div>
     <div class="fixed hidden z-modal cursor-pointer shadow-lg pr-10 text-white p-2 bg-black text-xm ctxMenus" id="archiveCtx" @mouseleave="closeCtx('archiveCtx')">
     <ul>
         <li class="py-1 p-1 hover:text-blue-400" @click="addFolder">Create folder</li>
-        <li class="py-1 p-1 hover:text-blue-400" @click="addFile">Create file</li>
+        <li class="py-1 p-1 hover:text-blue-400" @click="addFile" v-if="props.context!='assets'">Create file</li>
+        <li class="py-1 p-1 hover:text-blue-400" @click="uploadFile" v-if="props.context==='assets'">Upload file</li>
         <li class="py-1 p-1 hover:text-blue-400" @click="deleteItem">Delete ...</li>
         <li class="py-1 p-1 hover:text-blue-400" @click="refreshTree">Refresh</li>
     </ul>
@@ -20,6 +27,7 @@ import { ref , computed, watch } from 'vue'
 import { closeCtx , openContextDialog } from '/@/composables/contextMenu';
 import { status } from '/@/composables/useNavigation';
 import { fileExplorer, localData , openPath , currentFolder , fileTree } from '/@/composables/useLocalApi';
+import { store } from '/@/composables/useStore'
 
 const props = defineProps ( {
     context: String,
@@ -78,31 +86,38 @@ const loadFile = async ( file ) => {
     let element = document.getElementById(file.hash)
     let filePath = element?.getAttribute('data-path')
     const res = await openPath ( filePath )
-    emits ( 'file' , res , filePath )
+    emits ( 'file' , res , filePath , file )
 }
 
 const addFile = () => {
-    status.dialog = 'CreateFile'
-    status.dialogTitle = 'New File'
+    store.status.dialog = 'CreateFile'
+    store.status.dialogTitle = 'New File'
+    openContextDialog() 
+}
+
+const uploadFile = () => {
+    store.status.dialog = 'UploadFile'
+    store.status.dialogTitle = 'Upload File'
     openContextDialog() 
 }
 
 
+
 const addFolder = () => {
-    status.dialog = 'CreateFolder'
-    status.dialogTitle = 'New Folder'
+    store.status.dialog = 'CreateFolder'
+    store.status.dialogTitle = 'New Folder'
     openContextDialog() 
 }
 
 const deleteItem = () => {
-    status.dialog = 'Delete'
-    status.dialogTitle = 'Delete'
+    store.status.dialog = 'Delete'
+    store.status.dialogTitle = 'Delete'
     openContextDialog()
 
 }
 
 if ( props.context ){
-    status.context = props.context
+    store.status.context = props.context
     loadTree ( props.context )
 }
 
@@ -111,5 +126,6 @@ watch( () => fileTree.reload, (refresh) => {
     fileTree.reload = false
   }
 )
+
 
 </script>

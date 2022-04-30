@@ -1,11 +1,9 @@
 <template>
     
     <div  class="md:ml-1/4 lg:ml-1/5 md:w-3/4 lg:w-4/5 pl-10 top-0 left-0 mt-8 absolute z-modal h-screen w-screen bg-gray-100 overflow-y-auto">
-        <!-- <div class="w-full h-10 bg-bluegray-800 text-gray-400 z-modal flex items-center absolute top-0 left-0">
-            <span class="absolute right-0 top-0 text-2xl cursor-po"  @click="switchToEditor" ><i class="iconify" data-icon="mdi:close"/></span> 
-        </div> -->
-        <TreeContainer context="templates" :open="open" @close="open=!open" @file="loadFile"/>
-        <!-- <FileExplorer context="templates" :open="open" @close="open=!open" @file="loadFile"/> -->
+       
+        <TreeContainer context="templates" :open="open" @file="loadFile"/>
+
         <div class="p-2 bg-bluegray-800 w-full flex text-gray-500 text-xs" v-if="fileInfo?.path">
             <chip class="">{{fileInfo.path}}</chip>
             <span @click="editFile" class="absolute cursor-pointer right-0 top-0 text-2xl m-1 text-white" >
@@ -22,33 +20,30 @@
             </div>
 
         </div>
-        <!-- <div class="titleBar relative">
-            Templates
-            <div class="absolute right-0 top-0 m-2 text-gray-300" title="Create folder"><span><Icon icon="bi:folder-plus" class="text-lg"></Icon></span></div>
-        </div>
-        <FileTree :tree="localData.folders.children" @openTemplate="loadFile"/> -->
-        <!-- <span  class="text-3xl z-modal absolute right-0 top-0 cursor-pointer" @click="switchToEditor"><icon icon="mdi:close"></icon></span> -->
+        
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { tabberAddTab , tabber, status, switchToEditor } from '/@/composables/useNavigation'
-import { localData , openFolder , openPath, openSubFolder , openFile , saveFile, moveFile,  template , currentFolder , DATA_PATH} from '/@/composables/useLocalApi'
-import EditorPanelVue from '../editor/EditorPanel.vue';
-import { useStore } from '/@/composables/useActions';
-import { message, dragDrop } from '/@/composables/useUtils'
-import { EDITOR } from '/@/composables/useEditor';
-const editor = EDITOR //useStore()
+import { tabberAddTab } from '/@/composables/useNavigation'
+import { saveFile, moveFile, currentFolder  } from '/@/composables/useLocalApi'
+//import EditorPanelVue from '../editor/EditorPanel.vue';
+//import { useStore } from '/@/composables/useActions';
+import { dragDrop } from '/@/composables/useUtils'
+//import { EDITOR } from '/@/composables/useEditor';
+import { store } from '/@/composables/useStore'
+
+const editor = store.editor // EDITOR //useStore()
 
 const emits = defineEmits ( {
     disable:String
 })
 
-status.context = 'templates'
-status.current = null
+store.status.context = 'templates'
+store.status.current = null
 let dragAndDrop = ref(dragDrop)
-
+let message = store.message
 let open = ref ( true )
 let fileInfo = ref ({})
 
@@ -91,7 +86,7 @@ const saveToCurrentFolder = async () => {
 
 const moveToFolder = async () => {
     let sourcePath = fileInfo.value.path
-    let targetPath = status.current.path + '/' + sourcePath.split('/')[sourcePath.split('/').length-1]
+    let targetPath = store.status.current.path + '/' + sourcePath.split('/')[sourcePath.split('/').length-1]
     const res = await moveFile ( sourcePath , targetPath )
     message.data = await res.message
     console.log ( res )

@@ -82,8 +82,8 @@ const handleInput = (e) => {
 const selector = computed( () => {
     if ( !editor.current || !editor.current?.id ) return
         return editor.current.id === props.element.id ?
-            ' border border-green-500 ' + ' z-' + props.level :
-            ' border hover:border-green-500 border-dashed '  + ' z-' + props.level
+            ' border-2 border-bluegray-800 ' + ' z-' + props.level :
+            ' border-1 hover:border-bluegray-800 border-dashed '  + ' z-' + props.level
 })
 
 const contextMenu = ( event: object , flag: boolean ) => {

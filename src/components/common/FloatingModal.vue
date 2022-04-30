@@ -7,15 +7,19 @@
             <CreateFolder v-if="status.dialog === 'CreateFolder'"/>
             <CreateFile v-if="status.dialog === 'CreateFile'"/>
             <DeleteFile v-if="status.dialog === 'Delete'"/>
+            <UploadFile v-if="status.dialog === 'UploadFile'"/>
             <DocumentSettings v-if="status.dialog === 'DocumentSettings'" :mode="status.mode"/>
             <BlockTipTap v-if="status.dialog==='wysiwyg'"/>
             <BlockGrid v-if="status.dialog==='Grid'"/>
+            <ConfirmAction v-if="status.dialog === 'ConfirmAction'"/>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { status } from '/@/composables/useNavigation';
+import { ref } from 'vue'
+//import { status } from '/@/composables/useNavigation';
 import { openContextDialog , closeCtx } from '/@/composables/contextMenu';
-
+import { store } from '/@/composables/useStore'
+let status = store.status
 </script>

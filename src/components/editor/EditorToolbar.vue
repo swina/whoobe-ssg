@@ -32,8 +32,8 @@ import { EDITOR } from '/@/composables/useEditor'
 const editor = EDITOR //useStore() //useStore()
 
 const icons = ref([
-    { icon: 'tabler:template' , tool: 'snippets' , mode: null },
-    { icon: 'la:elementor' , tool: 'elements' , mode: null },
+    { icon: 'eos-icons:templates' , tool: 'snippets' , mode: null },
+    { icon: 'clarity:blocks-group-line' , tool: 'elements' , mode: null },
     { icon: 'file-icons:windi' , tool: 'customize' , mode: null },
     { icon: 'ic:baseline-css' , tool: 'css' , mode: null },
     { icon: 'simple-icons:alpinedotjs' , tool: 'alpine' , mode: null },
