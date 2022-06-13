@@ -1,12 +1,22 @@
-import { reactive } from 'vue'
+import { reactive , provide } from 'vue'
 import { GraphQLClient , gql } from 'graphql-request';
 import { EDITOR } from './useEditor'
 
+const ep = import.meta.env.VITE_APP_GRAPHQL_ENDPOINT
+const endpoints = ep.split(';')
+const gQLClients = endpoints.map ( ep => {
+    let endp = ep.split('@')
+    return { client: endp[0] , url: endp[1] }
+})
+
+export const graphqlClients = gQLClients.map ( cl => { return cl.client } )
 
 export const CMS_URL:String = import.meta.env.VITE_APP_GRAPHCMS_CONTENT_API
-const graphcmsClient = new GraphQLClient(CMS_URL);
 
-export const CMS_SCHEMA = reactive({
+var graphcmsClient = new GraphQLClient('https://1xikguiz.directus.app/graphql')//CMS_URL);
+//const graphc = new GraphQLClient('https://1xikguiz.directus.app/graphql')
+
+export const _CMS_SCHEMA = reactive({
     schema:{
         pages: {
             query: {
@@ -28,7 +38,7 @@ export const CMS_SCHEMA = reactive({
                     }
                 }`,
                 single: gql`
-                query getPageBySluf($slug: String) {
+                query ($slug: String) {
                   pages(where: { slug: $slug }) {
                     slug
                     title
@@ -63,14 +73,153 @@ export const CMS_SCHEMA = reactive({
     }
 })
 
-export const CMS =  reactive ( {
-    pages:Object,
-    page:Object,
-    posts:Object,
-    post:Object,
-    products:Object,
-    product:Object
+export const CMS_SCHEMA = reactive({
+    schema:{
+       pages: {
+            query: {
+                list: gql`
+                {
+                pages {
+                        id
+                        slug
+                        title
+                        abstract
+                        featuredImage
+                    }
+                }`,
+                single: gql`
+                query($slug:String) {
+                    pages(filter:{slug:{ _eq:$slug }}) {
+                        id
+                        title
+                        featuredImage
+                        slug
+                        html
+                        tags
+                    }
+                }
+                `,
+                params: 'slug',
+                name: 'title',
+                fields: ['slug','title','html','abstract' , 'featuredImage','tags'],
+                seo: {
+                    title: 'title',
+                    description: 'abstract',
+                    keywords: 'tags'
+                }
+            }
+        }
+    }
 })
+
+export const graphqlConfig = {
+    'directus' : {
+        schema:{
+            pages: {
+                query: {
+                    list: gql`
+                    {
+                    pages {
+                            id
+                            slug
+                            title
+                            abstract
+                            featuredImage
+                        }
+                    }`,
+                    single: gql`
+                    query($slug:String) {
+                        pages(filter:{slug:{ _eq:$slug }}) {
+                            id
+                            title
+                            featuredImage
+                            slug
+                            html
+                            tags
+                        }
+                    }
+                    `,
+                    params: 'slug',
+                    name: 'title',
+                    fields: ['slug','title','html','abstract' , 'featuredImage','tags'],
+                    seo: {
+                        title: 'title',
+                        description: 'abstract',
+                        keywords: 'tags'
+                    }
+                }
+            }
+        }
+    },
+    graphcms: {
+        schema:{
+            pages: {
+                query: {
+                    list: gql`
+                    {
+                    pages {
+                            id
+                            title
+                            slug
+                            abstract
+                            featuredImage {
+                                url
+                            }
+                            content {
+                                html
+                                raw
+                            }
+                            tags
+                        }
+                    }`,
+                    single: gql`
+                    query ($slug: String) {
+                      pages(where: { slug: $slug }) {
+                        slug
+                        title
+                        content {
+                            html
+                            raw
+                        }
+                        abstract
+                        featuredImage {
+                            url
+                        }
+                        tags
+                      }
+                    }
+                  `,
+                    params: 'slug',
+                    name: 'title',
+                    fields: ['slug','title','content','abstract' , 'featuredImage' , 'tags'],
+                    seo: {
+                        title: 'title',
+                        description: 'abstract',
+                        keywords: 'tags'
+                    }
+                }
+            }
+        }
+    }
+}
+
+console.log ( gQLClients , graphqlConfig )
+
+export const CMS =  reactive ( {} )
+
+export const graphQLCurrent = reactive ({})
+
+export async function setGraphqlClient ( client ){
+    return new GraphQLClient( gQLClients.filter(a=>a.client===client)[0].url )
+}
+
+export async function graphQLQuery ( config ){
+    let client = await setGraphqlClient ( config.client )
+    const data = await client.request ( config.schema.query.list )
+    return await data
+}
+
+
 
 export async function getCMSQuery(schema){
     let query = CMS_SCHEMA.schema[schema].query.list
