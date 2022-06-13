@@ -5,7 +5,7 @@
           <div :class="n===1?'border-l':''" class="border-r h-4 h-screen"></div>
         </template>
       </div>
-      <div v-if="editor.document" class="editor-container mt-4 border-0 mr-10 h-screen border-purple-600 overflow-y-auto pb-40" 
+      <div v-if="editor.document" class="editor-container mt-4 border-0 mr-10 h-screen border-purple-600 overflow-y-auto pb-60" 
         @click="editor.current = editor.document.json.blocks[0]" @contextmenu.prevent="openMenu($event)">
         <BlockContainer/>
       </div>
@@ -30,23 +30,22 @@
 
 <script setup lang="ts">
 import {  computed  } from 'vue';
-import { useEditorStore } from '/@/stores/editor';
-import { useNavigatorStore } from '/@/stores/navigator';
-import { useStore , updateCSS } from '/@/composables/useActions'
+import { updateCSS } from '/@/composables/useActions'
 import twGroups from '/@/composables/tw.groups'
 import { hotKeys } from '/@/composables/hotKeys';
 import { useEditorSidebar } from '/@/composables/useNavigation';
 import { moveBlock } from '/@/composables/useEditor';
-import { EDITOR } from '/@/composables/useEditor';
+//import { EDITOR } from '/@/composables/useEditor';
+import { store } from '/@/composables/useStore';
+
     const hk = hotKeys()
 
-    const editor = EDITOR //useStore()
-    const navigation = useStore('navigation')
-    editor.tool = 'customize'
-    useEditorSidebar.sidebar = true
+    const editor = store.editor //EDITOR //useStore()
+    !editor.tool ? editor.tool = 'customize' : null
+    store.useEditorSidebar.sidebar = true
     editor.wiTools = twGroups 
     const size = computed(()=>{
-        return useEditorSidebar.sidebar && editor.current ? 'w-3/4' : 'mr-12'
+        return store.useEditorSidebar.sidebar && editor.current ? 'w-3/4' : 'mr-12'
         //return navigation.sidebar ? 'w-3/4' : 'w-full'
     })
 
@@ -70,10 +69,10 @@ import { EDITOR } from '/@/composables/useEditor';
         item.action != 'move' ?
           item.action === 'flex-row' || item.action === 'flex-col' ?
             editor.current.css.css = updateCSS ( ['flex-row' , 'flex-col' ] , editor.current.css.css , item.action ) :
-                  editor._tool ( item.action , editor.current ) : moveBlock()
+                  editor.tool = item.action : moveBlock()
 
         item?.group ?
-          editor._toolGroup ( item.group ) : null
+          editor.toolGroup = item.group : null
         // item.action != 'move' ?
         //     editor._tool ( item.action ) : moveBlock()
         //   editor._toolGroup ( item.group ) : null

@@ -21,7 +21,13 @@
             <span class="chip w-auto text-black px-1 flex items-center m-1 rounded-full cursor-pointer">{{ data.currentDirective }}</span>
             <textarea style="font-family:monospace" class="w-full text-xs h-52" v-model="status.current.alpine[data.currentDirective]"/>
         </div>
-        <button class="btn border-0 bg-bluegray-800 rounded mt-10" @click="addTransition">Add Transition</button>
+        <div  class="mt-8">
+            Add transition
+            <select v-model="alpineTransition">
+                <option v-for="transition in Object.keys(alpineTransitions)" :value="transition">{{ transition }}</option> 
+            </select>
+        </div>
+        <button v-if="alpineTransition" class="btn border-0 bg-bluegray-800 rounded mt-2" @click="addTransition">Add Transition</button>
         <p class="text-xs text-gray-300 absolute bottom-0 mb-20"><b>Add an AlpineJS directive selecting from the list and add your code</b>.
         <!-- <br><br>AlpineJS is disabled in smartphone/tablet preview -->
         </p>
@@ -31,13 +37,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useStore, ALPINE_DIRECTIVES } from '/@/composables/useActions'
-import { currentFolder } from '/@/composables/useLocalApi';
-import { status } from '/@/composables/useNavigation'
+import { ALPINE_DIRECTIVES } from '/@/composables/useActions'
+import { store } from '/@/composables/useStore'
+//import { currentFolder } from '/@/composables/useLocalApi';
+//import { status } from '/@/composables/useNavigation'
+//import { EDITOR } from '/@/composables/useEditor';
 
-import { EDITOR } from '/@/composables/useEditor';
-
-const editor = EDITOR //useStore()
+const editor = store.editor //EDITOR //useStore()
+const status = store.status
 
 let element = ref({})
 let data = ref ({
@@ -49,7 +56,7 @@ let data = ref ({
         directives: ALPINE_DIRECTIVES
 })
 
-
+let alpineTransition = ref ('')
 let alpineTransitions = { 
     standard : {
         'x-transition:enter' : 'transition ease-out duration-1000',
@@ -58,6 +65,11 @@ let alpineTransitions = {
         'x-transition:leave' : 'transition ease-in duration-1000',
         'x-transition:leave-start' : 'opacity-100',
         'x-transition:leave-end' : 'opacity-0'
+    },
+    mini: {
+        'x-transition:enter' : 'transition ease-out duration-1000',
+        'x-transition:enter-start' : 'opacity-0',
+        'x-transition:enter-end' : 'opacity-100',
     }
 }
 
@@ -86,7 +98,7 @@ function removeDirective(key){
 }
 
 const addTransition = async ( name:String ) => {
-    let data = alpineTransitions.standard
+    let data = alpineTransitions[alpineTransition.value]
     console.log ( 'transition' , data )
     Object.keys(data).forEach ( tr => {
         status.current.alpine[tr] = data[tr]

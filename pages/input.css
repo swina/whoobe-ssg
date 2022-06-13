@@ -1,10 +1,10 @@
 @tailwind base;
 @tailwind components;
-body { 
-  @apply w-screen;
-}
+
 @layer base {
-  
+    body {
+      @apply w-screen overflow-x-hidden;
+    }
     h1 {
       @apply text-7xl font-normal;
     }

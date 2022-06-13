@@ -37,6 +37,7 @@ declare module 'vue' {
     BlockTree: typeof import('./components/editor/tools/BlockTree.vue')['default']
     BlockUIKits: typeof import('./components/editor/tools/BlockUIKits.vue')['default']
     BlockWindi: typeof import('./components/editor/tools/BlockWindi.vue')['default']
+    ChangeSlug: typeof import('./components/project/ChangeSlug.vue')['default']
     Chip: typeof import('./components/common/Chip.vue')['default']
     Close: typeof import('./components/common/Close.vue')['default']
     ConfirmAction: typeof import('./components/common/ConfirmAction.vue')['default']
@@ -57,6 +58,8 @@ declare module 'vue' {
     FileTree: typeof import('./components/common/FileTree.vue')['default']
     FloatingModal: typeof import('./components/common/FloatingModal.vue')['default']
     Folder: typeof import('./components/archive/Folder.vue')['default']
+    GenerateGraphQL: typeof import('./components/project/GenerateGraphQL.vue')['default']
+    GraphQLTool: typeof import('./components/plugins/graphql/GraphQLTool.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Home: typeof import('./components/Home.vue')['default']
     Icon: typeof import('./components/common/Icon.vue')['default']
@@ -69,6 +72,7 @@ declare module 'vue' {
     Pixabay: typeof import('./components/plugins/pixabay/Pixabay.vue')['default']
     Preview: typeof import('./components/preview/Preview.vue')['default']
     Project: typeof import('./components/project/Project.vue')['default']
+    RenameFile: typeof import('./components/common/RenameFile.vue')['default']
     SidebarLeft: typeof import('./components/SidebarLeft.vue')['default']
     SidebarRight: typeof import('./components/SidebarRight.vue')['default']
     Slider: typeof import('./components/editor/blocks/elements/slider.vue')['default']
@@ -80,6 +84,7 @@ declare module 'vue' {
     TreeList: typeof import('./components/common/TreeList.vue')['default']
     UIKits: typeof import('./components/uikits/UIKits.vue')['default']
     UploadFile: typeof import('./components/common/UploadFile.vue')['default']
+    WebpagePreview: typeof import('./components/project/WebpagePreview.vue')['default']
     Website: typeof import('./components/project/Website.vue')['default']
   }
 }

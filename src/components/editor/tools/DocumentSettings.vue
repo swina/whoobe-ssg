@@ -22,14 +22,6 @@
                 <label class="mr-2">Use layout</label>
                 <input type="checkbox" v-model="useLayout"/>
             </div>
-            <!-- <div>
-                <label class="mr-2">Include Footer Template</label>
-                <input type="checkbox" v-model="includeFooter"/> <small>{{ !SSG.footer ? '(not available)' : ''}}</small>
-            </div> -->
-            <!-- <label>Category</label>
-            <select class="w-full" v-model="editor.document.category">
-                <option v-for="category in categories" :value="category">{{ category }}</option>
-            </select> -->
             <label>Tags (used as keyword for SEO)</label>
             <div class="flex flex-row flex-wrap my-1">
             <template v-for="(tag,index) in editor.document.tags">
@@ -46,14 +38,13 @@
 
 <script setup lang="ts">
 import { ref , computed , watch } from 'vue'
-import { useStore } from '/@/composables/useActions'
+import { store } from '/@/composables/useStore'
 import { saveSveltePage , activeProject, saveFile, saveStaticPage , paths , DATA_PATH , SSG, CONFIG_FILE } from '/@/composables/useLocalApi'
 import { project , exportDocument } from '/@/composables/useProject'
 import { slugify , message } from '/@/composables/useUtils';
 import { status } from '/@/composables/useNavigation'
-import { EDITOR } from '/@/composables/useEditor';
+//import { EDITOR } from '/@/composables/useEditor';
 import jp from 'jsonpath'
-import { store } from '/@/composables/useStore'
 
 const props = defineProps ({
     mode:String
@@ -63,6 +54,9 @@ const emits = defineEmits ({
     close:String
 })
 
+const editor = store.editor //EDITOR //useStore()
+
+
 let newTag = ref ( '' )
 let isHomepage = ref ( false )
 let pageTypes = ref ( ['page','homepage' , 'header' , 'footer'] )
@@ -71,7 +65,6 @@ let useLayout = ref ( status.previewMode )
 let includeHeader = ref (true)
 let includeFooter = ref ( true )
 
-const editor = EDITOR //useStore()
 
 let saveAsPath = ref ( '' )
 let saveAs = ref ( '' )
@@ -116,13 +109,8 @@ const setSlug = () => {
 }
 
 const saveAsTemplate = async () => {
-    // if ( !saveAs.value ) {
-    //     store.message.data = 'A name is required'
-    //     return
-    // }
     let filePath = DATA_PATH + paths.templates + '/' 
     editor.document.path = filePath + slugify(editor.document.name.toLowerCase()) + '.json'
-    //editor.document.name = saveAs.value
     await saveFile ( editor.document )
     store.message.data = 'File saved'
     store.status.dialog = null
@@ -137,7 +125,7 @@ const saveAsStaticPage = async () => {
         }
         project.path = CONFIG_FILE
         const res = await saveFile(project)
-        store.message.data = await res.message
+        store.message.data = 'file saved as ' + slug.value 
         store.status.dialog = null
         return
     }
@@ -146,7 +134,7 @@ const saveAsStaticPage = async () => {
         slug: slug.value,
         document: editor.document,
         fonts: getFonts(),
-        layout: false
+        layout: useLayout.value
     }
     console.log ( page )
     await saveStaticPage ( page )
@@ -195,7 +183,7 @@ const documentHTML = () => {
     if ( useLayout.value ){
         doc = document.querySelector ('#' + editor.document.json.blocks.id )
     } else {
-        doc = document.querySelector ('.whoobePreview')
+        doc = document.querySelector ('#templatePreview')
     }
     
     let html = doc.innerHTML.replaceAll('<!--v-if-->','')

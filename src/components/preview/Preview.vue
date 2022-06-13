@@ -24,6 +24,9 @@
             <li class="ml-2 list-none py-2 p-1 hover:text-blue-400">Save as ...</li> -->
         </ul>
     </div>
+    <div class="fixed left-0 top-0 h-screen w-0 z-modal p-1 flex items-center rounded-r-lg shadow-lg cursor-pointer" title="Toggle layout"  @click="previewLayout=!previewLayout">
+        <icon icon="ant-design:layout-filled" class="text-2xl mt-1 rounded-r-xl shadow-lg" :class="previewLayout?'text-purple-600':''"/>
+    </div> 
     <!-- <div class="fixed modal bottom-0 right-0 p-2 z-modal bg-white w-1/3 text-xs" v-if="settings">
         <DocumentSettings :mode="mode" @close="settings=false"/>
     </div> -->
@@ -62,8 +65,9 @@ const openContextMenu = (e:Object) => {
 }
 
 const documentHTML = async () => {
-    let doc = document.querySelector ('.whoobePreview')
+    let doc = document.querySelector ('#templatePreview')
     let html = doc.innerHTML.replaceAll('<!--v-if-->','')
+    console.log ( html )
     editor.document.json['html'] = html
     return html
 }
@@ -78,7 +82,7 @@ const saveAsLayout = async ( context:String ) => {
     }
     project.path = CONFIG_FILE
     const res = await saveFile(project)
-    message.data = await res.message
+    store.message.data = await res.message
     return
 }
 let previewCSS = ref('')

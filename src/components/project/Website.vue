@@ -109,12 +109,22 @@
                     <h3 class="mx-auto">No layout defined yet</h3>
                 </div>
             </div>
-            <div v-if="settings.tab==='homepage'" class="flex flex-col pb-20 overflow-y-auto h-screen">
+            <div v-if="settings.tab==='homepage'" class="flex flex-col pb-40 overflow-y-auto h-screen">
                 <span @click="cms_context='homepage',open=!open" class="ml-2 text-4xl mt-1" title="Select template"><button>Select</button></span>
                 <div v-if="project.data.homepage" class="mx-auto">
                     <!-- <span v-if="!project.data.header">To create an header to add to all pages, save a template as page type <strong>header</strong></span>
                     <div v-if="project.data.header" v-html="project.data.header.html"></div> -->
-                    <div v-if="project.data.homepage" v-html="project.data.homepage.html" class="preview-lg"></div>
+                        <div class="flex items-center justify-center">
+                            <!-- <div v-if="project.data.homepage?.html" v-html="project.data.homepage.html" class="preview-md"></div> -->
+                            <WebpagePreview context="homepage" v-if="project.data.homepage.blocks"/>
+                            <!-- <div class="preview-sm text-center" style="transform-origin:50% 0;" v-if="project.data.homepage?.blocks">
+                                
+                                <BlockPreview v-if="project.data.header?.blocks" :block="project.data.header.blocks.json.blocks"/>
+                                <BlockPreview  :block="project.data.homepage.blocks.json.blocks"/>
+                                <BlockPreview v-if="project.data.footer?.blocks" :block="project.data.footer.blocks.json.blocks"/>
+                            </div> -->
+                        </div>
+                    <!-- <div v-if="project.data.homepage" v-html="project.data.homepage.html" class="preview-lg"></div> -->
                     <!-- <span v-if="project.data.footer">To create a footer to add to all pages, save a template as page type <strong>footer</strong></span>
                     <div v-if="project.data.footer" v-html="project.data.footer.html"></div> -->
                 </div>
@@ -131,33 +141,54 @@
                     </div>
                     <div class="w-2/3 flex flex-col items-center justify-center" v-if="previewPage?.blocks || previewPage?.html">
                         <div class="flex items-center justify-start w-full p-2 pt-4"><input class="mr-2 w-3/4" type="text" v-model="newPageSlug"/><button @click="updateSlug">Change Slug</button><button @click="cms_context='compose',open=!open">Compose Page</button></div>
-                        <div class="flex items-center justify-center">
-                            <div v-if="previewPage && previewPage.html" v-html="previewPage.html" class="preview-md"></div>
+                        <div class="flex items-center justify-center" v-if="previewPage?.slug">
+                            <WebpagePreview :context="previewPage.slug"/>
+
+                            <!-- <div v-if="previewPage && previewPage.html" v-html="previewPage.html" class="preview-md"></div>
                             <div class="preview-md" v-if="previewPage && !previewPage.html">
                                 <BlockPreview  :block="previewPage.blocks.json.blocks"/>
-                            </div>
+                            </div> -->
                         </div>
                         
                     </div>
                 </div>
+                
             </div>
-            <div v-if="settings.tab==='graphQL'" class="p-2 flex overflow-y-auto h-screen">
-            <div class="w-1/2">
-                Enable Schema
-                <template v-for="context in Object.keys(CMS_SCHEMA.schema)">
+            <div v-if="settings.tab==='graphQL'" class="p-2 flex flex-col overflow-y-auto h-screen">
+                <div class="w-1/2">
+                    <template v-for="context in Object.keys(CMS_SCHEMA.schema)">
+                        <div class="flex items-center">
+                            <icon  v-if="project.data.graphql[context]" icon="bi:check" class="mt-1 text-2xl text-green-500"/> 
+                            <icon v-else icon="mdi:close" class="mt-1 text-2xl text-red-500"/> 
+                            {{ context }} <button class="ml-2 dark small" v-if="project.data.graphql[context]" @click="graphQLPages(context)">List</button>
+                        </div>
+                    </template>
+                </div>
+              
+                <!-- Enable Schema
                     <div class="flex items-center p-1">
                         <input type="checkbox" class="mr-2" :checked="project.data?.graphql[context]?true:false" @change="setGraphQLSchema($event,context)"/> {{ context }} <span @click="cms_context=context,open=!open" class="ml-2 text-4xl mt-1" title="Select template"><icon icon="flat-color-icons:template" :class="project.data?.graphql[context] && project.data.graphql[context]?.template?'':'grayscale'"/></span>
-                        <chip v-if="project.data?.graphql[context] && project.data.graphql[context]?.template" @click="getCMSData(context)">{{ project.data?.graphql[context].template.name }}</chip>
+                        <chip v-if="project.data?.graphql[context] && project.data.graphql[context]?.template" @click="cms_context=context,store.editor.document=project.data.graphql[context].template,store.editor.current = project.data.graphql[context].template,getCMSData(context)">{{ project.data?.graphql[context].template.name }}</chip>
                     </div>
-                </template>
-            </div>
-            <div class="flex flex-col p-2" v-if="cms_context">
-                    <!-- <div class="flex w-full justify-around">
-                        <template v-for="field in CMS_SCHEMA.schema[cms_context].query.fields">
-                           <span class="px-4">{{ field }}</span> 
-                        </template>
-                    </div> -->
-                    <div class="font-bold">{{ cms_context }} - webpages</div>
+                </template> -->
+            <!-- <GenerateGraphQL v-if="cms_context" :context="cms_context"/> -->
+                <div class="flex flex-row p-2">
+                    <div class="w-1/2" v-if="graphQLPagesFound && graphQLPagesFound?.children">
+                        GraphQL - <strong>{{ graphQLPagesFound.name }}</strong>
+                        <ul class="m-0" >
+                            <li class="ml-0 list-none cursor-pointer lowercase flex items-center" :class="previewPage.slug === page?'font-bold':''" v-for="page in graphQLPagesFound.children">
+                                <span @click="removePage(page)" class="pt-0" title="Remove"><icon icon="ci:off-close" class="text-red-500 text-xl mr-2"/></span><span title="Click to preview" @click="setPreviewQLPage(page)">{{page.name}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-1/2 text-xs">
+                        <chip>{{ previewQLPageHTML }}</chip>
+                        <iframe class="preview-md mt-2" style="height:100rem;transform-origin:0 0;" :src="previewQLPageHTML" v-if="previewQLPageHTML"></iframe>
+                    </div>
+                    <!-- <template v-for="page in graphQLPagesFound.children">
+                        {{ page.name }}
+                    </template> -->
+                    <!-- <div class="font-bold">{{ cms_context }} - webpages</div>
                     <div class="flex flex-wrap w-full" v-for="item in CMS[cms_context]" v-if="cms_context" style="max-width:100%;width:100%;">
                         
                         <icon icon="bi:check" class="text-2xl text-green-500" v-if="fileExists(paths.ssg + '/' + item.slug)"/> 
@@ -167,7 +198,7 @@
                         <span @click="editCMSTemplate"><icon icon="mdi:edit"></icon></span>
                     </div>
                 
-                <button @click="analyzeLinks">Test</button>
+                <button @click="analyzeLinks">Test</button> -->
                 </div>
                 <!-- <div class="flex flex-wrap w-full" v-for="item in CMS[cms_context]" v-if="cms_context" style="max-width:100%;width:100%;">
                     {{item.slug}}
@@ -214,6 +245,7 @@
                         <BlockPreview :key="previewID" :block="buildPage.json.blocks" :level="2" v-if="buildPage"/>
                     </div>
                 </div>
+                
             </div>
         </div>  
         <TreeContainer context="templates" :open="open" @close="open=!open" @file="addTemplate"/> 
@@ -223,23 +255,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref , onMounted, watch } from 'vue'
+import { ref , onMounted , inject } from 'vue'
 import { project } from '/@/composables/useProject'
-import { saveFile , buildClear , openPath , activeProject , paths , DATA_PATH , SSG , PAGESURL, CONFIG_FILE , buildProject , saveStaticPage , fileExists , layoutMainClass } from '/@/composables/useLocalApi'
-import { useStore } from '/@/composables/useActions'
+import { saveFile , buildClear , openPath , paths , DATA_PATH , PAGESURL, CONFIG_FILE , buildProject , saveStaticPage , fileExists , layoutMainClass , fileExplorer } from '/@/composables/useLocalApi'
 import { slugify } from '/@/composables/useUtils'
-import { EDITOR , usedFonts , BlockData , usedLinks , randomID } from '/@/composables/useEditor'
+import { usedFonts , usedLinks , randomID } from '/@/composables/useEditor'
 import { CMS_SCHEMA , CMS, getCMSQuery , getCMSSingleQuery ,} from '/@/composables/useGraphCMS'
 import { tabberAddTab } from '/@/composables/useNavigation'
-import jp from 'jsonpath'
-import { getHTMLFromFragment } from '@tiptap/core'
-import { store } from '/@/composables/useStore'
+//import { store } from '/@/composables/useStore'
 
-let settings = store.settings 
-const editor = EDITOR //useStore()
+
+const store = inject('useStore')
+
 const props = defineProps ({
     data:Object
 })
+
+const editor = store.editor // EDITOR //useStore()
+let settings = store.settings 
 let message = store.message 
 project.path = DATA_PATH + '/' + paths.projects
 
@@ -267,8 +300,17 @@ let templateID = ref(randomID())
 let buildPage = ref( null  )
 let mainCSS = ref('')
 let previewID = ref(randomID())
+let graphQLPagesFound = ref(null)
+let previewQLPageHTML = ref('')
 const tabClass = (tab) => {
     return tab === tab.value ? 'bg-white' : ''
+}
+
+if ( !project.data?.graphql ){
+    project.data['graphql'] = {}
+    Object.keys(CMS_SCHEMA.schema).forEach ( context => {
+        project.data.graphql[context] = {}
+    })
 }
 
 const saveProject = async () => {
@@ -298,8 +340,13 @@ loadFile()
 
 let previewPage = ref({})
 let newPageSlug = ref('')
+
 const setPreviewPage = async (page:String) => {
     previewPage.value = project.data.pages[page]
+}
+
+const setPreviewQLPage = async ( page ) => {
+    previewQLPageHTML.value = PAGESURL + '/' + page.relativePath.replace('.html','')
 }
 
 let linksAnalyzed = ref(null)
@@ -344,6 +391,17 @@ const loadHomepage = async () => {
     }
 }
 
+
+const graphQLPages = async ( context ) => {
+    const cmsPages = await fileExplorer ( context )
+    if ( cmsPages?.children ){
+        cmsPages.children.forEach ( child => {
+            if ( child.name === context ){
+                graphQLPagesFound.value = child
+            }
+        })
+    }
+}
 
 
 const setGraphQLSchema = ( e:Object , context:String ) => {
@@ -417,8 +475,9 @@ const removePage = ( slug:String )=> {
 
 
 const getCMSData = async (  context: String ) => {
-    cms_context.value = context
-    if ( !CMS[context].length ){
+    //cms_context.value = context
+    console.log ( CMS.hasOwnProperty(context) )
+    if ( !CMS.hasOwnProperty(context) ){
         let data = await getCMSQuery ( context )
     } else {
         console.log ( 'data in memory')
@@ -426,41 +485,35 @@ const getCMSData = async (  context: String ) => {
 }
 
 const buildPages = async () => {
-    // let foundData = jp.paths ( project.data.graphql['pages'].template.json , '$..blocks..data..provider')
-    // console.log ( foundData )
     message.console = await buildClear()
     message.console += '\n=====================\n'
     mainCSS.value = await layoutMainClass()
-
-    //let saved = await buildHomepage()
     setTimeout (async()=>{
         await buildHomepage()
-    },2000)
-    Object.keys(project.data.pages).forEach ( async ( page ) => {
-        
-        setTimeout (async()=>{
-            templateID.value = randomID()
-            template.value = project.data.pages[page].blocks
-            console.log ( template.value )
-            await saveWebsitePage ( page )
-        },2000)
-        //await saveWebsitePage ( page )
-        
-    })
-    await buildGraphQLPages()
+        Object.keys(project.data.pages).forEach ( async ( page ) => {
+            
+            setTimeout (async()=>{
+                templateID.value = randomID()
+                template.value = project.data.pages[page].blocks
+                console.log ( template.value )
+                await saveWebsitePage ( page )
+            },1000)
+        })
+    },1000)
 }
 
 const buildHomepage = async () => {
         let pageToCreate = null
+        homepage.value = project.data.homepage.blocks
     //setTimeout (async()=>{
         let doc = await document.querySelector('#previewHomepage')
         let html = await doc.innerHTML.replaceAll('<!--v-if-->','')
         pageToCreate = {
-            document: homepage.value,
+            document: project.data.homepage.blocks,
             html: html,
             slug: 'index' ,
             layout:false,
-            fonts: await usedFonts ( homepage.value ),
+            fonts: project.data.homepage.fonts , //await usedFonts ( project.data.homepage.json.blocks ),
             folder: buildFolder.value,
             seo: {
                 title: project.data.title,
@@ -487,29 +540,25 @@ const saveWebsitePage = async ( slug:String ) => {
         folder: buildFolder.value
     }
     const saved = await saveStaticPage ( pageToCreate )
-    message.console += '- ' + slug + ' created \n'
+    message.console += '- ' + slug + ' created (' + slug + '.html)\n'
 }
 let buildFolder = ref('')
 
 const buildGraphQLPages = async () => {
     //buildFolder.value = prompt ('Destination folder',buildFolder.value)
-    message.console += 'Creating GraphQL contents \n\n'
-    if ( project.data.graphql ){
+    if ( Object.keys(project.data.graphql).length ){
+        message.console += 'Creating GraphQL contents \n\n'
         let contextKeys = Object.keys ( project.data.graphql )
+        ///message.console += 'context ' + contextKeys.join('-')
         contextKeys.forEach ( async ( context ) => {
-            buildPage.value = { json: { blocks: project.data.graphql[context].template } }
-            if ( !CMS[context] ) {
-                await getCMSQuery ( context )
-            }
-            await setBlockData( context )
+            message.console += 'Context=> ' + context + '\n'
+            const res = await getCMSQuery ( context )
         })
+        
     }
     return
 }
 
-const buildGraphQLPreview = async () => {
-
-}
 
 const setBlockData = async (context:String) => {
     //let qry = CMS[context]
@@ -583,6 +632,5 @@ const updateSlug = async () => {
     saveProject()
 }
 
-console.log( project )
 
 </script>

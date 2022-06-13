@@ -6,6 +6,7 @@ export const DATA_PATH = import.meta.env.VITE_APP_DATA_PATH
 export const CONFIG_FILE = '/app/pages/whoobe.config.json'
 import { message } from './useUtils'
 import { fstat } from 'fs'
+import { store } from './useStore'
 
 export const API_URL = import.meta.env.VITE_APP_LOCAL_API
 
@@ -116,6 +117,11 @@ export const deleteFile = async ( path:String ) => {
     return await rm.json() ?? rm
 }
 
+export const renameFile = async ( path:String , source:String , name:String ) => {
+    const rm = await fetch ( endpoint + '/rename?path=' + path + '&source=' + source + '&name=' + name )
+    return await rm.json() ?? rm
+}
+
 export const activeProject = async ( json:Object ) => {
     await fetch ( endpoint + '/current' ,{
         method: 'POST',
@@ -156,8 +162,8 @@ export const loadConfig = async () => {
     let config = await openPath ( CONFIG_FILE )
     return await config
 }
-export const buildClear = async () => {
-    const message = await fetch ( endpoint + '/build/clear ')
+export const buildClear = async (folder:String='') => {
+    const message = await fetch ( endpoint + '/build/clear?folder=' + folder)
     return 'Build cleared'
 
 }
@@ -182,6 +188,10 @@ export const saveStaticPage = async ( page: Object ) => {
     config.data.header ? header = config.data.header.html : null
     config.data.footer ? footer = config.data.footer.html : null
     
+    page?.layout ?
+        !page.layout ? header = '' : null : null
+    page?.layout ?
+        !page.layout ? footer = '' : null : null
     // !page.layout ? header = '' : null
     // !page.layout ? footer = '' :  null
     
@@ -204,6 +214,7 @@ export const saveStaticPage = async ( page: Object ) => {
     if ( page?.seo ){
         seo = page.seo
     }
+    
     let analytics = ''
     if ( config.data.analytics ){
         analytics = `<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -238,12 +249,15 @@ export const saveStaticPage = async ( page: Object ) => {
         </head>
         <body>
         ${header}
-        <div class="${mainCSS} whoobe-layout-container">
         ${page.html}
-        </div>
         ${footer}
         </body>
     </html>`
+    
+    
+    //        <div class="${mainCSS} whoobe-layout-container">
+    //</div>
+    
     await fetch ( endpoint + '/save/html/' ,{
         method: 'POST',
         headers: {

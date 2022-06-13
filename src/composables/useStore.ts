@@ -1,5 +1,6 @@
-import { reactive } from 'vue'
+import { reactive, toRefs } from 'vue'
 import { EDITOR } from '/@/composables/useEditor'
+import { CMS } from '/@/composables/useGraphCMS'
 import { CONFIG_FILE } from './useLocalApi'
 import Project from '/@/composables/useProjectClass'
 
@@ -9,7 +10,7 @@ export const store = reactive({
         loading: false,
         archive: false,
         dialog: null ,
-        dialogCss : 'w-1/3',
+        dialogCss : 'w-1/2',
         dialogTitle: '',
         dialogConfirm: false,
         dialogAction: '',
@@ -39,13 +40,20 @@ export const store = reactive({
         group: ''
     },
     editor : EDITOR,
+    graphql : {
+        data: CMS
+    },
     project: {
         data: Object ,
         path: ''
     },
-    clipboard : null
+    clipboard : null,
+
 })
 
+export const useStore = () => {
+    return toRefs(store)
+}
 export const loading = ()=>{
     store.status.loading =! store.status.loading 
 }

@@ -1,6 +1,6 @@
 
 <template>
-  <li class="ml-2 text-base tree-item">
+  <li class="ml-2 text-sm tree-item">
     <div
         :id="model.hash"
         :data-path="model.path"
@@ -28,10 +28,10 @@
       <TreeItem
         v-for="model in model.children"
         :model="model"
+        :root="root"
         @openTemplate="loadFile"
         @reloadTree="refreshTree">
       </TreeItem>
-      <!-- <li class="p-1 flex add ml-3" @click="addChild">+ <icon icon="carbon:document" class="mr-1 text-lg"></icon></li> -->
     </ul>
   </li>
   
@@ -41,12 +41,13 @@
 import { ref, computed  } from 'vue'
 //import { status } from '/@/composables/useNavigation'
 import { openContextDialog, openCtx , closeCtx } from '/@/composables/contextMenu'
-import { moveFile , fileTree } from '/@/composables/useLocalApi';
+import { moveFile , fileTree , paths } from '/@/composables/useLocalApi';
 import { dragDrop , message } from '/@/composables/useUtils';
 import { store } from '/@/composables/useStore'
 
 const props = defineProps({
   model: Object,
+  root: String,
   open: Boolean
 })
 
@@ -62,6 +63,7 @@ const isFolder = computed(() => {
 })
 
 function toggle(model,open=true) {
+    status.current = model
     if ( model.type === 'file' && open ){
         emit('openTemplate',model)
     }
@@ -98,9 +100,9 @@ const deleteItem = async () => {
     emit ( 'reloadTree' )
 }
 
-const current = ()=>{
+const current = (model)=>{
     return status.current ?
-            status.current.path === props.model.path ?
+            status.current.path === model.path ?
                 'text-purple-300 bg-black' : '' : ''
 }
 const loadFile = async ( item ) => {
@@ -114,33 +116,23 @@ const refreshTree = async () => {
 let source = ref({})
 let target = ref({})
 let fs = ref (fileTree)
+
 const handleDragEnd = async (e,item) => {
     console.log ( 'drag stop ' , item , dragDrop.target )
     source.value = item.path
     dragDrop.source = item
+    
     let targetPath = dragDrop.target.path
-    // let srcElement = document.getElementById(item.hash)
-    // srcElement?.setAttribute('data-path' , dragDrop.target.path + '/' + item.name )
-    // let targetElement = document.getElementById(dragDrop.target.hash)?.parentElement
+    if ( typeof dragDrop.target.path === 'undefined' ){
+        targetPath = props.root
+    }
     try {
-        // targetElement = targetElement?.querySelector('ul')
-        // let li = document.createElement('li')
-        // li.setAttribute('class','ml-2 px-1 text-sm drop-container item')
-        // li.append ( srcElement )
-        // targetElement.prepend ( li )
-        // console.log ( srcElement , targetElement )
-        // if ( dragDrop.target.type === 'file' ){
-        //     targetPath = dragDrop.target.path.replace(item.name,'')
-        // }
         const result = await moveFile ( item.path , targetPath , item.name , fs.value )
         message.data = await result.message
         fileTree.reload = true
-        // fileTree.lastSource = item
-        // fileTree.lastTarget = dragDrop.target
     } catch ( err ) {
         message.data = "No drop area found"
     }
-    //emit ( 'reloadTree' )
 }
 
 const handleDrop = (e:any,item:Object) => {
@@ -152,11 +144,7 @@ const openContextMenu = (e:any,model:Object) => {
     console.log ( 'open context' )
     store.status.current = model
     e.preventDefault()
-    //e.preventDefault()
-    // let ctxMenu = document.querySelector ( `#archiveCtx` )
-    // ctxMenu.classList.remove ( 'hidden' )
-    // ctxMenu.style.left = `${e.pageX||e.clientX}px`
-    // ctxMenu.style.top =`${e.pageY||e.clientY}px`
+   
     openCtx('archiveCtx', e)
 }
 

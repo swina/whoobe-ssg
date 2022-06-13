@@ -8,8 +8,8 @@ export function openContextMenu ( e:object ){
     console.log ( 'open context menu' )
     let ctxMenu = document.querySelector ( '#contextMenu' )
     ctxMenu.classList.remove ( 'hidden' )
-    ctxMenu.style.left = `${e.pageX||e.clientX}px`
-    ctxMenu.style.top =`${e.pageY||e.clientY}px`
+    ctxMenu.style.left = `${e.pageX-50||e.clientX-50}px`
+    ctxMenu.style.top =`${e.pageY-30||e.clientY-30}px`
     ctxMenu.style.minHeight = 100
 }
 
@@ -33,8 +33,8 @@ export function openCtx ( id:String , e:object ){
     e.preventDefault()
     let ctxMenu = document.querySelector ( `#${id}` )
     ctxMenu.classList.remove ( 'hidden' )
-    ctxMenu.style.left = `${e.pageX||e.clientX}px`
-    ctxMenu.style.top =`${e.pageY||e.clientY}px`
+    ctxMenu.style.left = `${e.pageX-10||e.clientX-10}px`
+    ctxMenu.style.top =`${e.pageY-50||e.clientY-50}px`
 }
 
 export function closeCtx ( id:String ){

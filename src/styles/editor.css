@@ -9,13 +9,15 @@
       border:0;
   } */
 
-  select {
+
+select {
     @apply border-bluegray-300 rounded p-1;
-  }
-  
-  textarea {
+}
+
+textarea {
     @apply border-bluegray-300 p-1 text-xs;
-  }
+}
+
 .dashboard {
     @apply fixed inset-0 max-w-max max-h-max w-screen h-screen bg-bluegray-800 text-gray-300 py-10;
  }
@@ -46,7 +48,7 @@
  }
  
  .bottomBar {
-     @apply bottom-0 left-0 w-screen h-10 z-2 flex flex-row items-center;
+     @apply bottom-0 left-0 w-screen h-10 flex flex-row items-center;
  }
  
  .bars .iconify{ 
@@ -144,6 +146,17 @@ button.square {
     @apply border rounded w-6 h-6 border-gray-600  bg-gray-700 hover:bg-black hover:text-white justify-center flex items-center bg-transparent text-xs p-1;
 }
 
+button.dark {
+    @apply bg-bluegray-900 rounded px-2 py-1 border border-bluegray-700 rounded text-sm;
+}
+
+button.dark.small {
+    @apply text-xs;
+}
+
+button.dark:hover {
+    @apply bg-purple-700;
+}
 
 *[data-block-tag]:hover::before {
     content: attr(data-block-tag);

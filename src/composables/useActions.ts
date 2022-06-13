@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
-import { useNavigatorStore  } from '/@/stores/navigator'
-import { useEditorStore } from '/@/stores/editor'
+//import { useNavigatorStore  } from '/@/stores/navigator'
+//import { useEditorStore } from '/@/stores/editor'
 import Block from '/@/composables/useBlockClass'
 import Element from '/@/composables/useElementClass'
 import jp from 'jsonpath'
@@ -8,8 +8,8 @@ import { EDITOR } from '/@/composables/useEditor'
 import { status } from '/@/composables/useNavigation'
 import { store } from '/@/composables/useStore'
 
-const editorStore = useEditorStore();
-const navigation = useNavigatorStore();
+//const editorStore = useEditorStore();
+//const navigation = useNavigatorStore();
 let editor = EDITOR
 
 export const PREVIEW = 'whoobe-preview'
@@ -60,6 +60,8 @@ export function setLocalStorage ( storage: string , source: any , json: boolean 
             window.localStorage.setItem ( storage , JSON.stringify ( source ) ) :
             window.localStorage.getItem ( storage , source )
 }
+
+
 
 //clone object and reassign any id to a new random id
 // export function cloneBlock(o) {
@@ -331,9 +333,6 @@ export function initColors(){
         })
         console.log ( 'adding colors for =>' , cl )
     })
-    console.log ( 'colors loaded !')
-    //element.remove()
-    navigation._message ( 'Colors loaded !')
 }
 
 

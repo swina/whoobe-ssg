@@ -1,10 +1,11 @@
 <template>
-    <div v-if="open && show" :class="isShowed()" class="pt-2 md:w-1/4 lg:w-1/5 text-xs cursor-pointer top-0 mt-8 fixed h-screen z-2xtop bg-bluegray-800 text-gray-300 overflow-y-auto">
+    <div v-if="open && show" :class="isShowed()" class="pt-2 md:w-1/3 lg:w-3/16 text-xs cursor-pointer top-0 mt-8 fixed h-screen z-2xtop bg-bluegray-800 text-gray-300 overflow-y-auto">
         <ul>
             <TreeItem 
                 :key="fileTree.folders.name" 
                 v-if="fileTree && fileTree?.folders" 
                 :open="true" 
+                :root="tree.path"
                 :model="fileTree.folders" 
                 @openTemplate="loadFile" 
                 @reloadTree="reload"/>
@@ -15,6 +16,7 @@
         <li class="py-1 p-1 hover:text-blue-400" @click="addFolder">Create folder</li>
         <li class="py-1 p-1 hover:text-blue-400" @click="addFile" v-if="props.context!='assets'">Create file</li>
         <li class="py-1 p-1 hover:text-blue-400" @click="uploadFile" v-if="props.context==='assets'">Upload file</li>
+        <li class="py-1 p-1 hover:text-blue-400" @click="renameFile">Rename ...</li>
         <li class="py-1 p-1 hover:text-blue-400" @click="deleteItem">Delete ...</li>
         <li class="py-1 p-1 hover:text-blue-400" @click="refreshTree">Refresh</li>
     </ul>
@@ -37,7 +39,8 @@ const props = defineProps ( {
         required: false,
         default: false
     },
-    right:Boolean
+    right:Boolean,
+    close:Boolean
 })
 
 const emits = defineEmits ( {
@@ -67,12 +70,14 @@ const isShowed = () => {
         css : css + 'md:w-0 lg:w-0 -ml-1/5'
 }
 const loadTree = async ( context ) => {
+    store.status.loading = true
     tree.value = await fileExplorer ( context )
 
     folders.value = { name: context , children: tree.value.children.filter ( a => a.type === 'directory' ).sort() }
     folders.value.children.push ( ...tree.value.children.filter( a => a.type === 'file' ).sort() )
    
     fileTree.folders = folders.value
+    store.status.loading = false
 }
 
 const reload = async () => {
@@ -98,6 +103,12 @@ const addFile = () => {
 const uploadFile = () => {
     store.status.dialog = 'UploadFile'
     store.status.dialogTitle = 'Upload File'
+    openContextDialog() 
+}
+
+const renameFile = () => {
+    store.status.dialog = 'RenameFile'
+    store.status.dialogTitle = 'Rename File'
     openContextDialog() 
 }
 

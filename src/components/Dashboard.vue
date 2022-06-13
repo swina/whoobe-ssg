@@ -10,8 +10,9 @@
 </template>
 
 <script setup lang="ts">
-  import { store } from '/@/composables/useStore'
-
+  //import { store } from '/@/composables/useStore'
+  import { inject } from 'vue'
+  const store = inject('useStore')
   const props = defineProps ({
     comp: String,
     size: String

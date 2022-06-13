@@ -1,15 +1,15 @@
 <template>
-    <div class="bars bottomBar pl-10 pr-64 text-gray-500 z-2xtop" :class="$attrs.class">
+    <div class="bars bottomBar border-t border-bluegray-800 pl-10 text-gray-500 z-modal" :class="$attrs.class">
         <!-- <template v-for="(tab,index) in navigation.tabs" :key="'tab_' + index">
             <div class="tab" :class="active(index)" @click="navigation.tab = index">{{ tab.label }} <div @click="removeTab(index)"><i class="iconify text-xs ml-2" data-icon="mdi:close"/></div>
             </div>
         </template> -->
 
-        <span class="mx-2">
+        <!-- <span class="mx-2">
             Project <span v-if="project" class="bg-bluegray-500 px-1 rounded">{{ project.data.name }}</span>
-        </span>
+        </span> -->
         
-        Template <input type="text" v-model="editor.document.name"/>
+        Template <input class="mx-2" type="text" v-model="editor.document.name"/>
         {{ editor.current ? editor.current.id : '' }}
         <span @click="saveTemplate($event)" class="mx-2" title="Save template">
             <Icon icon="ic:baseline-save" class="text-xl"/>
@@ -35,7 +35,7 @@
             <Icon icon="ic:baseline-css" class="text-xl"/>
         </span>
         <input 
-        v-if="editor.current && editor.current?.css" v-model="editor.current.css.css" class="mx-2 w-1/2"/>
+        v-if="editor.current && editor.current?.css" v-model="editor.current.css.css" class="mx-2 w-1/2"  @focus="editor.tool='css'"/>
         <!-- <div class="w-1/4"></div> -->
     </div>
     <div class="file-explorer fixed left-0 top-0 z-modal w-1/3 h-screen" v-if="selectFolder" @click="selectFolder=!selectFolder">
@@ -50,11 +50,11 @@ import { openContextDialog } from '/@/composables/contextMenu';
 import { status } from '/@/composables/useNavigation'
 import { project } from '/@/composables/useProject'
 import { saveFile , fileExplorer } from '/@/composables/useLocalApi';
-import { message } from '/@/composables/useUtils'
-import { EDITOR } from '/@/composables/useEditor'
+//import { message } from '/@/composables/useUtils'
+//import { EDITOR } from '/@/composables/useEditor'
 import { store } from '/@/composables/useStore'
 
-const editor = EDITOR //useStore()
+const editor = store.editor //EDITOR //useStore()
 
 const selectFolder = ref(false)
 let tree = ref({})

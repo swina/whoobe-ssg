@@ -1,6 +1,7 @@
 <template>
-    <Icon icon="mdi:chevron-right-box" class="cursor-pointer absolute top-0 right-0 m-1 text-gray-400 text-2xl z-20" @click="sidebar('')" title="Close sidebar"/>
-    <div class="editor-toolbar text-2xl pt-6">
+    <!-- <Icon icon="mdi:chevron-right-box" class="cursor-pointer absolute top-0 right-0 m-1 text-gray-400 text-2xl z-20" @click="sidebar('')" title="Close sidebar"/> -->
+    <div class="editor-toolbar text-2xl p-0 pb-6">
+        <div class="text-xs bg-bluegray-800 -mt-8 h-9 text-white flex items-center">TOOLS</div>
         <Icon v-for="icon in icons" :icon="icon.icon" class="icon-button ml-0 mb-1" :class="isActive(icon.tool)" @click="sidebar(icon.tool)" :title="icon.tool"/>
         <!-- <Icon icon="tabler:template" class="icon-button ml-0 mb-1" :class="isActive('snippets')" @click="toolbar.tool='snippets',sidebar('snippets')"  
         title="Snippets"/>
@@ -25,23 +26,23 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useStore } from '/@/composables/useActions'
 import { useEditorSidebar, toolbar } from '/@/composables/useNavigation';
-import { EDITOR } from '/@/composables/useEditor'
+//import { EDITOR } from '/@/composables/useEditor'
+import { store } from '/@/composables/useStore'
 
-const editor = EDITOR //useStore() //useStore()
+const editor = store.editor // EDITOR //useStore() //useStore()
 
 const icons = ref([
-    { icon: 'eos-icons:templates' , tool: 'snippets' , mode: null },
     { icon: 'clarity:blocks-group-line' , tool: 'elements' , mode: null },
+    { icon: 'eos-icons:templates' , tool: 'snippets' , mode: null },
     { icon: 'file-icons:windi' , tool: 'customize' , mode: null },
     { icon: 'ic:baseline-css' , tool: 'css' , mode: null },
+    { icon: 'mdi:widgets-outline' , tool: 'library' , mode: null },
     { icon: 'simple-icons:alpinedotjs' , tool: 'alpine' , mode: null },
     { icon: 'file-icons:graphql' , tool: 'graphql' , mode: null },
     { icon: 'clarity:cursor-hand-click-line' , tool: 'events' , mode: null },
     { icon: 'ic:outline-edit-attributes' , tool: 'attributes' , mode: 'editor' },
-    { icon: 'mdi:widgets-outline' , tool: 'library' , mode: null },
-    { icon: 'mdi:settings' , tool: 'settings' , mode: null },
+    //{ icon: 'mdi:settings' , tool: 'settings' , mode: null },
     //{ icon: 'carbon:tree-view-alt' , tool: 'tree' , mode: null },
 ])
 
@@ -58,8 +59,8 @@ const sidebar = ( action: String ) => {
 }
 
 const isActive = (tool:String) =>{
-    return toolbar.tool === tool ?
-        'text-purple-600' :
+    return editor.tool === tool ?
+        'bg-black h-9 pt-1 pl-1 w-8 text-purple-600' :
         ''
 }
 

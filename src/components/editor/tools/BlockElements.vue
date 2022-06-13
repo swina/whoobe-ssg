@@ -22,12 +22,17 @@
 <script setup lang="ts">
 
 import {  ref } from 'vue';
-//import { useStore } from 'vuex'
-import { useEditorStore } from '/@/stores/editor';
+import { store } from '/@/composables/useStore'
 import Element from '../../../composables/useElementClass';
-import { EDITOR } from '/@/composables/useEditor';
-import { status } from '/@/composables/useNavigation';
-    const editor:any = EDITOR //useEditorStore()//useStore().state.editor;
+
+//import { useStore } from 'vuex'
+//import { useEditorStore } from '/@/stores/editor';
+//import { EDITOR } from '/@/composables/useEditor';
+//import { status } from '/@/composables/useNavigation';
+
+    const editor:any = store.editor //EDITOR //useEditorStore()//useStore().state.editor;
+    const status = store.status
+
     const tab = ref('')
     let open = ref(false)
     const newElement = async ( name: string )=>{

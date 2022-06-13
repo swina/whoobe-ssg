@@ -15,7 +15,8 @@
         <BlockHeading v-if="editor.tool==='heading'"/>
         <BlockWindi v-if="editor.tool === 'customize'" :group="editor.toolGroup"/>
         <BlockSlider v-if="editor.tool === 'slider'"/>
-        <BlockGraphQL v-if="editor.tool === 'graphql'"/>
+        <!-- <BlockGraphQL v-if="editor.tool === 'graphql'"/> -->
+        <GraphQLTool v-if="editor.tool==='graphql'"/>
         <BlockTree v-if="editor.tool === 'tree'"/>
         <BlockAlpine v-if="editor.current && editor.tool === 'alpine'" :id="editor.current.id"/>
         <BlockUIKits v-if="editor.current && editor.tool === 'library'"/>
@@ -25,10 +26,8 @@
 </template>
 
 <script setup lang="ts">
-import { EDITOR } from '/@/composables/useEditor'
-
-    const editor = EDITOR //useEditorStore()
-    
+import { inject } from 'vue'
+const editor = inject('useStore').editor
 </script>
 <style>
 ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-track{background:#cccccc;border-radius:5px}::-webkit-scrollbar-thumb{background:#6c6c6d;border-radius:5px}

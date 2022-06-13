@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import '@purge-icons/generated';
 import { createI18n } from 'vue-i18n';
-import { createPinia } from 'pinia'
+//import { createPinia } from 'pinia'
 //import store  from '/@/stores'
 
 
@@ -23,8 +23,7 @@ import 'virtual:windi-devtools';
 
 import './styles/base.css';
 import './styles/custom.css';
-//import 'uno.css'
-//import './input.css'
+
 import '/@/composables/useGraphCMS'
 
 const app = createApp(App);
@@ -33,6 +32,6 @@ app.use(i18n);
 
 app.use(Router);
 
-app.use(createPinia());
+//app.use(createPinia());
 
 app.mount('#app');

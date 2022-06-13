@@ -9,9 +9,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { tabberAddTab , status } from '/@/composables/useNavigation';
+import { tabberAddTab } from '/@/composables/useNavigation';
 
-    const title = ref('SidebarLeft');
+import { inject } from 'vue'
+const store = inject('useStore')
+
+const title = ref('SidebarLeft');
 
     const items = ref ([
       
@@ -28,7 +31,7 @@ import { tabberAddTab , status } from '/@/composables/useNavigation';
         tabberAddTab ( component )
       if ( component?.status )
         //status[component.status] = !status[component.status]
-        status.fileexplorer = component.status
+        store.status.fileexplorer = component.status
       
     }
 </script>

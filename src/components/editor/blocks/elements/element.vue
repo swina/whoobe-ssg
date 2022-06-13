@@ -17,7 +17,7 @@
             data-type="element"
             :data-element-tag="element.element"
             :data-icon="element.tag==='iconify' || element.tag === 'icon'?element.data.icon:null"
-            @click="selectBlock(element,$event),contextMenu($event,false),status.current=element,EDITOR.current=element" @contextmenu.prevent="selectBlock(element,$event),contextMenu($event,true)"
+            @click="selectBlock(element,$event),contextMenu($event,false),status.current=element,editor.current=element" @contextmenu.prevent="selectBlock(element,$event),contextMenu($event,true)"
             >
             
         </component>
@@ -26,27 +26,29 @@
 </template>
 
 <script setup lang="ts">
-import { useEditorStore } from '/@/stores/editor'
-import { computed , useAttrs, ref } from 'vue'
+import { computed , ref } from 'vue'
 import { selectBlock } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu';
-import { status } from '/@/composables/useNavigation';
-import { EDITOR } from '/@/composables/useEditor';
+import { store } from '/@/composables/useStore'
 
-const editor = EDITOR //useEditorStore()
-const attrs = useAttrs()
+const editor = store.editor // EDITOR //useEditorStore()
+const status = store.status
+
 
 const props = defineProps ({
     element: Object,
     level: Number,
     id: String,
-    data:Object
+    data:Object,
+    parent: String
 })
+
+props.element.parent = props.parent
 
 const classe = computed(() => {
     let css = Object.values(props.element.css).join( ' ' ) + ' z-' + props.level
     css += ' ' + selector.value
-    return css
+    return css.replaceAll('invisible','visible').replaceAll('absolute','').replaceAll('fixed','')
 })
 
 const stile = computed(() => {
@@ -82,8 +84,8 @@ const handleInput = (e) => {
 const selector = computed( () => {
     if ( !editor.current || !editor.current?.id ) return
         return editor.current.id === props.element.id ?
-            ' border-2 border-bluegray-800 ' + ' z-' + props.level :
-            ' border-1 hover:border-bluegray-800 border-dashed '  + ' z-' + props.level
+            ' ' + editor.blockBorders.element + ' z-' + props.level :
+            ' ' + editor.blockBorders.elementHover + ' z-' + props.level
 })
 
 const contextMenu = ( event: object , flag: boolean ) => {

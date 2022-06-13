@@ -15,7 +15,8 @@
 	 		"</template>",
 			"",
 			"<script setup lang=\"ts\">",
-			"import { store } from '/@/composables/useStore'",
+			"import { inject } from 'vue'",
+			"const store = inject('useStore')",
 			"",
 			"</script>"
 	 	],

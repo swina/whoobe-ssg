@@ -10,13 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import { useStore } from '/@/composables/useActions'
 import { tabberRemoveTab } from '/@/composables/useNavigation'
-import { EDITOR } from '../composables/useEditor';
-import { store } from '/@/composables/useStore'
-
-const editor = store.editor //EDITOR //useStore()
-//let tabber = store.tabber
+import { inject } from 'vue'
+const store = inject('useStore')
+const editor = store.editor 
 
 const props = defineProps({
     tab: Number
@@ -38,7 +35,7 @@ const selectTab = ( index: Number ) => {
         //save current scroll before to open a new tab
         try {
             let target = document.querySelector('.editor-container')
-            store.tabber.tabs[tabber.tab].scroll = target.scrollTop
+            store.tabber.tabs[store.tabber.tab].scroll = target.scrollTop
         } catch (err ){
             console.log ( err )
         }        
@@ -46,7 +43,7 @@ const selectTab = ( index: Number ) => {
         editor.document = store.tabber.tabs[index].object 
         editor.current = store.tabber.tabs[index].object.json.blocks 
         try {
-            target.scrollTo(0,store.tabber.tabs[tabber.tab].scroll)
+            target.scrollTo(0,store.tabber.tabs[store.tabber.tab].scroll)
         } catch (err) {
             console.log ( 'no scroll target')
         }

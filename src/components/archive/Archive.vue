@@ -1,16 +1,16 @@
 <template>
     
-    <div  class="md:ml-1/4 lg:ml-1/5 md:w-3/4 lg:w-4/5 pl-10 top-0 left-0 mt-8 absolute z-modal h-screen w-screen bg-gray-100 overflow-y-auto">
+    <div  class="md:ml-1/4 lg:ml-1/5 md:w-3/4 lg:w-4/5 pl-0 top-0 left-0 mt-8 absolute z-modal h-screen w-screen bg-gray-100 overflow-y-auto">
        
         <TreeContainer context="templates" :open="open" @file="loadFile"/>
 
-        <div class="p-2 bg-bluegray-800 w-full flex text-gray-500 text-xs" v-if="fileInfo?.path">
+        <div class="p-2 pl-6 bg-bluegray-800 w-full flex text-gray-500 text-xs" v-if="fileInfo?.path">
             <chip class="">{{fileInfo.path}}</chip>
             <span @click="editFile" class="absolute cursor-pointer right-0 top-0 text-2xl m-1 text-white" >
                 <icon icon="mdi:edit" title="edit"/>
             </span>
         </div>
-        <div v-if="fileInfo?.name" class="relative flex flex-col p-2">
+        <div v-if="fileInfo?.name" class="relative flex flex-col p-2 pl-8">
             <ul class="border-b mb-4 sticky">
                 <li class="flex">Template name <chip css="ml-2">{{fileInfo.name }}</chip></li>
                 <li class="flex">Description : {{ fileInfo.description }}</li>

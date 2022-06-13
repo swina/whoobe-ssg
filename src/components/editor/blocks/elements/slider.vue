@@ -1,18 +1,18 @@
 <template>
     <div 
         @click="selectBlock(block,$event),EDITOR.current=block,status.current=block"
-        :id="block.id" class="flex flex-col border-yellow-400 border-2 border-dashed m-2 w-full border p-1 relative" 
-        :class="'z-' + level">
+        :id="block.id" class="flex flex-col border-green-600 border-2 m-2 w-full p-1 relative" 
+        :class="classeSlide">
         <div class="absolute top-0 right-0 m-1 flex items-center">
             <span class="text-xs text-gray-300 p-1">{{ block.data.mode }}</span>
-            <span @click="newSlide" title="Add slide"><icon icon="mdi:add"/></span>
-            <span @click="duplicateSlide" class="mx-2" title="Duplicate current slide"><icon icon="mdi:content-duplicate"/></span>
-            <span @click="removeSlide" class="mx-2" title="Remove current slide"><icon icon="mdi:delete"/></span>
-            <span @click="selectBlock ( slider , $event ) , editor._tool ( 'slider' , editor.current )" title="Settings"><icon icon="mdi:settings"/></span>
+            <span @click="newSlide" title="Add slide"><icon icon="mdi:add" class="text-xl"/></span>
+            <span @click="duplicateSlide" class="mx-2" title="Duplicate current slide"><icon icon="mdi:content-duplicate" class="text-xl"/></span>
+            <span @click="removeSlide" class="mx-2" title="Remove current slide"><icon icon="mdi:delete" class="text-xl"/></span>
+            <span @click="selectBlock ( slider , $event ) , editor.tool = 'slider'" title="Settings"><icon icon="mdi:settings" class="text-xl"/></span>
         </div>
         <div class="flex flex-row w-full">
             <template v-for="(tab,n) in slider.blocks.length" :key="tab">
-                <span @click="index=n,sliderIndex.index=n,selectBlock(slider.blocks[n],$event),EDITOR.current=slider.blocks[n]" class="px-1 text-center text-sm" :class="tabCSS(n)">
+                <span @click="index=n,sliderIndex.index=n,selectBlock(slider.blocks[n],$event),EDITOR.current=slider.blocks[n]" class="p-1 px-2 text-center text-sm" :class="tabCSS(n)">
                     <span v-if="slider.data.mode==='tabs'">{{ slider.data.slides[n].name }}</span>
                     <span v-else> Slide {{ n + 1 }}</span>
                 </span>
@@ -58,6 +58,12 @@ const classe = computed(()=>{
     return Object.values ( slider.value.blocks[index.value].css ).join ( ' ' )
 })
 
+const classeSlide = computed(()=>{
+    return editor.current && editor.current?.type === 'slider' ?
+        'z-' + props.level :
+        'z-' + props.level + ' border-dashed' 
+})
+
 const slider = ref ( props.block )
 
 sliderObject.slider = slider.value
@@ -69,9 +75,9 @@ const contextMenu = ( event: object , flag: boolean )=>{
 }
 
 const tabCSS = (n)=>{
-    return n != sliderIndex.index ? 
-        slider.value.data.css.default + ' ' + slider.value.data.css.hover :
-        slider.value.data.css.active 
+    return n != index.value ? 
+        '' : //slider.value.data.css.default + ' ' + slider.value.data.css.hover :
+        'bg-green-400' //slider.value.data.css.active 
 }
 
 const duplicateSlide = () => {
@@ -85,12 +91,19 @@ const newSlide = () =>{
     slider.value.data.slides.push ( { name: 'new slide' } ) 
     slider.value.blocks.push ( slide )
     editor.current = slide
-    selectBlock ( slide , editor.current )
+    index.value = slider.value.blocks.length - 1
+    //editor.current = slider.value.data.slides[index.value]
+    // sliderIndex.index = slider.value.data.slides.length - 1
+    // index.value = sliderIndex.index
 }
+    
 
 const removeSlide = () => {
     slider.value.data.slides.splice ( sliderIndex.index , 1)
     slider.value.blocks.splice ( sliderIndex.index , 1)
-    sliderIndex.index = slider.value.blocks.length - 1
+    index.value = slider.value.blocks.length - 1
+    editor.current = slider.value.data.slides[index.value]
+    //sliderIndex.index = slider.value.blocks.length - 1
+    
 }
 </script>

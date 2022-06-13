@@ -111,6 +111,19 @@ app.get ( '/delete' , ( req , res ) => {
     }
 })
 
+//delete file
+//@req.query.path : full path to delete
+app.get ( '/rename' , async ( req , res ) => {
+    let source = path.resolve ( req.query.path + req.query.source )
+    let target = path.resolve ( req.query.path ) + '/' + req.query.name
+    if ( source ){
+        await fs.copySync ( source , target )
+        await fs.removeSync ( source )
+        res.json ( { message: 'Item renamed' } )
+    }
+})
+
+
 
 //save template
 //@req.params.name : template name
@@ -139,8 +152,8 @@ app.post('/file/save' , (req, res) => {
 
 
 app.get ( '/build/clear' , ( req, res ) => {
-    let targetPath = path.resolve ( paths.static )
-    fs.readdirSync(path.resolve(paths.static)).forEach(f => { if ( f.includes('.html') ) {
+    let targetPath = path.resolve ( paths.static ) + '/' + req.query.folder
+    fs.readdirSync(targetPath).forEach(f => { if ( f.includes('.html') ) {
         fs.removeSync ( targetPath + '/' + f )
         console.log ( 'removed ' , targetPath + '/' + f )
     }});

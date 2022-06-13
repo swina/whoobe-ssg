@@ -23,6 +23,9 @@ export function slugify ( value:string ){
     return value.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
 }
 
+
+
+
 export function removeNestedObjectsKey( currentNode:Object = {} , arrayKey:Object = [] , deleteKey:String = ''){
   delete currentNode[deleteKey]
   currentNode[arrayKey].forEach ( obj => {

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col p-2 text-xs" v-if="slider.type === 'slider'">
+    <div class="flex flex-col p-2" v-if="slider.type === 'slider'">
         Mode <select v-model="slider.data['mode']">
             <option value="slider">Slider</option>
             <option value="tabs">Tabs</option>
@@ -21,9 +21,11 @@
         <div class="flex flex-col mt-2" v-if="slider.data.mode === 'slider'">
             Autoplay (ms)
             <input type="text" v-model="slider.data.settings.autoplay"/>
-            Navigation
-            <input type="checkbox" v-model="slider.data.settings.navigation.enabled"/>
-            <div class="flex flex-col" v-if="slider.data.settings.navigation.enabled">
+            <div class="flex items-center my-2">
+                Navigation
+                <input type="checkbox" class="ml-2" v-model="slider.data.settings.navigation.enabled"/>
+            </div>
+            <div class="flex flex-col p-1" v-if="slider.data.settings.navigation.enabled">
                 Icons 
                 <icon :icon="slider.data.settings.navigation.icons.prev" class="text-4xl"/>
                 <input type="text" v-model="slider.data.settings.navigation.icons.prev"/>
@@ -37,8 +39,13 @@
                     <option value="bottom">Bottom</option>
                 </select>
             </div>
+            <div class="flex items-center my-2">
+                Dots
+                <input type="checkbox" class="ml-2" v-model="slider.data.settings.navigation.dots"/>
+            </div>
             Animation 
             <select v-model="slider.data.settings.animation">
+                <option value="">no animation</option>
                 <option value="fade-in-slide">Fade</option>
                 <option value="slide-left">Slide</option>
             </select>
@@ -47,11 +54,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useStore , sliderObject , sliderIndex, sliderTabs } from '/@/composables/useActions'
-import { EDITOR } from '/@/composables/useEditor';
-const editor = EDITOR //useStore()
+import { inject } from 'vue'
+import { sliderObject , sliderIndex, sliderTabs } from '/@/composables/useActions'
+//import { EDITOR } from '/@/composables/useEditor';
+//const editor = EDITOR //useStore()
+
+const editor = inject('useStore').editor
+
+!sliderObject.slider.data.settings.navigation?.dots ?
+    sliderObject.slider.data.settings.navigation['dots'] = true : null
 
 const slider = sliderObject.slider
-
 </script>

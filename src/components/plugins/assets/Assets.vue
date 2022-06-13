@@ -6,7 +6,7 @@
         <div class="flex flex-wrap justify-around">
             <template v-for="item in status.current.children" v-if="status.current?.children">
                 <div class="w-40 h-40 border m-2 text-xs my-4 cursor-pointer" @click="previewItem=!previewItem,asset=item">
-                    <img v-if="isImage(item)" class="w-40 h-40 object-cover" :src="PAGESURL+'/assets/' + item.relativePath"/>
+                    <img class="w-40 h-40 object-cover" :src="PAGESURL+'/assets/' + item.relativePath"/>
                     <div class="truncate">{{item.name}}</div>
                 </div>
             </template>
@@ -19,17 +19,21 @@
     </div>
     <TreeContainer :context="context" :open="open" @file="setRawData"/>
     <transition name="fade">
-    <div class="fixed bg-black bg-opacity-75 inset-0 flex items-center justify-center h-screen w-screen z-modal" style="z-index:999999999;" v-if="asset && previewItem">
+    <div class="fixed bg-black bg-opacity-75 inset-0 flex items-center justify-center h-screen w-screen z-modal p-20" style="z-index:999999999;" v-if="asset && previewItem">
         <span class="absolute top-0 right-0 m-1 cursor-pointer" @click="previewItem=!previewItem"><icon icon="mdi:close" class="text-5xl text-gray-500"/></span>
-        <img v-if="isImage(asset)" class="object-contain m-auto bg-black border" :src="PAGESURL+'/assets/' + asset.relativePath"/>
+        <div @click="previewItem=!previewItem" class="m-10">
+            <img  @load="getImageInfo($event)" id="previewImage" class="h-4/5 object-contain m-auto bg-black border" :src="PAGESURL+'/assets/' + asset.relativePath"/>
+            <div class="text-white text-lg">{{ asset.name }} - {{ asset.size }} - {{ imageInfo }} </div>
+        </div>
     </div>
     </transition>
 </template>
 
 <script setup lang="ts">
-import { ref , watch } from 'vue'
+import { ref , computed, onMounted } from 'vue'
 import { PAGESURL , paths } from '/@/composables/useLocalApi';
 import { store } from '/@/composables/useStore'
+import { imageDim } from '/@/composables/useUtils'
 
 const context = ref ('assets')
 let open = ref ( true )
@@ -38,17 +42,18 @@ let file = ref ( '' )
 let path = ref ( '' )
 let previewItem = ref ( false )
 let folderPreview = ref ( null )
+let imageInfo = ref ( '' )
 const status = store.status
-
 if ( status.current && status.current?.type ){
     if ( status.current.type === 'directory' ){
         console.log ( status.current )
     }
 }
-const loadFile = async ( file:Object ) => {
-    console.log ( await file )
-    //component.value = file.data
-}
+
+// const loadFile = async ( file:Object ) => {
+//     console.log ( await file )
+//     //component.value = file.data
+// }
 
 const setRawData = ( data:String , path:String , item:Object ) => {
     // if ( status.current.type === 'file' ) {
@@ -63,11 +68,17 @@ const setRawData = ( data:String , path:String , item:Object ) => {
     previewItem.value = false
 }
 
-const isImage = ( item:Object )=>{
-    if ( item.extension.includes('jpg') || item.extension.includes('png') || item.extension.includes('webp') || item.extension.includes('gif') ){
-        return true
-    }
-    return false
+// const previewModal = ()=>{
+//     if ( asset.value && previewItem.value ){
+//         return 'fixed'
+//     }
+//     return 'hidden'
+// }
+
+const getImageInfo = async (e:Object) => {
+    let el = e.path[0]
+    imageInfo.value = el.naturalWidth + 'x' + el.naturalHeight
 }
+
 
 </script>

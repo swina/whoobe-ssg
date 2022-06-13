@@ -43,6 +43,7 @@ export default class Element {
         this.icon = 'highlight_alt'
         this.helper = null
         this.dialog = null
+        this.parent = null
     }
 
     randomID(){

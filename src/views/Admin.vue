@@ -14,34 +14,42 @@
     <textarea class="bg-black w-full h-screen-sm font-mono text-white">{{ store.message.console }}</textarea>
   </div>
   
-  <div ref="setupColors" id="setupColors" class="h-10 absolute left-0 bottom-0 w-full"></div>
+  <div ref="setupColors" id="setupColors" class="h-10 w-10 absolute left-0 bottom-0 ml-10"></div>
  
 </template>
 
 <script lang="ts" setup>
 import '../styles/editor.css'
-import { ref , computed , onMounted } from 'vue';
-//import { useStore } from '/@/composables/useActions'
+import { inject , computed , onMounted  } from 'vue';
+import { initColors } from '/@/composables/useActions'
 import  Element from '/@/composables/useElementClass'
 //import { tabber , status, useEditorSidebar } from '/@/composables/useNavigation'
 //import { message } from '/@/composables/useUtils'
 //import { EDITOR } from '../composables/useEditor';
-import { store } from '../composables/useStore';
+//import { store } from '../composables/useStore';
+const store = inject('useStore')
+
 const editor = store.editor //EDITOR //useStore('')
 const message = store.message
 
+
+console.log ( store )
+
 const size = computed(()=>{
-        return ''
-        //return useEditorSidebar.sidebar && editor.current ? 'w-3/4' : 'mr-12'
-        //return navigation.sidebar ? 'w-3/4' : 'w-full'
-    })
+    return ''
+    //return useEditorSidebar.sidebar && editor.current ? 'w-3/4' : 'mr-12'
+    //return navigation.sidebar ? 'w-3/4' : 'w-full'
+})
 
     
     onMounted(async () => {
+      store.status.loading = true
       const elements = new Element().Groups()
       editor.elements = elements
       editor.elements = elements
-      message.data = ''
+      await initColors()
+      message.data = 'System setup completed'
+      store.status.loading = false
       message.console = ''
     })
 </script>

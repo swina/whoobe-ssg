@@ -12,14 +12,16 @@
 
 <script setup lang="ts">
 import { ref , computed } from 'vue'
-import { useEditorStore } from '/@/stores/editor'
-import classes from '/@/composables/tw.classes'
+import { store } from '/@/composables/useStore'
 import { updateCSS , matchCSS, setCSSValue } from '/@/composables/useActions'
-import { EDITOR } from '/@/composables/useEditor'
 import { FONTS } from '/@/composables/useUtils'
+import classes from '/@/composables/tw.classes'
+
+//import { EDITOR } from '/@/composables/useEditor'
+
 const sizes = classes.textSize
 const weights = classes.fontWeight
-const editor = EDITOR //useEditorStore()
+const editor = store.editor //EDITOR //useEditorStore()
 const fonts = FONTS
 const options = fonts //fonts.replaceAll('+',' ').split('|')
 let buttons = ref ( [

@@ -8,11 +8,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, computed } from 'vue'
-import { useNavigatorStore } from '/@/stores/navigator'
+//import { useNavigatorStore } from '/@/stores/navigator'
 //import { message } from '/@/composables/useUtils';
 import { store } from '/@/composables/useStore'
 
-const navigation = useNavigatorStore()
+//const navigation = useNavigatorStore()
 let message = store.message
 
 onMounted( () => {

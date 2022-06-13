@@ -1,5 +1,5 @@
 <template>
-    <div class="md:ml-1/4 lg:ml-1/5 md:w-3/4 lg:w-4/5 pl-10 mb-20 top-0 left-0 mt-8 absolute z-modal h-screen w-screen bg-gray-100 overflow-y-auto">
+    <div class="md:ml-1/4 lg:ml-1/5 md:w-3/4 lg:w-4/5 pl-0 mb-20 top-0 left-0 mt-8 absolute z-modal h-screen w-screen bg-gray-100 overflow-y-auto">
         <div class="p-2 bg-bluegray-800 text-gray-500 text-xs" v-if="file">
             {{file}} 
             <div class="absolute flex cursor-pointer right-0 top-0 text-2xl m-1 text-white" >

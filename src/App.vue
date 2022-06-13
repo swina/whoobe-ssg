@@ -1,10 +1,7 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-
-export default defineComponent({
-  name: 'App',
-});
+<script setup lang="ts">
+import { provide } from 'vue'
+import { store } from '/@/composables/useStore'
+provide ( 'useStore' , store )
 </script>
 <template>
   <router-view />

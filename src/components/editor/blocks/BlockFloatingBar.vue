@@ -7,21 +7,26 @@
         <span @click="copyBlock"><icon icon="fa6-regular:copy" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Copy" /></span>
         <span @click="pasteBlock"><icon icon="fa6-regular:paste" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Paste" /></span>
         <span @click="deleteBlock"><icon icon="ep:delete" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Delete" /></span>
-        <span @click="hideBlock($event)" v-if="filter({filter:['grid','flex']})"><icon icon="akar-icons:eye" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Hide" /></span>
+        <span @click="hideBlock($event)" v-if="filter({filter:['grid','flex','container']})"><icon icon="akar-icons:eye" class="ml-1 text-2xl text-gray-700 hover:text-blue-700" title="Hide" /></span>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { toggleContext } from '/@/composables/contextMenu'
-import { useStore , updateCSS } from '/@/composables/useActions'
+import { updateCSS } from '/@/composables/useActions'
 import { setLocalStorage, getLocalStorage, CLIPBOARD } from '/@/composables/useActions';
-import { message } from '/@/composables/useUtils';
-import { status } from '/@/composables/useNavigation';
+import { slugify } from '/@/composables/useUtils';
+import Block from '/@/composables/useBlockClass'
+import { DATA_PATH , paths , saveFile } from '/@/composables/useLocalApi';
 import { cloneBlock, moveBlock , removeBlock } from '/@/composables/useEditor';
-import { EDITOR } from '/@/composables/useEditor'
+import { store } from '/@/composables/useStore';
 
-const editor = EDITOR //useStore()
+//import Element from '/@/composables/useElementClass'
+//import { status } from '/@/composables/useNavigation';
+//import { EDITOR } from '/@/composables/useEditor'
+
+const editor = store.editor //EDITOR //useStore()
 
 const toolbar = ref ( [
     { icon: 'icomoon-free:move-up' , label: 'Move Up' , action: 'move' },
@@ -38,7 +43,7 @@ const toolbar = ref ( [
     { icon: 'akar-icons:image' , label: 'Image' , action: 'customize' , group: 'background' },
     { icon: 'akar-icons:link-chain' , label: 'Link' , action: 'link' },
     { icon: 'ant-design:download-outlined' , label: 'Import block' , action: 'BlockImport' , filter: ['grid','flex'] },
-    { icon: 'ant-design:upload-outlined' , label: 'Export block' , action: 'BlockExport' , filter: ['grid','flex'] } 
+    { icon: 'ic:baseline-save' , label: 'Save block as template' , action: 'BlockExport' , filter: ['grid','flex'] } 
 ])
 const filter = ( item: object ) => {
     if ( item?.filter ){
@@ -47,12 +52,27 @@ const filter = ( item: object ) => {
     return true
 }
 
-const loadTool = ( item: Object ) => {
+const loadTool = async ( item: Object ) => {
     toggleContext()
 
     //move block up
     if ( item.action === 'move' ){
         moveBlock()
+        return
+    }
+
+    if ( item.action === 'BlockExport' ){
+        let document = await new Block()
+        let block = editor.current
+        block.semantic = 'section'
+        document.json.blocks =  block 
+        document.name = window.prompt ( 'Template name' )
+        if ( document.name ){
+            let filePath = DATA_PATH + paths.templates + '/' 
+            document.path = filePath + slugify(document.name.toLowerCase()) + '.json'
+            await saveFile ( document )
+            store.message.data = 'File saved'
+        }
         return
     }
     
@@ -62,9 +82,9 @@ const loadTool = ( item: Object ) => {
         return
     }
     if ( item.action === 'wysiwyg' ){
-        status.dialog = 'wysiwyg'
-        status.dialogTitle = 'Rich Text Editor'
-        status.dialogCss = 'w-3/4 h-xl'
+        store.status.dialog = 'wysiwyg'
+        store.status.dialogTitle = 'Rich Text Editor'
+        store.status.dialogCss = 'w-3/4 h-xl'
         return
     }
     if ( item.action === 'customize' ){
@@ -86,18 +106,21 @@ const loadTool = ( item: Object ) => {
     }
 }
 
-const copyBlock = () => {
-   setLocalStorage ( CLIPBOARD , editor.current )
-   message.data = 'Block/Element copied to clipboard'             
+const copyBlock = async () => {
+    let clone = await cloneBlock ( editor.current )
+    console.log ( clone , editor.current )
+    setLocalStorage ( CLIPBOARD , clone )
+    store.message.data = 'Block/Element copied to clipboard'             
 }
 
-const pasteBlock = () => {
-    let block = cloneBlock ( getLocalStorage ( CLIPBOARD ) )
+const pasteBlock = async () => {
+    let block = await cloneBlock ( getLocalStorage ( CLIPBOARD ) )
+    console.log ( await block )
     if ( block ){
         editor.current.blocks.push ( block )
-        message.data = 'Block/Element pasted from clipboard'   
+        store.message.data = 'Block/Element pasted from clipboard'   
     } else {
-        message.data = 'No valid block in clipboard'
+        store.message.data = 'No valid block in clipboard'
     }
 }
 const hideBlock = (e:Object) => {
@@ -106,7 +129,7 @@ const hideBlock = (e:Object) => {
 }
 const deleteBlock = async () => {
     const res = await removeBlock ( editor.current.id , editor.document.json.blocks )
-    message.data = 'Block removed'
+    store.message.data = 'Block removed'
     
 }
 </script>

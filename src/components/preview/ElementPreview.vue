@@ -69,6 +69,7 @@ const component = computed ( () => {
 
 
 const classe = computed ( () => {
+    //if ( props.element.alpine && props.element.alpine.hasOwnProperty('x-bind:class') ) return ''
     return Object.values ( props.element.css ).join ( ' ' )
 })
 

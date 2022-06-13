@@ -8,8 +8,8 @@ import PurgeIcons from 'vite-plugin-purge-icons';
 import ViteFonts from 'vite-plugin-fonts';
 import svgLoader from 'vite-svg-loader';
 const fonts = ['Alfa+Slab+One','Asap+Condensed','Abel','Alice','Alegreya','Amethysta','Archivo+Black','Barlow','Barlow+Condensed','Bungee+Inline','Expletus+Sans','Lora','Montserrat','Nunito+Sans','Oi','Open+Sans','PT+Sans','Roboto','Roboto+Condensed','Quattrocento','Raleway','Tenor+Sans','Ultra','Yatra+One']
-import Unocss from 'unocss/vite'
-import presetUno from '@unocss/preset-uno'
+//import Unocss from 'unocss/vite'
+//import presetUno from '@unocss/preset-uno'
 // export default defineConfig({
 import { shortcuts } from './src/styles/unocss'
 

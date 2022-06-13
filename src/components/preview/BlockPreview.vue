@@ -1,14 +1,14 @@
 <template>
     <component 
-        :ref="block.id" 
-        :key="randomID" 
+        :ref="blockId" 
+        :key="blockId" 
         :class="classe" 
-        :id="block.id"
+        :id="blockId"
         :style="stile"
         :is="semantic">
         <template v-for="element in block.blocks" :key="element.id">
             <BlockPreview :block="element" v-if="element.type === 'container' && !element.data?.provider" :data="$attrs.data"/>
-            <BlockLoopPreview :block="element" v-if="element.data?.isLoop && element.data?.provider"/>
+            <BlockLoopPreview :block="element" v-if="element.data?.isLoop && element.data?.provider" :limit="element.data.limit" :offset="element.data.offset"/>
             <ElementPreview :element="element" :key="randomID" v-if="element.type != 'container' && element.type != 'slider' && element.tag != 'icon' && element.tag != 'iconify'" :data="$attrs.data"/>
             <IconPreview :element="element" v-if="element.tag === 'icon' || element.tag === 'iconify'"/>
             <SliderPreview :block="element" v-if="element.type === 'slider'"/>
@@ -25,6 +25,9 @@ const props = defineProps (
         block: Object
     }
 )
+
+
+
 const stile = computed ( () => {
     let st = props.block.style
     if ( props.block.image?.url ){
@@ -40,7 +43,7 @@ const classe = computed( ()  => {
     return Object.values ( props.block.css ).join ( ' ' )
 })
 
-const blockId = ref(props.block.id)
+const blockId = ref( randomID() ) //props.block.id)
 onMounted( () => {
     try {
         if ( props.block?.alpine ) {

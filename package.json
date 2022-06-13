@@ -4,7 +4,11 @@
   "description": "Whoobe Studio Vue3, Vite.js and WindiCSS/TailwindCSS",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "server": "nodemon index.js",
+    "server": "nodemon",
+    "whoobe": "npm run dev",
+    "web": "cd ./pages/dist && http-server -p 8080 -g -d",
+    "purge": "cd ./pages && npx tailwindcss -i ./input.css -o ./dist/assets/css/output.css --watch",
+    "all": "npm-run-all --parallel dev server web",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview"
   },
@@ -17,6 +21,7 @@
     "@tiptap/starter-kit": "^2.0.0-beta.183",
     "@tiptap/vue-3": "^2.0.0-beta.90",
     "@vue/server-renderer": "^3.2.31",
+    "alpinejs": "^3.10.2",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "graphql": "^16.3.0",
@@ -46,6 +51,7 @@
     "fs-extra": "^10.0.1",
     "jsonpath": "^1.1.1",
     "node-localstorage": "^2.2.1",
+    "npm-run-all": "^4.1.5",
     "pathe": "^0.2.0",
     "typescript": "^4.5.5",
     "unocss": "^0.31.17",

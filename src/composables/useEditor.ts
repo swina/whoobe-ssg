@@ -21,6 +21,14 @@ export const EDITOR = reactive({
     current:Object,     //selected object in the Editor
     document:Object,    //current template
     colors: createColors(),      //available colors
+    blockBorders: {
+        root: 'border-4 border-purple-500' ,
+        rootHover: 'border-4 hover:border-purple-500 border-dashed',
+        block: 'border-2 border-red-500' ,
+        blockHover: 'border-2 hover:border-red-500 border-dashed',
+        element: 'border border-bluegray-700',
+        elementHover: 'border hover:border-bluegray-700 border-dashed'
+    },
     tool:'',        //Editor tool selected (right toolbar)
     toolGroup:'',   //Tool Group
     wiTools:Object,      //WindiCSS Tools
@@ -41,12 +49,11 @@ export function randomID(){
 }
 
 //clone object and reassign any id to a new random id
-export function cloneBlock(o) {
-    if ( typeof o != 'object' || !isBlock(o) ) return 
+const traverse = function(o) {
     for (var i in o) {
       //fn.apply(this,[i,o[i]]);  
       if (o[i] !== null && typeof(o[i])=="object") {
-        cloneBlock(o[i]);
+        traverse(o[i]);
       } else {
           if ( i === 'id' ){
               o[i] = randomID()
@@ -54,6 +61,12 @@ export function cloneBlock(o) {
       }
     }
     return o
+}
+
+//clone object and reassign any id to a new random id
+export async function cloneBlock(o:Object) {
+    if ( typeof o != 'object' || !isBlock(o) ) return null
+    return await traverse(o)
 }
 
 //remove block
@@ -96,6 +109,31 @@ export function moveBlock (){
         parent.splice(i-1,0,obj)
     }
     EDITOR.document = component
+}
+
+
+// Find a node by a key value and return it
+export function returnNode(currentNode,key,value,parent){
+    if ( currentNode.hasOwnProperty(key) && currentNode[key] === value ) {
+        return { node: currentNode , parent: parent };
+    } else {
+        try {
+            let prevNode = currentNode
+            var node = null
+            for(var index in currentNode.blocks){
+                console.log ( 'node search key ' , node )
+                node = currentNode.blocks[index];
+                
+                if( node.hasOwnProperty(key) && node[key] === value ){
+                    return { node:  node , parent: prevNode };
+                }
+                returnNode(node,key,value ,prevNode );
+            }
+            return { node:  node , parent: prevNode };
+        } catch (err) {
+            return null
+        }
+    }
 }
 
 export function usedFonts ( target:Object ) {
