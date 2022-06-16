@@ -22,6 +22,7 @@ const projects  = `${DATA_PATH}/projects`
 const templates = `${DATA_PATH}/templates`
 const uikits    = `${DATA_PATH}/uikits`
 const assets    = `${process.env.VITE_APP_PAGES}/assets`
+const images    = `${process.env.VITE_APP_PAGES}/assets/img`
 const static    = process.env.VITE_APP_PAGES;
 const local     = `${DATA_PATH}`
 const tmp       = `./.whoobe/tmp`
@@ -33,6 +34,7 @@ const paths = {
     uikits: uikits,
     static: static,
     assets: assets,
+    images: images,
     pages: static,
     local: local
 }
@@ -58,22 +60,34 @@ var upload = multer({ storage: storage })
 // @name : paths
 app.get ( '/tree/:name' , ( req , res ) => {
     let dirToScan = paths[req.params.name]
+    console.log ( path.resolve ( dirToScan ) )
     const tree = dree.scan ( path.resolve ( dirToScan ) )
+    console.log  ( tree )
     res.json ( tree )
 })
 
 // load file
 // @req.query.path : full file path
-app.get('/file' , ( req , res ) => {
+app.get('/file' , async ( req , res ) => {
+    console.log ( path.resolve ( req.query.path ) )
     if ( req.query.path && path.resolve ( req.query.path ) && fs.existsSync ( req.query.path ) ){
-        const rawdata = fs.readFileSync ( path.resolve ( req.query.path ) )
+        const rawdata = await fs.readFileSync ( path.resolve ( req.query.path ) )
         try {
             res.json ( JSON.parse(rawdata) )
         } catch ( err ){
-            res.json ( { data: rawdata.toString() } )
+            res.json ( { error: 'not found' } )
         }
     } else {
-        res.json ( {} )
+        res.json ( { error: 'not found' } )
+    }
+})
+
+app.get('/fileExists' , async ( req,res) => { 
+    const exists = await fs.exists ( path.resolve ( req.query.path ) ) 
+    if ( exists ){
+        res.json ( { success: true } )
+    } else { 
+        res.json ( { success: false })
     }
 })
 

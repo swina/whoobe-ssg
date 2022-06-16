@@ -65,6 +65,7 @@ declare module 'vue' {
     Icon: typeof import('./components/common/Icon.vue')['default']
     Iconify: typeof import('./components/editor/blocks/elements/iconify.vue')['default']
     IconPreview: typeof import('./components/preview/IconPreview.vue')['default']
+    Images: typeof import('./components/plugins/assets/Images.vue')['default']
     LinkAnalyzer: typeof import('./components/project/LinkAnalyzer.vue')['default']
     Loading: typeof import('./components/common/Loading.vue')['default']
     Message: typeof import('./components/common/Message.vue')['default']

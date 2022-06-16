@@ -205,16 +205,17 @@
                 </div> -->
             </div>
              <div class="flex flex-col p-2" v-if="settings.tab==='links analyzer'">
-                <template  v-for="item in linksAnalyzed.sort()" v-if="linksAnalyzed">
-                    <div class="flex flex-wrap w-full" style="max-width:100%;width:100%;" v-if="item.includes('http') || ( item.slice(0,1) === '/'  && fileExists(paths.ssg + '/' + item.replace('/','')) )">
-                            <icon icon="bi:check" class="text-2xl text-green-500"/> 
-                            {{ item }}
-                            <a :href="PAGESURL + item" target="preview" class="mx-2"><icon icon="iconoir:open-in-window" title="Open in a new window"/></a>
+                <template  v-for="(item,index) in linksAnalyzed.sort()" v-if="linksAnalyzed">
+                    <div class="flex flex-wrap w-full" style="max-width:100%;width:100%;" v-if="item.page.includes('http') || ( item.page.slice(0,1) === '/' )">
+                            <icon icon="bi:check" class="text-2xl text-green-500" v-if="item.exists"/> 
+                            <icon icon="mdi:close" class="text-2xl text-red-500" v-else/>
+                            {{ item.page }} 
+                            <a v-if="item.exists" :href="PAGESURL + item.page" target="preview" class="mx-2"><icon icon="iconoir:open-in-window" title="Open in a new window"/></a>
                     </div>
-                    <div v-else class="flex flex-wrap w-full" style="max-width:100%;width:100%;" title="Broken link">
+                    <!-- <div v-else class="flex flex-wrap w-full" style="max-width:100%;width:100%;" title="Broken link">
                             <icon icon="mdi:close" class="text-2xl text-red-500"/>
-                            {{ item }}
-                    </div>
+                            {{ item.page }}
+                    </div> -->
                 </template>
              </div>
             <!-- <div v-if="tab!='pages' && tab!='settings'">
@@ -255,7 +256,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref , onMounted , inject } from 'vue'
+import { ref , onMounted , inject, watch } from 'vue'
 import { project } from '/@/composables/useProject'
 import { saveFile , buildClear , openPath , paths , DATA_PATH , PAGESURL, CONFIG_FILE , buildProject , saveStaticPage , fileExists , layoutMainClass , fileExplorer } from '/@/composables/useLocalApi'
 import { slugify } from '/@/composables/useUtils'
@@ -288,7 +289,7 @@ const options = ref ([
     { tab: 'scripts' }
 ])
 
-const tab = ref ('settings')
+const tab = ref ('builder')
 const cms_context = ref ( '' )
 const open = ref ( false )
 const qryData = ref ( {} )
@@ -349,19 +350,22 @@ const setPreviewQLPage = async ( page ) => {
     previewQLPageHTML.value = PAGESURL + '/' + page.relativePath.replace('.html','')
 }
 
-let linksAnalyzed = ref(null)
+let linksAnalyzed = ref([])
 
 const analyzeLinks = async () =>{
     let links = await usedLinks ( project.data )
-
     // links = await [ ...links.filter(a=>a) ,  usedLinks ( project.data.footer.blocks ) ].filter( a => a )
     // links = await [ ...links , await usedLinks ( project.data.main ) ].filter( a => a )
     //console.log ( links )
-    linksAnalyzed.value = await [ ...new Set(links) ].filter(a=>a)
+    linksAnalyzed.value = []
+    const allLinks = [ ...new Set(links) ].filter(a=>a) //.map( a => a = { page: a , exists: checkIfExist( a ) } )
+    allLinks.forEach ( async ( link ) => {
+        linksAnalyzed.value.push ( { page: link , exists: await checkIfExist( link )} )
+    })
 
 }
 
-analyzeLinks()
+
 if ( project.data.pages ){
     try {
         let initPage = Object.keys ( project.data.pages )
@@ -371,6 +375,7 @@ if ( project.data.pages ){
 }
 
 onMounted(()=>{
+    analyzeLinks()
     if ( project.data.homepage ){
         try {
             homepageID.value = randomID()
@@ -539,6 +544,7 @@ const saveWebsitePage = async ( slug:String ) => {
         fonts: await usedFonts ( template.value ),
         folder: buildFolder.value
     }
+    console.log ( pageToCreate )
     const saved = await saveStaticPage ( pageToCreate )
     message.console += '- ' + slug + ' created (' + slug + '.html)\n'
 }
@@ -612,7 +618,7 @@ const setPreviewFields = async ( qry:Object ) => {
                             }
                         }
                     }
-                }
+                } 
             }
         })
         console.log ( await buildPage.value.json.blocks.blocks[1].content )
@@ -629,8 +635,24 @@ const updateSlug = async () => {
     project.data.pages[newPageSlug.value] = project.data.pages[previewPage.value.slug]
     delete project.data.pages[previewPage.value.slug]
     previewPage.value.slug = newPageSlug.value
-    saveProject()
+    saveProject() 
 }
+
+const checkIfExist = async ( file ) => {
+    console.log( file )
+    if ( file === '/' ){
+        file = file + 'index.html' 
+    } else {
+        file = file + '.html' 
+    }
+    const exists = await fileExists( paths.ssg + file )
+    console.log ( exists )
+    return await exists.success
+}
+
+watch ( () => store.settings.tabs , (tab) => {
+    console.log ('tab is ' , tab )
+})
 
 
 </script>

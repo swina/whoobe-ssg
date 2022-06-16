@@ -13,6 +13,7 @@
             <BlockTipTap v-if="status.dialog==='wysiwyg'"/>
             <BlockGrid v-if="status.dialog==='Grid'"/>
             <ConfirmAction v-if="status.dialog === 'ConfirmAction'"/>
+            <Images v-if="status.dialog === 'images'" context="images"/>
         </div>
     </div>
 </template>

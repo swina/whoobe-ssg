@@ -1,8 +1,8 @@
 services:
   app:
-    image: whoobe-vitesome
+    image: whoobe-ssg
     build: .
-    container_name: whoobe-vitesome
+    container_name: whoobe-ssg
     volumes: 
       - .:/app
     ports:

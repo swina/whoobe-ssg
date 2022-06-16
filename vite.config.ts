@@ -21,6 +21,7 @@ export default ({ mode }) => {
     watch: {
       ignored: ["**/server/**","**/.whoobe/**","**/pages/**"],
     },
+    cors: true,
   },
   resolve: {
     alias: {

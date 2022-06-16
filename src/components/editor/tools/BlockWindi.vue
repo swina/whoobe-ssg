@@ -2,7 +2,7 @@
     <!-- <div class="bars sidebarRight"> -->
         <!-- <div class="panelTitle bg-purple-900 uppercase cursor-pointer">Customize</div> -->
         
-        
+        <div v-if="editor.current">
         <template v-for="group in editor.wiTools">
             <div v-if="enabledOption(group) && !editor.toolGroup" class="titleBar hover:bg-black text-xs uppercase cursor-pointer" :title="group.label" @click="editor.toolGroup = group">
                 {{ group.label }}
@@ -25,7 +25,7 @@
                 </template>
             </div>
         </div>
-        
+        </div>
     <!-- </div> -->
 </template>
 

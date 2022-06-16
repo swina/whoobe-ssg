@@ -3,6 +3,7 @@ import jp from 'jsonpath'
 const endpoint = import.meta.env.VITE_APP_LOCAL_API
 export const PAGESURL = import.meta.env.VITE_APP_PAGES_URL
 export const DATA_PATH = import.meta.env.VITE_APP_DATA_PATH
+export const PAGES_PATH = import.meta.env.VITE_APP_PAGES
 export const CONFIG_FILE = '/app/pages/whoobe.config.json'
 import { message } from './useUtils'
 import { fstat } from 'fs'
@@ -17,6 +18,7 @@ export const paths = {
     projects: '/projects',
     current: '/current',
     assets: '/assets',
+    images: '/images',
     build: '/build',
     svelte: '/svelte',
     pages: '/pages',
@@ -64,15 +66,17 @@ export async function fileExplorer ( path:string ){
     return await res.json()
 }
 
-export async function openPath ( path:string ) {
-    const res = await fetch ( endpoint + '/file?path=' + path )
+export async function openPath ( filePath:string ) {
+    
+    const res = await fetch ( endpoint + '/file?path=' + filePath )
     try {
+        console.log ( await res )
         return await res.json()
     } catch ( err ) {
         const body = await res.text()
         return body    
     }
-}
+} 
 
 export const openFolder = async ( folder )=>{
     const res = await fetch ( endpoint + '/folders/' + folder )
@@ -296,13 +300,20 @@ export async function buildProject (){
     }
 }
 
-export async function fileExists( path ){
+export async function fileExists( filePath:String ){
+    const res = await fetch ( endpoint + '/fileExists?path=' + filePath )
     try {
-        await openPath ( path ) 
-        return true
+        return await res.json()
     } catch ( err ) {
-        return false
+        const body = await res.text()
+        return body    
     }
+    // try {
+    //     await openPath ( filePath ) 
+    //     return true
+    // } catch ( err ) {
+    //     return false
+    // }
 }
 
 export async function  layoutMainClass () {

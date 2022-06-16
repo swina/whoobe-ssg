@@ -139,7 +139,10 @@ textarea:focus , input:focus , select:focus { @apply outline-none; }
 }
 
 button {
-    @apply border px-4 py-2 bg-blue-500 text-white text-sm rounded-lg;
+    @apply border px-4 py-2 bg-purple-700 text-white text-sm rounded;
+}
+button.small {
+    @apply px-2 py-1;
 }
 
 button.square {
@@ -154,6 +157,9 @@ button.dark.small {
     @apply text-xs;
 }
 
+button:hover {
+    @apply bg-black text-white;
+}
 button.dark:hover {
     @apply bg-purple-700;
 }

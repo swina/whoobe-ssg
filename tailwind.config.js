@@ -4,6 +4,7 @@ const plugin = require('tailwindcss/plugin')
 module.exports = {
     content: [
         "./index.html",
+        "./pages/**/*.{html,js}",
         "./src/**/*.{vue,js,ts,jsx,tsx}",
       ],
   theme: {colors: {

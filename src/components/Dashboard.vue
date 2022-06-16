@@ -4,7 +4,7 @@
       <Editor   v-if="loadthis() === 'Editor'"/>
       <UIKits   v-if="loadthis() === 'UIKits'"/>
       <Pages    v-if="loadthis() === 'Website'"/>
-      <Website  v-if="loadthis() === 'Settings'"/>
+      <Website  v-if="loadthis() === 'Builder'"/>
       <Assets   v-if="loadthis() === 'Assets'"/>
     </div>
 </template>
@@ -37,8 +37,8 @@
       if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Assets' ){
         return 'Assets'
       }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Settings' ){
-        return 'Settings'
+      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Builder' ){
+        return 'Builder'
       }
     }
     return false

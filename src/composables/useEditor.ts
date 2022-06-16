@@ -179,5 +179,11 @@ export async function BlockData (qry:Object,provider:String) {
 
 export async function usedLinks ( target:Object ){
     let links = await jp.query ( target , '$..blocks..link' )
+    console.log ( links )
     return links
+}
+
+
+export async function setEditorAsset (){
+    
 }

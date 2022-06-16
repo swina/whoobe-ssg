@@ -1,6 +1,6 @@
 <template>
     <!-- <Icon icon="mdi:chevron-right-box" class="cursor-pointer absolute top-0 right-0 m-1 text-gray-400 text-2xl z-20" @click="sidebar('')" title="Close sidebar"/> -->
-    <div class="editor-toolbar text-2xl p-0 pb-6">
+    <div class="editor-toolbar text-2xl p-0 pb-6" v-if="editor.current">
         <div class="text-xs bg-bluegray-800 -mt-8 h-9 text-white flex items-center">TOOLS</div>
         <Icon v-for="icon in icons" :icon="icon.icon" class="icon-button ml-0 mb-1" :class="isActive(icon.tool)" @click="sidebar(icon.tool)" :title="icon.tool"/>
         <!-- <Icon icon="tabler:template" class="icon-button ml-0 mb-1" :class="isActive('snippets')" @click="toolbar.tool='snippets',sidebar('snippets')"  

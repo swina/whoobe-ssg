@@ -24,7 +24,7 @@ import 'virtual:windi-devtools';
 import './styles/base.css';
 import './styles/custom.css';
 
-import '/@/composables/useGraphCMS'
+//import '/@/composables/useGraphCMS'
 
 const app = createApp(App);
 
