@@ -9,7 +9,7 @@
   <Loading v-if="store.status.loading"/>
   <FloatingModal/>
   
-  <div class="fixed z-modal bottom-0 right-0 w-1/3 h-1/2" v-if="message.console">
+  <div class="fixed z-modal bottom-0 left-0 w-1/3 h-1/2" v-if="message.console">
     <div class="p-1 bg-purple-700 text-white flex items-center">Console <icon icon="mdi:close" class="absolute right-0" @click="message.console=''"/></div>
     <textarea class="bg-black w-full h-screen-sm font-mono text-white">{{ store.message.console }}</textarea>
   </div>

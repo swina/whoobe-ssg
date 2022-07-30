@@ -3,16 +3,17 @@
       <Archive  v-if="loadthis() === 'Archive'"/>
       <Editor   v-if="loadthis() === 'Editor'"/>
       <UIKits   v-if="loadthis() === 'UIKits'"/>
-      <Pages    v-if="loadthis() === 'Website'"/>
-      <Website  v-if="loadthis() === 'Builder'"/>
+      <Pages    v-if="loadthis() === 'Pages'"/>
+      <Builder  v-if="loadthis() === 'Builder'"/>
       <Assets   v-if="loadthis() === 'Assets'"/>
+      <Directus   v-if="loadthis() === 'Directus'"/>
     </div>
 </template>
 
 <script setup lang="ts">
-  //import { store } from '/@/composables/useStore'
   import { inject } from 'vue'
   const store = inject('useStore')
+
   const props = defineProps ({
     comp: String,
     size: String
@@ -22,24 +23,7 @@
 
   const loadthis = () => {
     if ( tabber.tabs && tabber.tab > -1 ){
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Editor' ){
-        return 'Editor'
-      }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'UIKits' ){
-        return 'UIKits'
-      }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Archive' ){
-        return 'Archive'
-      }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Website' ){
-        return 'Website'
-      }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Assets' ){
-        return 'Assets'
-      }
-      if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Builder' ){
-        return 'Builder'
-      }
+      return tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component 
     }
     return false
   }

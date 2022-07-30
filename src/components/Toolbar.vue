@@ -1,7 +1,7 @@
 <template>
     <div class="bars toolbar bg-bluegray-800" :class="$attrs.class">
         <template v-for="(tab,index) in store.tabber.tabs" :key="'tab_' + index">
-            <div class="tab" :class="active(index)" @click="selectTab(index)">{{ tab.label }} 
+            <div class="tab" :class="active(index)" @click="selectTab(index)">{{ setTabName (tab) }} 
                 <div @click="tabberRemoveTab(index)"><i class="iconify text-xs ml-2" data-icon="mdi:close"/></div>
             </div>
         </template>
@@ -50,6 +50,11 @@ const selectTab = ( index: Number ) => {
     } else {
         store.tabber.tab = index
     }
+}
+
+const setTabName = ( tab:Object )=> {
+    return tab.component === 'Editor' ?
+        tab.object.name : tab.label
 }
 
 </script>

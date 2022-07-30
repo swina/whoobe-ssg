@@ -16,7 +16,9 @@ export const store = reactive({
         dialogAction: '',
         current: null,
         currentFile: null,
-        previewMode: false 
+        previewMode: false,
+        locales : import.meta.env.VITE_APP_LOCALE.split(','),
+        locale: import.meta.env.VITE_APP_LOCALE.split(',')[0]
     },
     message : {
         console: '',
@@ -41,14 +43,18 @@ export const store = reactive({
     },
     editor : EDITOR,
     graphql : {
-        data: CMS
+        data: CMS,
+        render: []
     },
     project: {
         data: Object ,
         path: ''
     },
+    
     clipboard : null,
-
+    directus: {
+        enabled: import.meta.env.VITE_APP_DIRECTUS
+    }
 })
 
 export const useStore = () => {

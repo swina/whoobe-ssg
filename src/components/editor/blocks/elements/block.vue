@@ -15,17 +15,18 @@
         </div>
         <template v-for="element in block.blocks" :key="element.id">
             <block
-                
                 v-if="element.type === 'container' && !element.data?.isLoop"
-
                 :block="element"
-                :level="level+1"/>
-            <blockloop
+                :level="level+1" :data="$attrs.data"/>
+            <template v-if="element.data?.isLoop" v-for="bl in store.graphql.data[element.id][element.data.model]" :key="randomID()" :id="randomID()">
+                <block :block="element" :level="level+1" :data="bl"/>
+            </template>
+            <!-- <blockloop
                 v-if="element.type === 'container' && element.data?.isLoop"
                 :block="element"
                 :limit="element.data?.limit ? element.data.limit : 8"
                 :offset="element.data?.offset ? element.data.offset : 0"
-                :level="level+1"/>
+                :level="level+1"/> -->
             <Element
                 :data="$attrs.data?$attrs.data:null"
                 :id="element.id"
@@ -59,7 +60,7 @@ import '/@/styles/editor.css'
 import { selectBlock } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu';
 //import { status } from '/@/composables/useNavigation'
-//import { EDITOR } from '/@/composables/useEditor'
+import { randomID } from '/@/composables/useEditor'
 import { CMS ,  getCMSQuery  } from "/@/composables/useGraphCMS"
 import { store } from '/@/composables/useStore'
 

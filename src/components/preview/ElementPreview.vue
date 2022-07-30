@@ -1,8 +1,8 @@
 <template>
-    <a v-if="getLink" :href="getLink">
+    <a v-if="getLink" :href="getLink" :title="getLinkTitle()">
         <component
             v-if="element"
-            :id="element.id"
+            :id="`${refID}${element.id}`"
             :ref="element.id"
             :is="component" 
             :type="element.type" 
@@ -41,27 +41,30 @@
 </template>
 
 <script setup lang="ts">
-import { computed , ref , onMounted } from 'vue'
-import { message} from '/@/composables/useUtils';
+import { computed , ref , onMounted, inject } from 'vue'
+import { message , ObjectValueByKey } from '/@/composables/useUtils';
+import { graphQLRequest  } from '/@/composables/useLocalApi'
+import { assertObjectTypeIndexer } from '@babel/types';
+import { randomID } from '/@/composables/useActions'
 
+const store = inject('useStore')
+const refID = randomID().replace('whoobe-','')
 const props = defineProps (
     {
         element: Object,
         id: String,
-        data: Object
+        data: null,
+        slug: String
     }
 )
 
 let element = props.element
 
 if ( props.data && props.element.tag === 'button'){
-    console.log ( props.data[element.data.field])
     element.link = props.data[element.data.field]
 }
 
 const component = computed ( () => {
-    // return props.element.link ? 
-    //     'a' : 
     return props.element.level ? 
         props.element.element + props.element.level : 
         props.element.element
@@ -75,20 +78,21 @@ const classe = computed ( () => {
 
 const blockId = ref(props.element.id)
 
-const getContent = computed(()=>{
-    if ( props.data && props.element.tag === 'button'){
-        element.link = props.data[props.element.data.field]
+const graphQL = ref ('')
+
+const getContent = computed( () =>{
+    if ( props.element.element != 'img' ){
+        if ( props.data ){
+            return props.element.data.field.split('.').reduce((o,i)=> o[i], props.data )
+        }
         return props.element.content
-    }
-    if ( props.data && props.element.data?.field ){
-        return props.data[props.element.data.field]
-    }
+    } 
     return props.element.content
 })
 
-const getImage = computed(()=>{
+  const getImage = computed(()=>{
     if ( props.data && props.element.data?.field ){
-        return props.data[props.element.data.field].url
+        return props.element.data.field.split('.').reduce((o,i)=> o[i], props.data ).url
     }
     return props.element.image && props.element.image.url ? props.element.image.url : 'no-image.png'
 })
@@ -100,11 +104,21 @@ const getLink = computed(() => {
             return props.data[element.data.field]
         }
     } 
+    if ( props.data && props.element.link.includes('{slug}') ){
+        return props.element.link.replace('{slug}',props.data.slug)
+    }
     return element.link ? element.link : ''
     
 })
 
-onMounted( () => {
+const getLinkTitle = () => {
+    if ( props.data && props.element.data.attributes?.title ){
+        let title = props.element.data.attributes.title.replace ( '{data.' , '' ).replace('}','')
+        return props.data[title]
+    }
+}
+
+onMounted( async () => {
     try {
         if ( props.element?.alpine ) {
             //message.console = 'Settings AlpineJS directives'
@@ -115,9 +129,16 @@ onMounted( () => {
         }
         if ( props.element.data?.attributes ) {
             
-            let element = document.querySelector ( '#' + props.element.id )
-            Object.keys ( props.element.data.attributes ).forEach ( attr => {
-                element.setAttribute ( attr , props.element.data.attributes[attr] )
+            let element = document.querySelector ( '#' + refID+props.element.id )
+            await Object.keys ( props.element.data.attributes ).forEach ( attr => {
+                if ( props.data && attr === 'title' ){
+                    // let title = attr.replace ( '{element.data.' , '' ).replace('}','')
+                    let title = props.element.data.attributes.title.replace ( '{data.' , '' ).replace('}','')
+                    console.log()
+                    element.setAttribute ( 'title' ,  props.data[title] )
+                } else {
+                    element.setAttribute ( attr , props.element.data.attributes[attr] )
+                }
             })
         }
     } catch( err ) {

@@ -20,7 +20,7 @@ export default class Project {
         this.name = "A new website"
         this.title = "My website"
         this.description = "A new website create with whoobe"
-        this.devserver = "http://localhost:3001"
+        this.devserver = "http://localhost:3000"
         this.framework = "sveltekit"
         this.homepage = {}
         this.header = {}

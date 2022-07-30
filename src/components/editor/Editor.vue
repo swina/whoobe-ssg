@@ -24,7 +24,7 @@
       <BlockFloatingBar @action="floatingAction"/>
     </div>
     <div class="fixed top-0 left-0 m-10 mt-8 text-xs z-10" v-if="editor.current && editor.current?.tag">
-      <div class="flex items-center breadcumb h-5 bg-black text-white px-4 justify-center ">{{ editor.current.semantic || editor.current.element }}</div>
+      <div class="flex items-center breadcumb h-5 bg-black text-white px-4 justify-center ">{{ editor.current.semantic || editor.current.element }} <span v-if="editor.current.data?.client && editor.current.data?.model"> - GraphQL</span></div>
     </div>
 </template>
 
@@ -41,7 +41,7 @@ import { store } from '/@/composables/useStore';
     const hk = hotKeys()
 
     const editor = store.editor //EDITOR //useStore()
-    !editor.tool ? editor.tool = 'customize' : null
+    !editor.tool ? editor.tool = 'elements' : null
     store.useEditorSidebar.sidebar = true
     editor.wiTools = twGroups 
     const size = computed(()=>{

@@ -1,16 +1,18 @@
 import { reactive } from 'vue'
 import jp from 'jsonpath'
+
 const endpoint = import.meta.env.VITE_APP_LOCAL_API
 export const PAGESURL = import.meta.env.VITE_APP_PAGES_URL
 export const DATA_PATH = import.meta.env.VITE_APP_DATA_PATH
 export const PAGES_PATH = import.meta.env.VITE_APP_PAGES
-export const CONFIG_FILE = '/app/pages/whoobe.config.json'
+export const CONFIG_FILE = import.meta.env.VITE_APP_PAGES_ROOT + '/whoobe.config.json'
 import { message } from './useUtils'
 import { fstat } from 'fs'
 import { store } from './useStore'
 
 export const API_URL = import.meta.env.VITE_APP_LOCAL_API
 
+const CONFIG = await openPath ( CONFIG_FILE )
 
 export const paths = { 
     templates : '/templates',
@@ -22,7 +24,7 @@ export const paths = {
     build: '/build',
     svelte: '/svelte',
     pages: '/pages',
-    ssg: '/app/pages/dist',
+    ssg: PAGES_PATH,
     url: PAGESURL
 }
 
@@ -70,8 +72,10 @@ export async function openPath ( filePath:string ) {
     
     const res = await fetch ( endpoint + '/file?path=' + filePath )
     try {
-        console.log ( await res )
-        return await res.json()
+        let data = await res.json()
+        data.path = filePath
+        //console.log ( await res )
+        return await data
     } catch ( err ) {
         const body = await res.text()
         return body    
@@ -172,8 +176,8 @@ export const buildClear = async (folder:String='') => {
 
 }
 export const saveStaticPage = async ( page: Object ) => {
-    let config = await openPath ( CONFIG_FILE )
-    let doc = page
+    let config = CONFIG //await openPath ( CONFIG_FILE )
+    let doc = await page
     let headerFonts = []
     let footerFonts = []
     
@@ -234,7 +238,7 @@ export const saveStaticPage = async ( page: Object ) => {
     //message.console += seo.title + ' created \n'
     //<meta name="keywords" content="${page?.document?.tags.join(',')}">
     doc.html = `<!DOCTYPE html>
-    <html lang="en">
+    <html lang="${store.status?.locale.split('-')[0]}">
         <head>
             <title>${seo.title}</title>
             <meta name="description" content="${seo.description}">
@@ -244,10 +248,12 @@ export const saveStaticPage = async ( page: Object ) => {
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
             ${fontsLink}
             <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer=""></script>
+            <!--<script type="module" src="https://cdn.skypack.dev/twind/shim" defer></script>-->
             <meta charset="UTF-8">
             <link rel="stylesheet" href="/assets/css/output.css">
-            <link rel="stylesheet" href="/assets/css/animations.css">
+            <!--<link rel="stylesheet" href="/assets/css/animations.css">-->
             <link rel="icon" href="/favicon.ico" />
+            
             <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
             ${analytics}
         </head>
@@ -262,7 +268,7 @@ export const saveStaticPage = async ( page: Object ) => {
     //        <div class="${mainCSS} whoobe-layout-container">
     //</div>
     
-    await fetch ( endpoint + '/save/html/' ,{
+    const saved = await fetch ( endpoint + '/save/html/' ,{
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -270,6 +276,7 @@ export const saveStaticPage = async ( page: Object ) => {
         },
         body: JSON.stringify(doc)
     })
+    //console.log ( saved )
 }
 
 export async function buildProject (){
@@ -327,4 +334,20 @@ export async function  layoutMainClass () {
         return mainCSS
    }
    return ''
+}
+
+export async function graphQLRequest ( config ) {
+    try {
+        const res = await fetch ( endpoint + '/graphql' ,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(config) 
+        })
+        return res.json()
+    } catch ( err ){
+        return { error: err }
+    }
 }

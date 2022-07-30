@@ -531,8 +531,10 @@ var classes = {
         'animate-bounce',
         'animate-spin',
         'animate-pulse',
-        'animate-slidein',
-        'animate-slideout'
+        'animate-fadeIn',
+        'animate-slideIn',
+        'animate-slideInTop',
+        'animate-slideInRight'
     ],
     clipPath: [
         { label: 'diagonal'     , value: 'clip-path-diagonal'},

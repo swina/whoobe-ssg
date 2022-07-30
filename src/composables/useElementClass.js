@@ -66,6 +66,10 @@ export default class Element {
                     {
                         name: 'Container' ,
                         icon: 'octicon:container-24'
+                    },
+                    {
+                        name: 'GraphQL' ,
+                        icon: 'cib:graphql'
                     }
                 ],
             } ,
@@ -193,6 +197,7 @@ export default class Element {
         return element === 'Grid'       ? this.Grid(options) : 
             element === 'Flexbox'       ? this.Flexbox(options) :
             element === 'Container'     ? this.Container(options) :
+            element === 'GraphQL'       ? this.GraphQL(options) : 
             element === 'Heading'       ? this.Heading(options) : 
             element === 'Paragraph'     ? this.Paragraph() :
             element === 'Inline Text'   ? this.InlineText() :
@@ -274,6 +279,14 @@ export default class Element {
     }
 
     Container(options){
+        this.blocks = []
+        this.type = 'container'
+        this.tag = 'container'
+        this.element = 'div'
+        return this
+    }
+
+    GraphQL(options){
         this.blocks = []
         this.type = 'container'
         this.tag = 'container'

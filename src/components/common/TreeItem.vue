@@ -16,7 +16,9 @@
             <icon icon="ant-design:folder-filled" class="mr-2 text-lg" v-if="isFolder && !isOpen"/>
             <icon icon="ant-design:folder-open-filled" class="mr-2 text-lg" v-if="isFolder && isOpen"/>
             <i data-icon="arcticons:file" class="iconify mr-1 text-lg" v-if="model.type==='file'"/>
-            <span class="tree-item text-vase" :title="model.name">{{ model.type === 'file' ? model.name.split('.').slice(0,-1).join('.') : model.name  }}</span>
+            <span class="tree-item text-vase" :title="model.name">
+                {{ model.type === 'file' ? extension ? model.name : model.name.split('.').slice(0,-1).join('.') : model.name  }}
+            </span>
         </span>
       <!-- <span class="absolute right-0" v-if="model.type==='directory'">[+]</span> -->
     </div>
@@ -29,6 +31,7 @@
         v-for="model in model.children"
         :model="model"
         :root="root"
+        :extension="extension"
         @openTemplate="loadFile"
         @reloadTree="refreshTree">
       </TreeItem>
@@ -48,7 +51,8 @@ import { store } from '/@/composables/useStore'
 const props = defineProps({
   model: Object,
   root: String,
-  open: Boolean
+  open: Boolean,
+  extension: Boolean
 })
 
 let status = store.status

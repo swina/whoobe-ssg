@@ -7,7 +7,7 @@ import Components from 'unplugin-vue-components/vite'
 import PurgeIcons from 'vite-plugin-purge-icons';
 import ViteFonts from 'vite-plugin-fonts';
 import svgLoader from 'vite-svg-loader';
-const fonts = ['Alfa+Slab+One','Asap+Condensed','Abel','Alice','Alegreya','Amethysta','Archivo+Black','Barlow','Barlow+Condensed','Bungee+Inline','Expletus+Sans','Lora','Montserrat','Nunito+Sans','Oi','Open+Sans','PT+Sans','Roboto','Roboto+Condensed','Quattrocento','Raleway','Tenor+Sans','Ultra','Yatra+One']
+const fonts = ['Alfa+Slab+One','Asap+Condensed','Abel','Alice','Alegreya','Amethysta','Archivo+Black','Barlow','Barlow+Condensed','Bungee+Inline','Expletus+Sans','Lora','Montserrat','Nunito+Sans','Oi','Open+Sans','PT+Sans','Roboto','Roboto+Condensed','Quattrocento','Raleway','Staatliches','Tenor+Sans','Ultra','Yatra+One']
 //import Unocss from 'unocss/vite'
 //import presetUno from '@unocss/preset-uno'
 // export default defineConfig({
@@ -15,13 +15,13 @@ import { shortcuts } from './src/styles/unocss'
 
 export default ({ mode }) => {
     process.env = {...process.env, ...loadEnv(mode, process.cwd())};
+    //const fonts = process.env.VITE_APP_FONTS;
     return defineConfig({
   server: {
-    port: 3000,
     watch: {
       ignored: ["**/server/**","**/.whoobe/**","**/pages/**"],
     },
-    cors: true,
+    cors: false,
   },
   resolve: {
     alias: {
@@ -55,9 +55,7 @@ export default ({ mode }) => {
     }),
 
     // https://github.com/antfu/vite-plugin-windicss
-    WindiCSS({
-      safelist: 'prose prose-sm m-auto text-left',
-    }),
+    WindiCSS(),
 
     // https://github.com/antfu/purge-icons/tree/main/packages/vite-plugin-purge-icons
     PurgeIcons({

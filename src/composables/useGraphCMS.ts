@@ -13,8 +13,8 @@ export const graphqlClients = gQLClients.map ( cl => { return cl.client } )
 
 export const CMS_URL:String = import.meta.env.VITE_APP_GRAPHCMS_CONTENT_API
 
-var graphcmsClient = new GraphQLClient('https://1xikguiz.directus.app/graphql')//CMS_URL);
-//const graphc = new GraphQLClient('https://1xikguiz.directus.app/graphql')
+var graphcmsClient = new GraphQLClient('http://localhost:8055/graphql')//CMS_URL);
+// console.log ( graphcmsClient )
 
 export const _CMS_SCHEMA = reactive({
     schema:{
@@ -32,7 +32,6 @@ export const _CMS_SCHEMA = reactive({
                         }
                         content {
                             html
-                            raw
                         }
                         tags
                     }
@@ -44,7 +43,6 @@ export const _CMS_SCHEMA = reactive({
                     title
                     content {
                         html
-                        raw
                     }
                     abstract
                     featuredImage {
@@ -114,6 +112,7 @@ export const CMS_SCHEMA = reactive({
 
 export const graphqlConfig = {
     'directus' : {
+        url: gQLClients.filter(a=>a.client==='directus')[0].url.replace('graphql',''),
         schema:{
             pages: {
                 query: {
@@ -121,18 +120,25 @@ export const graphqlConfig = {
                     {
                     pages {
                             id
+                            lang
                             slug
                             title
                             abstract
-                            featuredImage
+                            featuredImage {
+                                id
+                            }
+                            tags
                         }
                     }`,
                     single: gql`
                     query($slug:String) {
                         pages(filter:{slug:{ _eq:$slug }}) {
                             id
+                            lang
                             title
-                            featuredImage
+                            featuredImage {
+                                id
+                            }
                             slug
                             html
                             tags
@@ -141,7 +147,7 @@ export const graphqlConfig = {
                     `,
                     params: 'slug',
                     name: 'title',
-                    fields: ['slug','title','html','abstract' , 'featuredImage','tags'],
+                    fields: ['slug','lang','title','html','abstract' , 'featuredImage.id','tags'],
                     seo: {
                         title: 'title',
                         description: 'abstract',
@@ -152,6 +158,7 @@ export const graphqlConfig = {
         }
     },
     graphcms: {
+        url: gQLClients.filter(a=>a.client==='graphcms')[0].url.replace('graphql',''),
         schema:{
             pages: {
                 query: {
@@ -167,7 +174,6 @@ export const graphqlConfig = {
                             }
                             content {
                                 html
-                                raw
                             }
                             tags
                         }
@@ -179,7 +185,6 @@ export const graphqlConfig = {
                         title
                         content {
                             html
-                            raw
                         }
                         abstract
                         featuredImage {
@@ -191,7 +196,7 @@ export const graphqlConfig = {
                   `,
                     params: 'slug',
                     name: 'title',
-                    fields: ['slug','title','content','abstract' , 'featuredImage' , 'tags'],
+                    fields: ['slug','title','content.html','abstract' , 'featuredImage' , 'tags'],
                     seo: {
                         title: 'title',
                         description: 'abstract',
@@ -210,13 +215,14 @@ export const CMS =  reactive ( {} )
 export const graphQLCurrent = reactive ({})
 
 export async function setGraphqlClient ( client ){
+    console.log ( client , gQLClients.filter(a=>a.client===client) )
     return new GraphQLClient( gQLClients.filter(a=>a.client===client)[0].url )
 }
 
 export async function graphQLQuery ( config ){
     let client = await setGraphqlClient ( config.client )
-    const data = await client.request ( config.schema.query.list )
-    return await data
+    const data = await client.request ( graphqlConfig[config.client].schema[config.model].query.list )
+    return await data[config.model]
 }
 
 

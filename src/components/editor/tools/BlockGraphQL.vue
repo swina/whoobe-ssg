@@ -202,37 +202,39 @@ const generateCMSPages = async () => {
     store.message.console = 'GraphQL SSG\nBy default pages will be generated in a relative folder\nRelative folder will be cleared\n\n'
     store.message.console += 'Pages Limit: ' + editor.current.data.limit + '\n'
     store.message.console += 'Pages Offset: ' + editor.current.data.offset + '\n\n'
-    await buildClear(context.value)
-    let dataset = CMS[context.value].map ( (record,index) => {
-        console.log ( index , editor.current.data.limit - 1)
-        if( index >= editor.current.data.offset && index < editor.current.data.limit  ){
-            return record
-        }
-    }).filter ( a => a )
-    dataset.forEach ( async (content)  => {
-        let qry = await getCMSSingleQuery(context.value,content.slug)
-        qry = qry[context.value][0]
-        
-        setTimeout ( async() => { 
-            await setBlockData ( qry )
-            let page = {
-                html: await documentHTML(),
-                slug: qry.slug,
-                document: editor.document,
-                fonts: fonts,
-                layout: false,
-                seo: {
-                    title: qry[CMS_SCHEMA.schema[context.value].query.seo.title],
-                    description:  qry[CMS_SCHEMA.schema[context.value].query.seo.description],
-                },
-                folder: context.value
+    //await buildClear(context.value)
+    if ( !editor.current.data.isLoop ){
+        let dataset = CMS[context.value].map ( (record,index) => {
+            console.log ( index , editor.current.data.limit - 1)
+            if( index >= editor.current.data.offset && index < editor.current.data.limit  ){
+                return record
             }
-            console.log ( await page.html )
-            let saved = await saveStaticPage ( await page )
-            store.message.console += '- ' + context.value + '/' + qry.slug + '.html\n'
-        },1000)
+        }).filter ( a => a )
+        dataset.forEach ( async (content)  => {
+            let qry = await getCMSSingleQuery(context.value,content.slug)
+            qry = qry[context.value][0]
+            
+            setTimeout ( async() => { 
+                await setBlockData ( qry )
+                let page = {
+                    html: await documentHTML(),
+                    slug: qry.slug,
+                    document: editor.document,
+                    fonts: fonts,
+                    layout: false,
+                    seo: {
+                        title: qry[CMS_SCHEMA.schema[context.value].query.seo.title],
+                        description:  qry[CMS_SCHEMA.schema[context.value].query.seo.description],
+                    },
+                    folder: context.value
+                }
+                console.log ( await page.html )
+                let saved = await saveStaticPage ( await page )
+                store.message.console += '- ' + context.value + '/' + qry.slug + '.html\n'
+            },1000)
 
-    })
+        })
+    }
 }
 
 const setGraphqlTemplate = async () => {

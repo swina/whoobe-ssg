@@ -60,19 +60,27 @@ const component = computed ( () => {
 })
 
 const getContent = computed(()=>{
+    //console.log ( 'computed data graphql' , Object.keys(props.data[props.element.data.field]) )
     if ( props.data && props.element.tag === 'button'){
         props.element.link = props.data[props.element.data.field]
         return props.element.content
     }
     if ( props.data && props.element.data?.field ){
-        return props.data[props.element.data.field]
+        
+        //if ( Object.keys(props.element.data.field) ){
+            //return props.data[props.element.data.field][Object.keys(props.element.data.field)[0]]
+        //}
+        return props.element.data.field.split('.').reduce((o,i)=> o[i], props.data )
+        //return props.data[props.element.data.field]
     }
     return props.element.content
 })
 
 const getImage = computed(()=>{
     if ( props.data && props.element.data?.field ){
-        return props.data[props.element.data.field].url
+        
+        return props.element.data.field.split('.').reduce((o,i)=> o[i], props.data ).url
+        //return props.data[props.element.data.field].url
     }
     return props.element.image && props.element.image.url ? props.element.image.url : 'no-image.png'
 })

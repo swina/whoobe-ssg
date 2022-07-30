@@ -20,10 +20,11 @@ const title = ref('SidebarLeft');
       
       { label: 'Templates' , icon: 'carbon:volume-file-storage' , component: 'Archive'  },
       { label: 'New Template' , icon: 'emojione-monotone:new-button' , component: 'Editor' , hasTab: true },
-      { label: 'UI Kits' , icon: 'mdi:widgets' , component: 'UIKits' },
-      { label: 'Website' , icon: 'mdi:web'  , component: 'Website' },
+      { label: 'Assets' , icon: 'bx:data' , component : 'Assets' },
       { label: 'Builder' , icon: 'ic:round-build-circle'  , component: 'Builder'},
-      { label: 'Assets' , icon: 'file-icons:microsoft-project' , component : 'Assets' },
+      { label: 'Pages' , icon: 'mdi:web'  , component: 'Pages' },
+      { label: 'UI Kits' , icon: 'mdi:widgets' , component: 'UIKits' },
+      { label: 'Directus' , icon: 'simple-icons:directus' , component: 'Directus' }
     ])
     
     const addTab = (component: object) => {

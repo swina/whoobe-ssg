@@ -18,6 +18,12 @@
                     <option v-for="isType in pageTypes" :value="isType">{{ isType }}</option>
                 </select>
             </div>
+            <div class="my-2" v-if="store.status.locales && store.status.locales.length > 1">
+                Lanaguage
+                <select class="w-24" v-model="store.status.locale" @change="updateData">
+                    <option v-for="locale in store.status.locales" :value="locale">{{ locale }}</option>
+                </select>
+            </div>
             <div v-if="!status.previewMode">
                 <label class="mr-2">Use layout</label>
                 <input type="checkbox" v-model="useLayout"/>
@@ -37,13 +43,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref , computed , watch } from 'vue'
-import { store } from '/@/composables/useStore'
+import { ref , inject } from 'vue'
+//import { store } from '/@/composables/useStore'
 import { saveSveltePage , activeProject, saveFile, saveStaticPage , paths , DATA_PATH , SSG, CONFIG_FILE } from '/@/composables/useLocalApi'
 import { project , exportDocument } from '/@/composables/useProject'
 import { slugify , message } from '/@/composables/useUtils';
 import { status } from '/@/composables/useNavigation'
 //import { EDITOR } from '/@/composables/useEditor';
+
+const store = inject ('useStore')
 import jp from 'jsonpath'
 
 const props = defineProps ({
@@ -118,17 +126,18 @@ const saveAsTemplate = async () => {
 
 const saveAsStaticPage = async () => {
     if ( slug.value === 'header' || slug.value === 'footer' ){
-        project.data[slug.value] = {
+        store.project.data[slug.value] = {
             html: documentHTML(),
             fonts: getFonts(),
             blocks: editor.document.json.blocks
         }
-        project.path = CONFIG_FILE
-        const res = await saveFile(project)
+        store.project.path = CONFIG_FILE
+        const res = await saveFile(store.project)
         store.message.data = 'file saved as ' + slug.value 
         store.status.dialog = null
         return
     }
+    
     let page = await {
         html: documentHTML(),
         slug: slug.value,
@@ -136,10 +145,20 @@ const saveAsStaticPage = async () => {
         fonts: getFonts(),
         layout: useLayout.value
     }
+    
     console.log ( page )
     await saveStaticPage ( page )
     store.message.data = 'Saved as HTML page'
     store.status.dialog = null
+    if ( pageType.value === 'homepage' ){
+        store.project.path = CONFIG_FILE
+        store.project.data[pageType.value] = { 
+            html: page.html,
+            fonts: page.fonts,
+            blocks: editor.document
+        }
+        await saveFile(store.project)
+    }
     emits ('close' )
 }
 

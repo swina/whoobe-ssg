@@ -50,6 +50,8 @@ import { openContextDialog } from '/@/composables/contextMenu';
 import { status } from '/@/composables/useNavigation'
 import { project } from '/@/composables/useProject'
 import { saveFile , fileExplorer } from '/@/composables/useLocalApi';
+import { graphQLTemplateSave } from '/@/composables/useGraphQL'
+
 //import { message } from '/@/composables/useUtils'
 //import { EDITOR } from '/@/composables/useEditor'
 import { store } from '/@/composables/useStore'
@@ -75,6 +77,8 @@ const saveTemplate = async () => {
     if ( editor.document?.path ){
         await saveFile ( editor.document )
         store.message.data = 'File saved'
+        const template = await graphQLTemplateSave ( editor.document )
+        console.log ( await template )
     }
 }
 

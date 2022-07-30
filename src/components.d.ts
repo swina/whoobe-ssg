@@ -37,6 +37,13 @@ declare module 'vue' {
     BlockTree: typeof import('./components/editor/tools/BlockTree.vue')['default']
     BlockUIKits: typeof import('./components/editor/tools/BlockUIKits.vue')['default']
     BlockWindi: typeof import('./components/editor/tools/BlockWindi.vue')['default']
+    Builder: typeof import('./components/project/Builder.vue')['default']
+    BuilderAnalytics: typeof import('./components/project/BuilderAnalytics.vue')['default']
+    BuilderHomepage: typeof import('./components/project/BuilderHomepage.vue')['default']
+    BuilderLayout: typeof import('./components/project/BuilderLayout.vue')['default']
+    BuilderMetaTags: typeof import('./components/project/BuilderMetaTags.vue')['default']
+    BuilderPages: typeof import('./components/project/BuilderPages.vue')['default']
+    BuilderScripts: typeof import('./components/project/BuilderScripts.vue')['default']
     ChangeSlug: typeof import('./components/project/ChangeSlug.vue')['default']
     Chip: typeof import('./components/common/Chip.vue')['default']
     Close: typeof import('./components/common/Close.vue')['default']
@@ -47,6 +54,7 @@ declare module 'vue' {
     Dashboard: typeof import('./components/Dashboard.vue')['default']
     DeleteFile: typeof import('./components/common/DeleteFile.vue')['default']
     DialogModal: typeof import('./components/common/DialogModal.vue')['default']
+    Directus: typeof import('./components/plugins/directus/Directus.vue')['default']
     DocumentSettings: typeof import('./components/editor/tools/DocumentSettings.vue')['default']
     Editor: typeof import('./components/editor/Editor.vue')['default']
     EditorPanel: typeof import('./components/editor/EditorPanel.vue')['default']
@@ -59,6 +67,7 @@ declare module 'vue' {
     FloatingModal: typeof import('./components/common/FloatingModal.vue')['default']
     Folder: typeof import('./components/archive/Folder.vue')['default']
     GenerateGraphQL: typeof import('./components/project/GenerateGraphQL.vue')['default']
+    GraphQLClient: typeof import('./components/plugins/graphql/GraphQLClient.vue')['default']
     GraphQLTool: typeof import('./components/plugins/graphql/GraphQLTool.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Home: typeof import('./components/Home.vue')['default']
@@ -86,7 +95,6 @@ declare module 'vue' {
     UIKits: typeof import('./components/uikits/UIKits.vue')['default']
     UploadFile: typeof import('./components/common/UploadFile.vue')['default']
     WebpagePreview: typeof import('./components/project/WebpagePreview.vue')['default']
-    Website: typeof import('./components/project/Website.vue')['default']
   }
 }
 

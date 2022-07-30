@@ -21,10 +21,11 @@
 
 <script setup lang="ts">
 
-import {  ref } from 'vue';
-import { store } from '/@/composables/useStore'
+import { inject, ref } from 'vue';
+//import { store } from '/@/composables/useStore'
 import Element from '../../../composables/useElementClass';
 
+const store = inject ( 'useStore' )
 //import { useStore } from 'vuex'
 //import { useEditorStore } from '/@/stores/editor';
 //import { EDITOR } from '/@/composables/useEditor';
@@ -38,10 +39,28 @@ import Element from '../../../composables/useElementClass';
     const newElement = async ( name: string )=>{
         console.log ( 'adding => ' , name)
         if ( editor.current ){
+            
             if ( name != 'Grid' ){
                 const el = await new Element().createElement(name)
-                //const current: any = editor.current    
+                //const current: any = editor.current  
+                let id = editor.current.id
+                let isChild = false
+                if ( editor.current.data?.client && editor.current.data?.model ){
+                    el.data['client'] = editor.current.data.client
+                    el.data['model'] = editor.current.data.model
+                    el.parent = editor.current.id
+                    isChild = true
+                }
                 editor.current.blocks.push ( await el )
+                if ( name === 'GraphQL' ){
+                    store.status.dialog = 'GraphQL'
+                    store.status.dialogTitle = 'GraphQL Endpoint'
+                }
+                store.editor.current = editor.current.blocks[editor.current.blocks.length-1]
+                if ( isChild ){
+                    store.status.dialog = 'GraphQL'
+                    store.status.dialogTitle = 'Set Field Value'
+                }
                 //editor.current = el 
             } 
             if ( name === 'Grid' ){
@@ -50,6 +69,7 @@ import Element from '../../../composables/useElementClass';
                 //editor._helper ( name )
                 editor.helper = name
             }
+            
         }
     }
 

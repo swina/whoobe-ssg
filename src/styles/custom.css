@@ -2,6 +2,42 @@
    filter: grayscale(1);
 }
 
+.animate-fadeIn {
+    animation: fade 1s; 
+}
+
+@keyframes fade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-slideIn {
+    animation: slideIn 1s;
+}
+
+@keyframes slideIn {
+  0% { transform: translate(-100%, 0); }
+  100% { transform: translate(0, 0); }
+}
+
+.animate-slideInTop {
+    animation: slideInTop 1s;
+}
+
+@keyframes slideInTop {
+  0% { transform: translate(0, -100%); }
+  100% { transform: translate(0, 0); }
+}
+
+.animate-slideInRight {
+    animation: slideInRight 1s;
+}
+
+@keyframes slideInRight {
+  0% { transform: translate(100%,0); }
+  100% { transform: translate(0, 0); }
+}
+
 /* TRANSITIONS */
 
 .fade-enter-active, .fade-leave-active {

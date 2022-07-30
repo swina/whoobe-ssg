@@ -23,7 +23,9 @@ export function slugify ( value:string ){
     return value.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
 }
 
-
+export function ObjectValueByKey ( key:String , obj:Object ){
+  return key.split('.').reduce((o,i)=> o[i], obj )
+}
 
 
 export function removeNestedObjectsKey( currentNode:Object = {} , arrayKey:Object = [] , deleteKey:String = ''){

@@ -2,6 +2,9 @@
     <div class="flex flex-col p-2" v-if="editor.current">
         <label class="flex items-center">Link <span @click="open=!open" title="Link to page/asset" class="absolute right-0 mr-2"><icon icon="mdi:web"/></span></label>
         <input type="text" v-model="editor.current.link"/>
+        <div class="flex" v-if="editor.current.data?.field">
+            <button @click="setGraphQLLink">Link to GraphQL</button>
+        </div>
         Anchor
         <input type="text" v-model="editor.current.anchor"/>
 
@@ -31,6 +34,11 @@ const setLink = ( data:String , path:String ) => {
 
 if ( editor.current.link ){
     url.value = `${PAGESURL}/${editor.current.link.replace('.html','')}`
+}
+
+const setGraphQLLink = () => {
+    editor.current.link = editor.current.link.replace('{slug}','')
+    editor.current.link = editor.current.link + '{slug}'
 }
 
 let open = ref ( true )

@@ -1,5 +1,4 @@
 const colors = require('./colors')
-
 module.exports = {
     content: ["./dist/**/*.{html,js}"],
     theme: {

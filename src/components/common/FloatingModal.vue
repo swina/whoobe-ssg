@@ -12,6 +12,7 @@
             <DocumentSettings v-if="status.dialog === 'DocumentSettings'" :mode="status.mode"/>
             <BlockTipTap v-if="status.dialog==='wysiwyg'"/>
             <BlockGrid v-if="status.dialog==='Grid'"/>
+            <GraphQLClient v-if="status.dialog === 'GraphQL'"/>
             <ConfirmAction v-if="status.dialog === 'ConfirmAction'"/>
             <Images v-if="status.dialog === 'images'" context="images"/>
         </div>

@@ -1,5 +1,5 @@
 <template>
-<Block v-for="(item,index) in data" :block="props.block" :level="props.level" :data="item" :id="randomID()">
+<Block v-for="(item,index) in data" :block="props.block" :level="props.level" :data="item" :key="randomID()" :id="randomID()">
 </Block>
 </template>
 
@@ -21,15 +21,16 @@ const props = defineProps ({
 })
 
 const getData = async () => {
-    const res = await getCMSQuery ( props.block.data.provider )
-    console.log ( 'risposta' ,  await res )
-    const response = await CMS[props.block.data.provider]
-    data.value = response.map ( (record,index) => {
-        console.log ( index , props.limit - 1)
-        if( index >= props.offset && index < props.limit  ){
-            return record
-        }
-    }).filter ( a => a )
+    data.value = store.graphql.data[props.block.id][props.block.data.model]
+    // const res = await getCMSQuery ( props.block.data.provider )
+    // console.log ( 'risposta' ,  await res )
+    // const response = await CMS[props.block.data.provider]
+    // data.value = response.map ( (record,index) => {
+    //     console.log ( index , props.limit - 1)
+    //     if( index >= props.offset && index < props.limit  ){
+    //         return record
+    //     }
+    // }).filter ( a => a )
     return data.value
 }
 
