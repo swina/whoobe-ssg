@@ -46,9 +46,6 @@
                         <chip class="m-1" :class="store.editor.current.parent && field===store.editor.current.data?.field ? 'bg-purple-700':'bg-gray-700'" @click="setQLField(field)">{{field}}</chip>
                     </template>
                     
-                <!-- <template v-for="field in graphqlConfig[current.data.client].schema[current.data.model].query.fields">
-                    <chip class="m-1" :class="store.editor.current.parent && field===store.editor.current.data?.field ? 'bg-purple-700':'bg-gray-700'" @click="setQLField(field)">{{field}}</chip>
-                </template> -->
             </div>
             Legend
             <div class="flex">
