@@ -1,18 +1,36 @@
-import { reactive } from 'vue'
+import { reactive , inject } from 'vue'
 import jp from 'jsonpath'
 
+
+const APP_ROOT_PATH = import.meta.env.VITE_APP_PROTECT_ROOT //'home/antonio/projects/whoobe-ssg' ;
+
 const endpoint = import.meta.env.VITE_APP_LOCAL_API
+
+//const res = await fetch ( endpoint + '/home' )
+
+//const APP_ROOT_PATH = await res.path
+export const ROOT_PATH = APP_ROOT_PATH
+
 export const PAGESURL = import.meta.env.VITE_APP_PAGES_URL
-export const DATA_PATH = import.meta.env.VITE_APP_DATA_PATH
-export const PAGES_PATH = import.meta.env.VITE_APP_PAGES
-export const CONFIG_FILE = import.meta.env.VITE_APP_PAGES_ROOT + '/whoobe.config.json'
+export const DATA_PATH = APP_ROOT_PATH + '/.whoobe' ; //import.meta.env.VITE_APP_DATA_PATH
+export const PAGES_PATH = APP_ROOT_PATH + '/pages/dist' //import.meta.env.VITE_APP_PAGES
+export const CONFIG_FILE = APP_ROOT_PATH + '/pages/whoobe.config.json' //import.meta.env.VITE_APP_PAGES_ROOT + '/whoobe.config.json'
 import { message } from './useUtils'
-import { fstat } from 'fs'
 import { store } from './useStore'
+
+//const store = inject ( 'useStore' )
 
 export const API_URL = import.meta.env.VITE_APP_LOCAL_API
 
-const CONFIG = await openPath ( CONFIG_FILE )
+const CONFIG = loadConfiguration() //openPath ( CONFIG_FILE )
+
+
+console.log ( store )
+async function loadConfiguration (){
+    const data = await openPath ( CONFIG_FILE )
+    console.log ( data )
+    store.project.data = data.data 
+}
 
 export const paths = { 
     templates : '/templates',
@@ -58,23 +76,24 @@ export const template = reactive ( {
 
 
 export async function Archive ( path:string ) {
+    console.log ( path )
     const res = await fetch ( endpoint + paths[path] )
     localData.folders = await res.json()
     //console.log ( localData )
 }
 
 export async function fileExplorer ( path:string ){
+    console.log ( paths[path] )
     const res = await fetch ( endpoint + '/tree' + paths[path] )
     return await res.json()
 }
 
 export async function openPath ( filePath:string ) {
-    
     const res = await fetch ( endpoint + '/file?path=' + filePath )
     try {
         let data = await res.json()
+        console.log ( data )
         data.path = filePath
-        //console.log ( await res )
         return await data
     } catch ( err ) {
         const body = await res.text()

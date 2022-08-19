@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref , computed } from 'vue'
 import { randomID } from '/@/composables/useEditor';
-import { PAGESURL , paths  } from '/@/composables/useLocalApi'
+import { PAGESURL , ROOT_PATH, paths  } from '/@/composables/useLocalApi'
 import { status } from '/@/composables/useNavigation'
 
 let open = ref ( true )
@@ -33,11 +33,15 @@ let edit = ref (false)
 //     return file && file.value.split('.')[0] != 'index' ?
 //                 PAGESURL + '/' + file.value.split('.')[0] : PAGESURL
 // })
+
+console.log( paths )
 const setRawData = ( data:String , path:String ) => {
     edit.value = false
     console.log ( 'data', data , 'path',path )
     file.value = path
     rawdata.value = data.data
+    console.log ( 'Pages URL => ' , PAGESURL , paths.root )
+    console.log ( 'ROOT PATH => ' , ROOT_PATH )
     slug.value = PAGESURL + path.replace(paths.ssg,'')
 }
 </script>

@@ -1,7 +1,7 @@
 import { reactive, toRefs } from 'vue'
 import { EDITOR } from '/@/composables/useEditor'
 import { CMS } from '/@/composables/useGraphCMS'
-import { CONFIG_FILE } from './useLocalApi'
+//import { CONFIG_FILE } from './useLocalApi'
 import Project from '/@/composables/useProjectClass'
 
 export const store = reactive({
@@ -25,7 +25,7 @@ export const store = reactive({
         data: ''
     },
     settings :{
-        file: CONFIG_FILE,
+        file: null,//CONFIG_FILE,
         tab: 'settings',
     },
     toolbar: {

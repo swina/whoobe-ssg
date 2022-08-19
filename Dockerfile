@@ -9,3 +9,5 @@ USER node
 WORKDIR /app
 
 COPY . .
+
+CMD [ "npm" , "run" , "all" ]

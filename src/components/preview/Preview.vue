@@ -1,11 +1,11 @@
 <template>
 <div class="fixed inset-0 bg-white h-screen w-screen max-w-screen z-modal preview overflow-y-auto">
     <div class="whoobePreview border shadow-xl" @contextmenu="openContextMenu($event)" v-if="editor.document?.json" :style="scale">
-        <BlockPreview :block="project.data.header.blocks.json.blocks" v-if="previewLayout && project.data.header?.blocks"/>
+        <BlockPreview :block="store.project.data.header.blocks.json.blocks" v-if="previewLayout && store.project.data.header?.blocks"/>
         <div :class="previewLayout?previewCSS:''" id="templatePreview">
             <BlockPreview :data="$attrs.data" :slug="$attrs.slug" :block="editor.document.json.blocks" :level="2"/>
         </div>
-        <BlockPreview :block="project.data.footer.blocks.json.blocks" v-if="previewLayout && project.data.footer?.blocks"/>
+        <BlockPreview :block="store.project.data.footer.blocks.json.blocks" v-if="previewLayout && store.project.data.footer?.blocks"/>
     </div>
     <div class="fixed top-0 right-0 cursor-pointer text-gray-200 hover:text-gray-400 z-modal" @click="editor.preview=!editor.preview"><Icon icon="mdi:close" class="text-5xl"/></div>
 
@@ -38,9 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref , computed , watch , inject } from 'vue'
-import { useStore } from '/@/composables/useActions'
-import { openCtx , closeCtx } from '/@/composables/contextMenu'
+import { ref , inject } from 'vue'
+import { openCtx } from '/@/composables/contextMenu'
 import { slugify , message } from '/@/composables/useUtils';
 import { status } from '/@/composables/useNavigation'
 import { loadConfig , CONFIG_FILE , saveFile , layoutMainClass , saveStaticPage } from '/@/composables/useLocalApi'
@@ -112,7 +111,7 @@ if ( props.save ) {
     console.log ( 'Save on load' )
 }
 
-const openContextMenu = (e:Object) => {
+const openContextMenu = (e: object) => {
     e.preventDefault()
     openCtx('previewCtx', e)
 }
@@ -173,12 +172,12 @@ const previewClass = async () => {
 
 previewClass()
 
-async function loadSettings () {
-    let response = await loadConfig()
-    project.data = await response.data
-}
+// async function loadSettings () {
+//     let response = await loadConfig()
+//     project.data = await response.data
+// }
 
-loadSettings()
+// loadSettings()
 const scale = ref ( '' )
 const scaleIndex = ref(100);
 const scaleDown = ()=>{

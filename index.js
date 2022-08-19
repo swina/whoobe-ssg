@@ -24,14 +24,14 @@ var destination
 //any other path different from the protected root will be refused
 const protectRoot = __dirname //process.env.VITE_APP_PROTECT_ROOT
 
-const DATA_PATH = process.env.VITE_APP_DATA_PATH
+const DATA_PATH = path.resolve() + '/.whoobe' //process.env.VITE_APP_DATA_PATH
 const current   = `${DATA_PATH}/current`
 const projects  = `${DATA_PATH}/projects`
 const templates = `${DATA_PATH}/templates`
 const uikits    = `${DATA_PATH}/uikits`
-const assets    = `${process.env.VITE_APP_PAGES}/assets`
-const images    = `${process.env.VITE_APP_PAGES}/assets/img`
-const static    = process.env.VITE_APP_PAGES;
+const assets    = `${path.resolve()}/pages/dist/assets`
+const images    = `${path.resolve()}/pages/dist/assets/img`
+const static    = `${path.resolve()}/pages/dist` //process.env.VITE_APP_PAGES;
 const local     = `${DATA_PATH}`
 const tmp       = `./.whoobe/tmp`
 
@@ -194,6 +194,10 @@ app.post ( '/graphql' , async ( req, res ) => {
         res.json ( { error: err } )
     }
 }) 
+
+app.get ( '/home' , async ( req, res ) => {
+    res.json ( { path: path.resolve() } )
+})
 
 // get filesystem structure 
 // @name : paths

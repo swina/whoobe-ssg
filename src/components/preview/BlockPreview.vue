@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { computed , ref , onMounted , useAttrs , inject} from 'vue'
-import { blockCSS , randomID } from '/@/composables/useActions'
+import { randomID } from '/@/composables/useActions'
 import { message } from '/@/composables/useUtils';
 import { graphQLRequest } from '/@/composables/useLocalApi'
 
