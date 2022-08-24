@@ -79,11 +79,40 @@ export const graphqlConfig = {
                                     name
                                 }
                                 status
+                                blocks
                                 date_updated
                             }
                         }
                     `
                     , 
+                    single: gql`
+                        query($slug:String) {
+                            templates(filter:{slug:{ _eq:$slug }}) {
+                                id
+                                name
+                                category {
+                                    name
+                                }
+                                status
+                                blocks
+                                date_updated
+                            }
+                        }
+                    `,
+                    category: gql`
+                        query($category:String) {
+                            templates(filter:{category: {name: { _eq:$category } }}) {
+                                id
+                                name
+                                category {
+                                    name
+                                }
+                                status
+                                blocks
+                                date_updated
+                            }
+                        }
+                    `,
                     insert: gql`
                     {
                         mutation addTemplate ($template:AddTemplateInput!) { 

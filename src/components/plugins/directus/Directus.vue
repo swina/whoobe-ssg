@@ -8,10 +8,10 @@
             <i>Directus Data Engine is not intended for dynamic content (CMS), but only as data for templates and configuration</i>
         </p>
     </div>
-    <div v-else class="p-8">
+    <div v-else class="p-8 h-screen overflow-y-auto">
         <div class="bg-purple-500 text-white p-2">Directus Whoobe Data</div>
         <div class="flex w-full border bg-gray-100">
-            <div class="flex flex-col w-1/4">
+            <div class="flex flex-col w-1/5">
                 <template v-for="option in options">
                     <div v-if="!option?.hidden" class="capitalize px-2 py-4 border-b border-gray-300 hover:bg-white cursor-pointer" 
                         @click="directusData(option),tab=option.tab" :class="option.tab===tab?'bg-white':''">
@@ -19,10 +19,10 @@
                     </div>
                 </template>
             </div>
-            <div v-if="tab" class="bg-white w-full">
-                <div>
+            <div v-if="tab" class="bg-white w-4/5 flex min-h-screen h-screen">
+                <div class="w-1/3">
                     <ul>
-                        <li v-for="item in store.directus[current]" class="list-none my-1 hover:bg-gray-200 p-1 cursor-pointer items-center flex">
+                        <li v-for="item in store.directus[current]" class="list-none my-1p-1 cursor-pointer items-center flex">
                             
                             <template v-for="field in fields">
                                 
@@ -32,12 +32,48 @@
                                     </span>
                                 </span>
                                 <span v-else>
-                                    <i data-icon="arcticons:file" class="iconify mr-1 text-lg"/>{{ item[`${field}`] }}
+                                    <span @click="getItems(item)" class="hover:bg-gray-200 hover:text-black pr-2 flex items-center" :class="category && category===item.name?'bg-gray-500 text-white':'text-black'">
+                                         <i data-icon="arcticons:file" class="iconify mr-1 text-lg"/>
+                                        <!--<i v-if="" data-icon="arcticons:folder" class="iconify mr-1 text-lg"/> -->
+                                        {{ item[`${field}`] }}
+                                    </span>
+                                    <div v-if="templates && category === item.name">
+                                        <div class="ml-6 text-sm my-1 flex flex-col hover:bg-gray-300 px-2" v-for="block in templates">
+                                            <span @click="template = block">{{ block.name }}</span>
+                                        </div>
+                                    </div>
                                 </span>
                             </template>
                         </li>
                     </ul>
                 </div>
+                <div v-if="template && tab==='templates'" class="w-2/3 flex flex-col overflow-y-auto">
+                    <!-- <template v-for="block in templates"> -->
+                        <div class="flex flex-col w-full text-sm" @click="editTemplate(template)">
+                            <chip>{{ template.name }}</chip>
+                            <div class="preview-md" style="transform-origin:0 0">
+                                <BlockPreview :block="template.blocks.json.blocks" :level="2"/>
+                            </div>
+                        </div>
+                            <!-- {{ block.blocks.json.blocks }} -->
+                    <!-- </template> -->
+
+                </div>
+                <div class="w-2/3 flex flex-wrap  overflow-y-auto bg-gray-100" v-if="!template && templates.length && tab==='templates'">
+                    <template v-for="block in templates" :key="block.id">
+                        <div class="flex flex-col w-1/2 text-sm p-3 overflow-y-auto overflow-x-hidden">
+                            <chip class="bg-gray-300 text-black w-1/2">{{ block.name }}</chip>
+                            <div class="preview-sm p-2">
+                                <BlockPreview :block="block.blocks.json.blocks" :level="2"/>
+                            </div>
+                        </div>
+                    </template>
+                    
+
+                </div>
+                <div v-if="current === 'templates_categories' && !templates.length && tab==='templates'">
+                        No templates found.
+                    </div>
             </div>
         </div>
     </div>
@@ -45,17 +81,17 @@
 
 <script setup lang="ts">
 import { inject , ref } from 'vue'
-import { graphQLDirectus , configAll } from '/@/composables/useGraphQL'
-
+import { graphQLDirectus , graphQLData , configAll } from '/@/composables/useGraphQL'
+import { tabberAddTab } from '/@/composables/useNavigation'
 const store = inject('useStore')
 
 const tab = ref('')
 
 const options = ref ([
-    { tab: 'projects'  },
-    { tab: 'templates_categories' , filter: 'templates' , hidden: true },
-    { tab: 'templates' , filter: 'templates_categories' },
-    { tab: 'languages' },
+    { tab: 'projects'  , icon: 'arcticons:file'},
+    { tab: 'templates_categories' , filter: 'templates' , hidden: true , icon: 'arcticons:folder' },
+    { tab: 'templates' , filter: 'templates_categories' , icon: 'arcticons:folder' },
+    { tab: 'languages' , icon: 'arcticons:file' },
 ])
 
 let tree = ref({
@@ -80,5 +116,29 @@ const directusData = async ( collection:Object ) => {
     tree.value.children = store.directus[coll]
     tree.value.ref = collection
 }
+let category = ref('')
+let templates = ref([])
+let template = ref(null)
 
+const getItems = async ( item: object ) => {
+    template.value = null
+    if ( current.value === 'templates_categories' ){
+        let config = {
+            client: 'directus', 
+            model: 'templates',
+            category: item.name
+        }
+        category.value = item.name
+        templates.value = await graphQLData ( config )
+        console.log ( await templates.value )
+    }
+}
+
+const editTemplate = (template: object) => {
+     tabberAddTab ( {
+        component: 'Editor',
+        label: template.name,
+        object: template.blocks
+    })
+}
 </script>

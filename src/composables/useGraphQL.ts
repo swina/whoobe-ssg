@@ -39,7 +39,17 @@ export async function graphQLData ( config:Object ){
     //qryConfig['url'] = gQLClients.filter(a=>a.client===config.client)[0].url.replace('graphql','')
     let client = await setGraphqlClient ( config.client )
     let query = qryConfig.schema[config.model].query
-    
+    console.log ( config )
+
+    if ( config.category ){
+        let params = {}
+        params['category'] = config.category
+        const data = await client.request ( query.category , params )
+        console.log ( await data )
+        log ( await graphQLCollectionFields ( config ))
+        return await data[config.model]
+    }
+
     // list data 
     if ( !config.slug ){
         let params = {}
