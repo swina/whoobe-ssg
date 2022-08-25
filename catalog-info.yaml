@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: whoobe-ssg
+  annotations:
+    github.com/project-slug: swina/whoobe-ssg
+spec:
+  type: other
+  lifecycle: unknown
