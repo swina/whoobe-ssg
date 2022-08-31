@@ -5,8 +5,8 @@
           <div :class="n===1?'border-l':''" class="border-r h-4 h-screen"></div>
         </template>
       </div>
-      <div v-if="editor.document" class="editor-container mt-4 border-0 mr-10 h-screen border-purple-600 overflow-y-auto pb-60" 
-        @click="editor.current = editor.document.json.blocks[0]" @contextmenu.prevent="openMenu($event)">
+      <div v-if="store.editor.document" class="editor-container mt-4 border-0 mr-10 h-screen border-purple-600 overflow-y-auto pb-60" 
+        @click="store.editor.current = store.editor.document.json.blocks[0]" @contextmenu.prevent="openMenu($event)">
         <BlockContainer/>
       </div>
     </div>
@@ -29,15 +29,16 @@
 </template>
 
 <script setup lang="ts">
-import {  computed  } from 'vue';
+import {  computed , inject  } from 'vue';
 import { updateCSS } from '/@/composables/useActions'
 import twGroups from '/@/composables/tw.groups'
 import { hotKeys } from '/@/composables/hotKeys';
 import { useEditorSidebar } from '/@/composables/useNavigation';
 import { moveBlock } from '/@/composables/useEditor';
 //import { EDITOR } from '/@/composables/useEditor';
-import { store } from '/@/composables/useStore';
+//import { store } from '/@/composables/useStore';
 
+const store = inject ( 'useStore' )
     const hk = hotKeys()
 
     const editor = store.editor //EDITOR //useStore()

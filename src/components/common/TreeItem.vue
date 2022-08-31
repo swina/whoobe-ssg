@@ -67,7 +67,7 @@ const isFolder = computed(() => {
 })
 
 function toggle(model,open=true) {
-    status.current = model
+    status.currentFile = model
     if ( model.type === 'file' && open ){
         emit('openTemplate',model)
     }
@@ -105,8 +105,8 @@ const deleteItem = async () => {
 }
 
 const current = (model)=>{
-    return status.current ?
-            status.current.path === model.path ?
+    return status.currentFile ?
+            status.currentFile.path === model.path ?
                 'text-purple-300 bg-black' : '' : ''
 }
 const loadFile = async ( item ) => {

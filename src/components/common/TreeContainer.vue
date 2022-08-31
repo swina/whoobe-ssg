@@ -1,5 +1,5 @@
 <template>
-    <div v-if="open && show" :class="isShowed()" class="pt-2 md:w-1/3 lg:w-3/16 text-xs cursor-pointer top-0 mt-8 fixed h-screen z-2xtop bg-bluegray-800 text-gray-300 overflow-y-auto border-r-4  border-purple-400 shadow-lg">
+    <div v-if="show" :class="isShowed()" class="pt-2 md:w-1/3 lg:w-3/16 text-xs cursor-pointer top-0 mt-8 fixed h-screen z-2xtop bg-bluegray-800 text-gray-300 overflow-y-auto border-r-4  border-purple-400 shadow-lg">
         <ul>
             <TreeItem 
                 :key="fileTree.folders.name" 

@@ -76,6 +76,7 @@ export const graphqlConfig = {
                                 id
                                 name
                                 category {
+                                    id
                                     name
                                 }
                                 status

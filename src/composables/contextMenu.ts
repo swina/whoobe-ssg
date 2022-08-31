@@ -4,12 +4,10 @@ export const event = reactive ({
     data: null
 })
 
-export function openContextMenu ( e:object , fixed:Boolean ){
+export function openContextMenu ( e:any , fixed:Boolean ){
     console.log ( 'open context menu' )
-    let ctxMenu = document.querySelector ( '#contextMenu' )
+    let ctxMenu:any = document.querySelector ( '#contextMenu' )
     ctxMenu.classList.remove ( 'hidden' )
-    let offsetX = 50
-    let offsetY = 30
     let left = `${e.pageX-50||e.clientX-50}px`
     let top = `${e.pageY-30||e.clientY-30}px`
     let height = ctxMenu.getBoundingClientRect().height 
@@ -29,9 +27,9 @@ export function toggleContext ( e:object ){
     ctxMenu?.classList.add ( 'hidden' )
 }
 
-export function openContextDialog ( e:object , classe:string ){
+export function openContextDialog ( e:any , classe:string ){
     
-    let dialog = document.querySelector ( '#contextDialog' )
+    let dialog:object = document.querySelector ( '#contextDialog' )
     // if ( dialog.classList.contains('hidden') ){
     //     dialog.classList.remove ( 'hidden' )
     //     classe ? dialog.classList.add ( classe ) : null
@@ -40,9 +38,9 @@ export function openContextDialog ( e:object , classe:string ){
     // }
 }
 
-export function openCtx ( id:String , e:object ){
+export function openCtx ( id:String , e:any ){
     e.preventDefault()
-    let ctxMenu = document.querySelector ( `#${id}` )
+    let ctxMenu:any = document.querySelector ( `#${id}` )
     ctxMenu.classList.remove ( 'hidden' )
     let height = ctxMenu.getBoundingClientRect().height 
     console.log ( window.innerWidth )
@@ -59,7 +57,7 @@ export function openCtx ( id:String , e:object ){
 }
 
 export function closeCtx ( id:String ){
-    document.querySelector ( `#${id}` ).classList.add('hidden')
+    return document.querySelector ( `#${id}` ).classList.add('hidden')
 }
 
 

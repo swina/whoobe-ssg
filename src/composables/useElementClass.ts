@@ -1,4 +1,28 @@
 export default class Element {
+        id      : string
+        blocks  : object
+        css     : any
+        tailwind: object
+        font    : string
+        style   : string
+        content : string
+        element : any
+        description : string
+        categories : object
+        alpine : object
+        events : object
+        data : object
+        gsap : object
+        link : string
+        anchor : string
+        image : object
+        type : string
+        tag : string
+        editable : boolean
+        icon : string
+        helper : any
+        dialog : any
+        parent : any
 
     constructor(){
         this.id = this.randomID()
@@ -188,12 +212,13 @@ export default class Element {
                         icon: 'ic:baseline-smart-button'
                     }
                 ]
-            }
+            },
+            
         ]
     }
 
     
-    createElement(element,options){
+    createElement(element:any,options:any){
         return element === 'Grid'       ? this.Grid(options) : 
             element === 'Flexbox'       ? this.Flexbox(options) :
             element === 'Container'     ? this.Container(options) :
@@ -278,7 +303,7 @@ export default class Element {
         return this
     }
 
-    Container(options){
+    Container(){
         this.blocks = []
         this.type = 'container'
         this.tag = 'container'
@@ -286,7 +311,7 @@ export default class Element {
         return this
     }
 
-    GraphQL(options){
+    GraphQL(){
         this.blocks = []
         this.type = 'container'
         this.tag = 'container'
@@ -564,5 +589,4 @@ export default class Element {
         this.editable = true
         return this
     }
-    
 }

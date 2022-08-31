@@ -8,11 +8,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref ,computed } from 'vue'
-import { status } from '/@/composables/useNavigation'
+import { ref ,computed , inject } from 'vue'
 import { openPath , saveFile , deleteFile, currentFolder, paths, fileTree } from '/@/composables/useLocalApi';
 import { action , createTemplate  } from '/@/composables/useActions'
 import { project } from '/@/composables/useProject'
+
+const store = inject ( 'useStore' )
+const status = store.status
 
 let file = ref('')
 let destination = ref ('')

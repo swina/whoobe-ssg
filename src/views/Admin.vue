@@ -22,7 +22,7 @@
 import '../styles/editor.css'
 import { inject , computed , onMounted  } from 'vue';
 import { initColors } from '/@/composables/useActions'
-import  Element from '/@/composables/useElementClass'
+import  Element from '../composables/useElementClass'
 //import { tabber , status, useEditorSidebar } from '/@/composables/useNavigation'
 //import { message } from '/@/composables/useUtils'
 //import { EDITOR } from '../composables/useEditor';

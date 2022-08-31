@@ -10,7 +10,7 @@
     <div v-else class="mx-auto">
         <h3 class="mx-auto">No layout defined yet</h3>
     </div>
-    <TreeContainer context="templates" :open="open" @close="open=!open" @file="addTemplate"/>
+    <!-- <TreeContainer context="templates" :open="open" @close="open=!open" @file="addTemplate"/> -->
 </template>
 
 <script setup lang="ts">

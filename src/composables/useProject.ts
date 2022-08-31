@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import Project from '/@/composables/useProjectClass'
+//import Project from '/@/composables/useProjectClass'
 import jp from 'jsonpath'
 
 export const project = reactive ( {
@@ -9,14 +9,15 @@ export const project = reactive ( {
 
 export const exportDocument = async (html:String , template:Object) =>{
     if ( !html ) return
-    let page = template
-    let fonts = jp.query ( page.json.blocks , '$..blocks..font') 
-    let fnts = [ ...new Set ( fonts.filter ( a => { return a } ) )]
-    let anims = jp.query ( page.json.blocks , '$..blocks[?(@.gsap.animation)]') 
-    let animations = anims.map ( a => { return { id: a.id , gsap: a.gsap }}) 
-    const exportPage = {
+    let page:any = template
+    let fonts:any = jp.query ( page.json.blocks , '$..blocks..font') 
+    let fnts:any = [ ...new Set ( fonts.filter ( (a:string) => { return a } ) )]
+    let anims:any = jp.query ( page.json.blocks , '$..blocks[?(@.gsap.animation)]') 
+    let animations = anims.map ( (a:any) => { return { id: a.id , gsap: a.gsap }}) 
+    
+    const exportPage:any = {
         html : html,
-        json: template.json,
+        json: page.json,
         fonts: fnts,
         title: page.name,
         description: page.description,

@@ -10,6 +10,7 @@
             <UploadFile v-if="status.dialog === 'UploadFile'"/>
             <RenameFile v-if="status.dialog === 'RenameFile'"/>
             <DocumentSettings v-if="status.dialog === 'DocumentSettings'" :mode="status.mode"/>
+            <BuilderNewPage v-if="store.status.dialog === 'BuilderNewPage'"/>
             <BlockTipTap v-if="status.dialog==='wysiwyg'"/>
             <BlockGrid v-if="status.dialog==='Grid'"/>
             <GraphQLClient v-if="status.dialog === 'GraphQL'"/>

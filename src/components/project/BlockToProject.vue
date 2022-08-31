@@ -18,12 +18,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref , inject } from 'vue'
 import { project } from '/@/composables/useProject'
-import { useStore } from '/@/composables/useActions'
+//import { useStore } from '/@/composables/useActions'
 import { slugify } from '/@/composables/useUtils'
 
-const editor = useStore()
+const store:any = inject ( 'useStore')
+const editor = store.editor
 
 let target = ref('')
 let slug = ref( slugify(editor.document.name) )

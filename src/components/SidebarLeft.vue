@@ -18,11 +18,11 @@ const title = ref('SidebarLeft');
 
     const items = ref ([
       
-      { label: 'Templates' , icon: 'carbon:volume-file-storage' , component: 'Archive'  },
+      { label: 'Templates' , icon: 'carbon:volume-file-storage' , component: 'Archive' , context: 'templates' },
       { label: 'New Template' , icon: 'emojione-monotone:new-button' , component: 'Editor' , hasTab: true },
-      { label: 'Assets' , icon: 'bx:data' , component : 'Assets' },
+      { label: 'Assets' , icon: 'bx:data' , component : 'Assets' , context: 'assets'},
       { label: 'Builder' , icon: 'ic:round-build-circle'  , component: 'Builder'},
-      { label: 'Pages' , icon: 'mdi:web'  , component: 'Pages' },
+      { label: 'Pages' , icon: 'mdi:web'  , component: 'Pages', context: 'pages' },
       { label: 'UI Kits' , icon: 'mdi:widgets' , component: 'UIKits' },
       { label: 'Directus' , icon: 'simple-icons:directus' , component: 'Directus' }
     ])

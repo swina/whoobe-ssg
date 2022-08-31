@@ -1,4 +1,4 @@
-import { reactive , inject } from 'vue'
+import { reactive  } from 'vue'
 import jp from 'jsonpath'
 
 
@@ -6,6 +6,7 @@ const APP_ROOT_PATH = import.meta.env.VITE_APP_PROTECT_ROOT //'home/antonio/proj
 
 const endpoint = import.meta.env.VITE_APP_LOCAL_API
 
+export const IS_DIRECTUS = import.meta.env.VITE_APP_DIRECTUS
 //const res = await fetch ( endpoint + '/home' )
 
 //const APP_ROOT_PATH = await res.path
@@ -22,17 +23,17 @@ import { store } from './useStore'
 
 export const API_URL = import.meta.env.VITE_APP_LOCAL_API
 
-const CONFIG = loadConfiguration() //openPath ( CONFIG_FILE )
+// const CONFIG = loadConfiguration() //openPath ( CONFIG_FILE )
 
 
-console.log ( store )
-async function loadConfiguration (){
-    const data = await openPath ( CONFIG_FILE )
-    console.log ( data )
-    store.project.data = data.data 
-}
+// async function loadConfiguration (){
+//     const data = await openPath ( CONFIG_FILE )
+//     console.log ( data )
+//     store.project.data = data.data 
+// }
 
-export const paths = { 
+
+export const paths:any = { 
     templates : '/templates',
     uikits: '/uikits',
     projects: '/projects',
@@ -61,19 +62,27 @@ export const SSG = reactive({
 
 
 
-export const currentFolder = reactive({
+export const currentFolder:object = reactive({
     path: null
 })
 
-export const localData = reactive ( {
+export const localData:any = reactive ( {
     folders: null,
     files: {}
 })
 
-export const template = reactive ( {
+export const template:any = reactive ( {
     json: null
 })
 
+export async function getRootPath(){
+    return await fetch ( endpoint + '/home' )
+}
+
+export async function getConfig(){
+    const configuration = await fetch ( endpoint + '/config' )
+    return await configuration.json()
+}
 
 export async function Archive ( path:string ) {
     console.log ( path )
@@ -101,25 +110,25 @@ export async function openPath ( filePath:string ) {
     }
 } 
 
-export const openFolder = async ( folder )=>{
+export const openFolder = async ( folder:string )=>{
     const res = await fetch ( endpoint + '/folders/' + folder )
     localData.files[folder] = await res.json()
 }
 
-export const openSubFolder = async ( folder , subfolder )=>{
+export const openSubFolder = async ( folder:string , subfolder:string )=>{
     const res = await fetch ( endpoint + '/folders/' + folder + '?folder=' + subfolder )
     const json = await res.json()
     localData.files[folder][subfolder] = json
     //console.log ( localData )
 }
 
-export const openFile = async ( folder , name ) => {
+export const openFile = async ( folder:string , name:string ) => {
     const res = await fetch ( endpoint + '/file/' + folder + '/' + name )
     template.json = await res.json() ?? res
     return 
 }
 
-export const saveFile = async ( json:Object ) => {
+export const saveFile = async ( json:any ) => {
     let data = { data: json , path: json.path }
     const res = await fetch ( endpoint + '/file/save' ,{
         method: 'POST',
@@ -190,12 +199,12 @@ export const loadConfig = async () => {
     return await config
 }
 export const buildClear = async (folder:String='') => {
-    const message = await fetch ( endpoint + '/build/clear?folder=' + folder)
+    await fetch ( endpoint + '/build/clear?folder=' + folder)
     return 'Build cleared'
 
 }
-export const saveStaticPage = async ( page: Object ) => {
-    let config = CONFIG //await openPath ( CONFIG_FILE )
+export const saveStaticPage = async ( page: any ) => {
+    let config = await getConfig() //CONFIG //await openPath ( CONFIG_FILE )
     let doc = await page
     let headerFonts = []
     let footerFonts = []
@@ -222,13 +231,15 @@ export const saveStaticPage = async ( page: Object ) => {
     // !page.layout ? header = '' : null
     // !page.layout ? footer = '' :  null
     
-   let mainCSS = ''
+   let mainCSS:string = ''
    if ( config.data?.main ){
         let main = jp.query ( config.data.main.blocks.json.blocks.css , '$..css').filter( a => a) 
         let mainContainer = [ ...main , ...jp.query ( config.data.main.blocks.json.blocks.css , '$..container' ).filter ( a => a )]
         mainContainer ?
-            mainCSS = mainContainer.join( ' ' ) : null
-   }
+            mainCSS = mainContainer.join( ' ' ) : ''
+    } else {
+        mainCSS = ''
+    }
     let fontsLink = ''
     if ( fonts ){
         fontsLink = `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=${fonts}">`
@@ -287,7 +298,7 @@ export const saveStaticPage = async ( page: Object ) => {
     //        <div class="${mainCSS} whoobe-layout-container">
     //</div>
     
-    const saved = await fetch ( endpoint + '/save/html/' ,{
+    await fetch ( endpoint + '/save/html/' ,{
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -309,7 +320,7 @@ export async function buildProject (){
         fonts: config.data.homepage.blocks,
         layout: false
     }
-    let saved = await saveStaticPage ( page )
+    await saveStaticPage ( page )
     message.console += '- created homepage\n'
     if ( config.data.pages ){
         Object.keys(config.data.pages).forEach ( async (pg) => {
@@ -320,7 +331,7 @@ export async function buildProject (){
                 fonts: config.data.pages[pg].blocks,
                 layout: true
             }
-            saved = await saveStaticPage ( page )
+            await saveStaticPage ( page )
             message.console += '- created ' + config.data.pages[pg].slug + '\n'
         })
     }
@@ -355,7 +366,7 @@ export async function  layoutMainClass () {
    return ''
 }
 
-export async function graphQLRequest ( config ) {
+export async function graphQLRequest ( config:object ) {
     try {
         const res = await fetch ( endpoint + '/graphql' ,{
             method: 'POST',

@@ -40,7 +40,7 @@ import { computed, ref  } from 'vue'
 import { useStore, selectBlock , blockCSS , sliderObject , sliderIndex } from '/@/composables/useActions'
 import { openContextMenu , toggleContext } from '/@/composables/contextMenu'
 import { status } from '/@/composables/useNavigation'
-import Element from '/@/composables/useElementClass'
+import Element from '../../../../composables/useElementClass'
 import { EDITOR , cloneBlock , removeBlock } from '/@/composables/useEditor'
 
 const editor = EDITOR //useStore()

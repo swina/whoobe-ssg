@@ -7,9 +7,11 @@ export default class Project {
     homepage: object
     header: object
     footer: object
+    layout: object
     pages: object
     fonts: object
     animations: object
+    headless: object
     scripts:Object
     analytics: string
     meta: Object

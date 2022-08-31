@@ -1,13 +1,13 @@
 import { reactive } from 'vue'
-import { useStore  } from '/@/composables/useActions'
+//import { useStore  } from '/@/composables/useActions'
 
-import Element from '/@/composables/useElementClass'
+import Element from './useElementClass'
 import Block from '/@/composables/useBlockClass'
 
 import { PREVIEW , setLocalStorage } from '/@/composables/useActions'
 import { EDITOR } from '/@/composables/useEditor'
-import { CONFIG_FILE } from './useLocalApi'
-const editor = useStore()
+
+//const store:any = inject ( 'useStore' ) //useStore()
 
 import { store } from '/@/composables/useStore'
 
@@ -46,7 +46,7 @@ export const tabber = reactive ({
 export async function tabberAddTab( params: any) {
     let tabber = store.tabber
     await saveCurrentTab()
-    let obj:any = null , page:object , document:object , block:object , element:object
+    let obj:any = null  , document:any , block:object 
     if ( params.component === 'Editor' ){
         if ( !params.object ){
             console.log ( 'creating new template ...' )
@@ -56,12 +56,12 @@ export async function tabberAddTab( params: any) {
             document.name = 'A new template'
             document.json.blocks =  block 
             obj = document
-            //await editor._document ( document )
-            //await editor._current ( block )
+            // EDITOR.document = document
+            // EDITOR.current = block
             EDITOR.document = document
             EDITOR.current = block
-            //await editor._tool ( 'elements' , block )
-            //console.log ( editor.document )
+            store['document'] = document
+            store['current'] = block
             tabber.tabs.push (  {
                 label: params.label,
                 component: params.component,
@@ -70,10 +70,11 @@ export async function tabberAddTab( params: any) {
         } else {
             document = params.object
             obj = document
-            //editor._document ( obj )
-            //editor._current ( obj ) 
-            EDITOR.document = obj
-            EDITOR.current = obj 
+
+            // EDITOR.document = obj
+            // EDITOR.current = obj 
+            store.document = obj
+            store.current = obj
             tabber.tabs.push (  {
                 label: params.label,
                 component: params.component,
@@ -84,16 +85,17 @@ export async function tabberAddTab( params: any) {
         tabber.tab = tabber.tabs.length - 1
     } else {
         if ( tabber.tabs ){
-            let isTab = tabber.tabs.filter ( ( t , index ) => t.component === params.component )
+            let isTab = tabber.tabs.filter ( ( t:any , index:number ) => t.component === params.component )
             if ( !isTab.length ){
                 tabber.tabs.push (  {
                     label: params.label,
                     component: params.component,
-                    object: obj
+                    object: obj,
+                    context: params?.context 
                 })
                 tabber.tab = tabber.tabs.length - 1
             } else {
-                tabber.tabs.forEach ( (tab,index) => {
+                tabber.tabs.forEach ( (tab:any,index:any) => {
                     if ( tab.component === params.component ){
                         tabber.tab = index
                     }
@@ -113,10 +115,10 @@ export async function tabberAddTab( params: any) {
 
 
 export async function saveCurrentTab(){
-    let tabber = store.tabber
+    let tabber:any = store.tabber
     if ( tabber.tabs.length ){
         if ( tabber.tabs[tabber.tab]?.component && tabber.tabs[tabber.tab].component === 'Editor' ){
-            let target = document.querySelector ( '.editor-container' )
+            let target:any = document.querySelector ( '.editor-container' )
             tabber.tabs[tabber.tab].object = EDITOR.document //editor.document
             tabber.tabs[tabber.tab].scroll = target.scrollTop
         }
@@ -139,7 +141,7 @@ export async function tabberRemoveTab ( index: number ){
 export async function switchToEditor (){
     let tabber = store.tabber
     let isEditor = false
-    tabber.tabs.forEach ( (tab,index) => {
+    tabber.tabs.forEach ( (tab:any,index:any) => {
         if ( tab.component === 'Editor' ){
             tabber.tab = index
             isEditor = true

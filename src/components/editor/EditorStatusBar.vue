@@ -1,20 +1,18 @@
 <template>
     <div class="bars bottomBar border-t border-bluegray-800 pl-10 text-gray-500 z-modal" :class="$attrs.class">
-        <!-- <template v-for="(tab,index) in navigation.tabs" :key="'tab_' + index">
-            <div class="tab" :class="active(index)" @click="navigation.tab = index">{{ tab.label }} <div @click="removeTab(index)"><i class="iconify text-xs ml-2" data-icon="mdi:close"/></div>
-            </div>
-        </template> -->
-
-        <!-- <span class="mx-2">
-            Project <span v-if="project" class="bg-bluegray-500 px-1 rounded">{{ project.data.name }}</span>
-        </span> -->
         
         Template <input class="mx-2" type="text" v-model="editor.document.name"/>
-        {{ editor.current ? editor.current.id : '' }}
+        <span v-if="IS_DIRECTUS" class="mr-2">
+            Category : <select class="h-6 border-0 font-mono outline-none bg-bluegray-800 text-gray-400" v-model="directusCategory">
+                <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+            </select>
+        </span>
+        ID: {{ editor.current ? editor.current.id : '' }}
         <span @click="saveTemplate($event)" class="mx-2" title="Save template">
             <Icon icon="ic:baseline-save" class="text-xl"/>
         </span>
 
+        
         <span @click="saveTemplateAs($event)" class="mx-2" title="Save As">
             <Icon icon="codicon:save-as" class="mt-1 text-xl"/>
         </span>
@@ -49,8 +47,8 @@ import { PREVIEW , setLocalStorage , useStore } from '/@/composables/useActions'
 import { openContextDialog } from '/@/composables/contextMenu';
 import { status } from '/@/composables/useNavigation'
 import { project } from '/@/composables/useProject'
-import { saveFile , fileExplorer } from '/@/composables/useLocalApi';
-import { graphQLTemplateSave } from '/@/composables/useGraphQL'
+import { saveFile , fileExplorer , IS_DIRECTUS} from '/@/composables/useLocalApi';
+import { graphQLTemplateSave , graphQLData } from '/@/composables/useGraphQL'
 
 //import { message } from '/@/composables/useUtils'
 //import { EDITOR } from '/@/composables/useEditor'
@@ -61,6 +59,19 @@ const editor = store.editor //EDITOR //useStore()
 const selectFolder = ref(false)
 let tree = ref({})
 let folders = ref({})
+const categories = ref(null)
+let directusCategory = ref(null)
+
+
+const getTemplateCategories = async ()=>{
+    const config = {
+        client: 'directus', 
+        model: 'templates_categories'
+    }
+    const res = await graphQLData ( config )
+    categories.value = res
+}
+
 const preview = () => {
     setLocalStorage ( PREVIEW , editor.document )
     editor.preview = true
@@ -77,6 +88,9 @@ const saveTemplate = async () => {
     if ( editor.document?.path ){
         await saveFile ( editor.document )
         store.message.data = 'File saved'
+        if ( IS_DIRECTUS ){
+            editor.document['category'] = directusCategory
+        }
         const template = await graphQLTemplateSave ( editor.document )
         console.log ( await template )
     }
@@ -101,4 +115,8 @@ const loadTree = async ( context:String = "templates" ) => {
     })
 }
 loadTree()
+
+if ( IS_DIRECTUS ){
+    getTemplateCategories()
+}
 </script>

@@ -6,18 +6,21 @@
 </template>
 
 <script setup lang="ts">
-// import { ref } from 'vue'
+import { inject } from 'vue'
 // import { useEditorStore } from '/@/stores/editor';
-import { EDITOR } from '/@/composables/useEditor';
+
+const store:any = inject ( 'useStore' )
+
+//import { EDITOR } from '/@/composables/useEditor';
 
 import '/@/styles/editor.css'
 
-const editor: any = EDITOR //useEditorStore();
+const editor: any = store.editor  //EDITOR //useEditorStore();
 // const navigation = useNavigatorStore();
 
 //let whoobe = ref(EDITOR)
 
-const setCurrent = () => {
-    console.log ( 'container' , editor.document  )
-}
+// const setCurrent = () => {
+//     console.log ( 'container' , editor.document  )
+// }
 </script>

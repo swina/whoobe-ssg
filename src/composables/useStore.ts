@@ -2,7 +2,7 @@ import { reactive, toRefs } from 'vue'
 import { EDITOR } from '/@/composables/useEditor'
 import { CMS } from '/@/composables/useGraphCMS'
 //import { CONFIG_FILE } from './useLocalApi'
-import Project from '/@/composables/useProjectClass'
+//import Project from '/@/composables/useProjectClass'
 
 export const store = reactive({
     status : {
@@ -16,6 +16,7 @@ export const store = reactive({
         dialogAction: '',
         current: null,
         currentFile: null,
+        currentType: null,
         previewMode: false,
         locales : import.meta.env.VITE_APP_LOCALE.split(','),
         locale: import.meta.env.VITE_APP_LOCALE.split(',')[0]
@@ -27,6 +28,9 @@ export const store = reactive({
     settings :{
         file: null,//CONFIG_FILE,
         tab: 'settings',
+    },
+    explorer: {
+        file: null
     },
     toolbar: {
         tool: ''
@@ -48,7 +52,9 @@ export const store = reactive({
     },
     project: {
         data: Object ,
-        path: ''
+        path: '',
+        rebuild: false,
+        lastRebuild: null
     },
     
     clipboard : null,

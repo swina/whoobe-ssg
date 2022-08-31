@@ -1,5 +1,6 @@
 "use strict";
 import Element from './useElementClass'
+import { store } from '/@/composables/useStore'
 
 const templatesIcons = {
     'Empty'             : { icon:'ic:baseline-highlight-alt' , template: 'empty'},
@@ -18,7 +19,8 @@ const templatesIcons = {
     'Input Icon(R)'     : { icon:'ic:baseline-input' , template: 'inputIconR' },
     'Article'           : { icon:'ic:baseline-article' , template: 'article'},
     'Classic Page'      : { icon:'mdi:web' , template: 'classicPage'},
-    'Blog Homepage'     : { icon:'mdi:web' , template: 'blog' }
+    'Blog Homepage'     : { icon:'mdi:web' , template: 'blog' },
+    'Website Menu'      : { icon:'mdi:web' , template: 'menuPages' }
 }
 
 const templates = {
@@ -36,7 +38,8 @@ const templates = {
     'Input Icon(R)'     : 'inputIconR',
     'Article'           : 'article',
     'Classic Page'      : 'classicPage',
-    'Blog Homepage'     : 'blog'
+    'Blog Homepage'     : 'blog',
+    'Website Menu'      : 'menuPages'
 }
 
 const kits = [
@@ -74,7 +77,8 @@ export default class Template {
                 name === 'simpleForm'   ? this.simpleForm() : 
                 name === 'roundedInput' ? this.roundedInput() : 
                 name === 'inputIcon'    ? this.inputIcon() :
-                name === 'inputIconR'    ? this.inputIconRight() :null
+                name === 'inputIconR'    ? this.inputIconRight() :
+                name === 'menuPages'    ? this.navbar('pages') : null
     }   
 
     empty(){
@@ -126,19 +130,34 @@ export default class Template {
         return this
     }
 
-    navbar(){
-        let container = new Element().Grid().Cols(12).setCss('w-full bg-white shadow-lg')
-        let logo = new Element().Flexbox({direction:'col',colspan:3}).setCss('items-center justify-center')
-        let title = new Element().Heading(2).setContent('Title')
-        logo.blocks.push ( title )
-        let menu = new Element().Flexbox({direction:'row',colspan:9}).setCss('items-center justify-center')
-        for ( var n=0 ; n < 3 ; n++ ){
-            let menu_item = new Element().InlineText().setCss('border-b border-transparent hover:border-black mx-6').setContent('Item_' + (parseInt(n)+1))
-            menu.blocks.push ( menu_item )
+    navbar(data=null){
+        if ( !data ){
+            let container = new Element().Grid().Cols(12).setCss('w-full bg-white shadow-lg')
+            let logo = new Element().Flexbox({direction:'col',colspan:3}).setCss('items-center justify-center')
+            let title = new Element().Heading(2).setContent('Title')
+            let menu = new Element().Flexbox({direction:'row',colspan:9}).setCss('items-center justify-center')
+            logo.blocks.push ( title )
+            for ( var n=0 ; n < 3 ; n++ ){
+                let menu_item = new Element().InlineText().setCss('border-b border-transparent hover:border-black mx-6').setContent('Item_' + (parseInt(n)+1))
+                menu.blocks.push ( menu_item )
+            }
+            container.blocks.push ( logo )
+            this.blocks.push ( container )
+        } else {
+            let menu = new Element().Flexbox().setCss('items-center justify-center flex-col md:flex-row')
+            if ( store?.project.data?.pages ) {
+                let pages = store.project.data.pages
+                Object.keys ( store.project.data.pages ).forEach ( page => {
+                    console.log ( pages[page].blocks.name ) 
+                    let menu_item = new Element().InlineText().setCss('border-b border-transparent hover:border-black mr-6')
+                        .setContent( pages[page].blocks.name )
+                    menu_item['link'] = page    
+                    menu.blocks.push ( menu_item )
+                })
+            }
+            this.blocks.push ( menu )
+            //container.blocks.push ( menu )
         }
-        container.blocks.push ( logo )
-        container.blocks.push ( menu )
-        this.blocks.push ( container )
         return this
     }
 

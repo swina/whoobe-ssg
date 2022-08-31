@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 //import { useNavigatorStore  } from '/@/stores/navigator'
 //import { useEditorStore } from '/@/stores/editor'
 import Block from '/@/composables/useBlockClass'
-import Element from '/@/composables/useElementClass'
+import Element from './useElementClass'
 import jp from 'jsonpath'
 import { EDITOR } from '/@/composables/useEditor'
 import { status } from '/@/composables/useNavigation'
@@ -39,10 +39,9 @@ export function randomID(){
     return 'whoobe-' + Math.random().toString(36).substr(2, 5)
 }
 
-export function useStore ( name: String ){
-    return null
-    return !name ? editorStore : navigation 
-}
+// export function useStore ( ){
+//     return null
+// }
 
 
 export function isBlock( block:object ){
@@ -336,10 +335,10 @@ export function initColors(){
 }
 
 
-export function getCurrent (  ){
-    return JSON.parse ( window.localStorage.getItem ( 'w-current' ) )
-}
+// export function getCurrent (  ){
+//     return JSON.parse ( window.localStorage.getItem ( 'w-current' ) ? window.localStorage.getItem ( 'w-current' ) : '' )
+// }
 
-export function getEditor () {
-    return JSON.parse ( window.localStorage.getItem ( 'editor') )
-}
+// export function getEditor () {
+//     return JSON.parse ( window.localStorage.getItem ( 'editor') ? window.localStorage.getItem('editor') : '' )
+// }

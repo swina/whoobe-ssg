@@ -34,6 +34,7 @@ const images    = `${path.resolve()}/pages/dist/assets/img`
 const static    = `${path.resolve()}/pages/dist` //process.env.VITE_APP_PAGES;
 const local     = `${DATA_PATH}`
 const tmp       = `./.whoobe/tmp`
+const config    = `${path.resolve()}/pages/whoobe.config.json`
 
 const paths = {
     current: current,
@@ -44,7 +45,8 @@ const paths = {
     assets: assets,
     images: images,
     pages: static,
-    local: local
+    local: local,
+    config: config
 }
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -198,6 +200,16 @@ app.post ( '/graphql' , async ( req, res ) => {
 app.get ( '/home' , async ( req, res ) => {
     res.json ( { path: path.resolve() } )
 })
+
+app.get ( '/config' , async ( req, res) => {
+    console.log ( paths.config )
+    const rawdata = await fs.readFileSync ( paths.config , 'utf-8' )
+    try {
+        res.json ( JSON.parse(rawdata) )
+    } catch ( err ){
+        res.json ( { data: rawdata } )
+    }
+}) 
 
 // get filesystem structure 
 // @name : paths

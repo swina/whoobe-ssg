@@ -20,29 +20,27 @@
                 </template>
             </div>
             <div v-if="tab" class="bg-white w-4/5 flex min-h-screen h-screen">
-                <div class="w-1/3">
+                <div class="w-1/4">
                     <ul>
-                        <li v-for="item in store.directus[current]" class="list-none my-1p-1 cursor-pointer items-center flex">
+                        <li v-for="item in store.directus[current]" class="list-none p-1 ml-0 w-full cursor-pointer items-center flex">
                             
                             <template v-for="field in fields">
                                 
-                                <span v-if="typeof item[field] === 'object'" class="ml-2">
+                                <div v-if="typeof item[field] === 'object'" class="ml-2">
                                     <span v-for="a in item[field]" class="text-sm p-1 bg-purple-300 rounded">
                                         {{ a }}
                                     </span>
-                                </span>
-                                <span v-else>
-                                    <span @click="getItems(item)" class="hover:bg-gray-200 hover:text-black pr-2 flex items-center" :class="category && category===item.name?'bg-gray-500 text-white':'text-black'">
-                                         <i data-icon="arcticons:file" class="iconify mr-1 text-lg"/>
-                                        <!--<i v-if="" data-icon="arcticons:folder" class="iconify mr-1 text-lg"/> -->
+                                </div>
+                                <div v-else class="w-full">
+                                    <div @click="getItems(item)" class="hover:bg-gray-200 hover:text-black p-1 flex items-center w-full" :class="category && category===item.name?'bg-gray-500 text-white':'text-black'">
                                         {{ item[`${field}`] }}
-                                    </span>
+                                    </div>
                                     <div v-if="templates && category === item.name">
                                         <div class="ml-6 text-sm my-1 flex flex-col hover:bg-gray-300 px-2" v-for="block in templates">
                                             <span @click="template = block">{{ block.name }}</span>
                                         </div>
                                     </div>
-                                </span>
+                                </div>
                             </template>
                         </li>
                     </ul>
@@ -72,8 +70,8 @@
 
                 </div>
                 <div v-if="current === 'templates_categories' && !templates.length && tab==='templates'">
-                        No templates found.
-                    </div>
+                    No templates found.
+                </div>
             </div>
         </div>
     </div>
@@ -89,7 +87,7 @@ const tab = ref('')
 
 const options = ref ([
     { tab: 'projects'  , icon: 'arcticons:file'},
-    { tab: 'templates_categories' , filter: 'templates' , hidden: true , icon: 'arcticons:folder' },
+    // { tab: 'templates_categories' , filter: 'templates' , hidden: false , icon: 'arcticons:folder' },
     { tab: 'templates' , filter: 'templates_categories' , icon: 'arcticons:folder' },
     { tab: 'languages' , icon: 'arcticons:file' },
 ])
@@ -102,6 +100,8 @@ let tree = ref({
 const fields = ref(null)
 const key = ref(null)
 const current = ref('')
+const fileTree = ref({})
+
 const directusData = async ( collection:Object ) => {
     let coll = collection.tab
     if ( collection?.filter ){
@@ -115,6 +115,12 @@ const directusData = async ( collection:Object ) => {
     tree.value.name = coll
     tree.value.children = store.directus[coll]
     tree.value.ref = collection
+    if ( current.value === 'templates' ){
+        
+        let categories = store.directus.templates.map ( template => { template.category.name } )
+        categories = [ ... new Set(categories) ].sort()
+        console.log ( categories )
+    }
 }
 let category = ref('')
 let templates = ref([])
@@ -141,4 +147,16 @@ const editTemplate = (template: object) => {
         object: template.blocks
     })
 }
+
+const categories = async () => {
+    const config = {
+        client: 'directus', 
+        model: 'template_categories'
+    }
+    return await graphQLDirectus ( { filter: 'template_categories' } )
+}
+
+
+console.log ( categories() )
+
 </script>

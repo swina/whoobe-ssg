@@ -25,14 +25,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { tabberAddTab } from '/@/composables/useNavigation'
 import { saveFile, moveFile, currentFolder  } from '/@/composables/useLocalApi'
 //import EditorPanelVue from '../editor/EditorPanel.vue';
 //import { useStore } from '/@/composables/useActions';
 import { dragDrop } from '/@/composables/useUtils'
 //import { EDITOR } from '/@/composables/useEditor';
-import { store } from '/@/composables/useStore'
+//import { store } from '/@/composables/useStore'
+
+const store = inject ( 'useStore' )
 
 const editor = store.editor // EDITOR //useStore()
 

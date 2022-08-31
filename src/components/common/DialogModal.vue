@@ -7,6 +7,7 @@
         <CreateFile v-if="store.status.dialog === 'CreateFile'"/>
         <DeleteFile v-if="store.status.dialog === 'Delete'"/>
         <DocumentSettings v-if="store.status.dialog === 'DocumentSettings'" :mode="store.status.mode"/>
+        <BuilderNewPage v-if="store.status.dialog === 'BuilderNewPage'"/>
         <ConfirmAction v-if="store.status.dialog === 'ConfirmAction'"/>
         <Images v-if="store.status.dialog === 'images'" context="images"/>
     </dialog>

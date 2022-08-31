@@ -40,8 +40,9 @@ const selectTab = ( index: Number ) => {
             console.log ( err )
         }        
         store.tabber.tab = index 
-        editor.document = store.tabber.tabs[index].object 
-        editor.current = store.tabber.tabs[index].object.json.blocks 
+        
+        store.editor.document = store.tabber.tabs[index].object 
+        store.editor.current = store.tabber.tabs[index].object.json.blocks 
         try {
             target.scrollTo(0,store.tabber.tabs[store.tabber.tab].scroll)
         } catch (err) {
@@ -55,6 +56,7 @@ const selectTab = ( index: Number ) => {
 const setTabName = ( tab:Object )=> {
     return tab.component === 'Editor' ?
         tab.object.name : tab.label
+        
 }
 
 </script>

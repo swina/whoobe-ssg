@@ -1,11 +1,14 @@
 <template>
     <div :class="props.size" class="ml-10 mt-8">
-      <Archive  v-if="loadthis() === 'Archive'"/>
+      <!-- <Archive  v-if="loadthis() === 'Archive'"/> -->
+      <PathTree v-if="loadthis() === 'Archive'"/>
       <Editor   v-if="loadthis() === 'Editor'"/>
       <UIKits   v-if="loadthis() === 'UIKits'"/>
-      <Pages    v-if="loadthis() === 'Pages'"/>
+      <PathTree v-if="loadthis() === 'Pages'"/>
+      <!-- <Pages    v-if="loadthis() === 'Pages'"/> -->
       <Builder  v-if="loadthis() === 'Builder'"/>
-      <Assets   v-if="loadthis() === 'Assets'"/>
+      <PathTree v-if="loadthis() === 'Assets'"/>
+      <!-- <Assets   v-if="loadthis() === 'Assets'"/> -->
       <Directus   v-if="loadthis() === 'Directus'"/>
     </div>
 </template>

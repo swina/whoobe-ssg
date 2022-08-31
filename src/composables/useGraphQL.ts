@@ -105,7 +105,8 @@ export async function graphQLTemplateSave (template:Object){
     log ( configClient )
     let params = {
         name: template.name ,
-        blocks: template
+        blocks: template,
+        category: template.category
     } 
     const data = await fetch ( configClient.url + '/items/templates' ,{
         method: 'POST',
