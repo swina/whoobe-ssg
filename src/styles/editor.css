@@ -235,6 +235,22 @@ iframe.small, .preview-sm {
     transform-origin: 50% 0;
 }
 
+
+.preview-md-homepage {
+    margin:0 auto;
+    width: 55rem;
+    height: 70rem;
+}
+
+.preview-md-page {
+    margin:0 auto;
+    width: 55rem;
+    height: 70rem;
+    transform: scale(.5);
+    transform-origin: 20% 20%;
+}
+
+
 .preview-lg {
     margin:0 auto;
     width: 65rem;

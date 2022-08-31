@@ -1,10 +1,10 @@
 <template>
     <div class="pages-preview ml-10 px-20 w-full pl-0 mb-20 pb-52 top-0 left-0 mt-2 absolute z-modal h-screen w-screen bg-gray-100 overflow-y-auto shadow-lg">
-        <div class="p-2 bg-bluegray-800 text-gray-500 text-xs" v-if="store.status.currentData?.data">
+        <div class="p-2 bg-bluegray-800 text-gray-500 text-xs relative">
             {{store.status.currentFile.path}} 
             <div class="absolute flex cursor-pointer right-0 top-0 text-2xl m-1 text-white" >
                 <span @click="edit=!edit"><icon icon="mdi:edit" title="edit"/></span>
-                <a :href="slug.replace('.html','')" target="preview" v-if="slug"><icon icon="iconoir:open-in-window" title="Open in a new window"/></a>
+                <a :href="slug.replace('.html','')" target="preview"><icon icon="iconoir:open-in-window" title="Open in a new window"/></a>
             </div>
             
         </div>

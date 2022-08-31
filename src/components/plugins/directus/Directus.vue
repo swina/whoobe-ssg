@@ -22,7 +22,7 @@
             <div v-if="tab" class="bg-white w-4/5 flex min-h-screen h-screen">
                 <div class="w-1/4">
                     <ul>
-                        <li v-for="item in store.directus[current]" class="list-none p-1 ml-0 w-full cursor-pointer items-center flex">
+                        <li v-for="item in store.directus[current]" class="list-none ml-0 w-full cursor-pointer items-center flex">
                             
                             <template v-for="field in fields">
                                 
@@ -36,7 +36,7 @@
                                         {{ item[`${field}`] }}
                                     </div>
                                     <div v-if="templates && category === item.name">
-                                        <div class="ml-6 text-sm my-1 flex flex-col hover:bg-gray-300 px-2" v-for="block in templates">
+                                        <div class="ml-4 text-sm flex flex-col hover:bg-gray-100 px-2 py-1" :class="template===block?'bg-gray-300':''" v-for="block in templates">
                                             <span @click="template = block">{{ block.name }}</span>
                                         </div>
                                     </div>
@@ -47,9 +47,9 @@
                 </div>
                 <div v-if="template && tab==='templates'" class="w-2/3 flex flex-col overflow-y-auto">
                     <!-- <template v-for="block in templates"> -->
-                        <div class="flex flex-col w-full text-sm" @click="editTemplate(template)">
+                        <div class="flex flex-col w-full text-sm cursor-pointer" title="Edit template" @click="editTemplate(template)">
                             <chip>{{ template.name }}</chip>
-                            <div class="preview-md" style="transform-origin:0 0">
+                            <div class="preview-md-page" style="transform-origin:0 0">
                                 <BlockPreview :block="template.blocks.json.blocks" :level="2"/>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="w-2/3 flex flex-wrap  overflow-y-auto bg-gray-100" v-if="!template && templates.length && tab==='templates'">
                     <template v-for="block in templates" :key="block.id">
-                        <div class="flex flex-col w-1/2 text-sm p-3 overflow-y-auto overflow-x-hidden">
+                        <div class="flex flex-col w-1/2 text-sm p-3 overflow-y-auto overflow-x-hidden" @click="template=block">
                             <chip class="bg-gray-300 text-black w-1/2">{{ block.name }}</chip>
                             <div class="preview-sm p-2">
                                 <BlockPreview :block="block.blocks.json.blocks" :level="2"/>
@@ -126,7 +126,7 @@ let category = ref('')
 let templates = ref([])
 let template = ref(null)
 
-const getItems = async ( item: object ) => {
+const getItems:any = async ( item: object ) => {
     template.value = null
     if ( current.value === 'templates_categories' ){
         let config = {
@@ -140,7 +140,7 @@ const getItems = async ( item: object ) => {
     }
 }
 
-const editTemplate = (template: object) => {
+const editTemplate:any = (template: object) => {
      tabberAddTab ( {
         component: 'Editor',
         label: template.name,

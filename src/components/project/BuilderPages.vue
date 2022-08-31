@@ -8,15 +8,15 @@
     <div v-if="store.project.data.pages" class="flex  overflow-y-auto h-screen">
         <div class="w-1/3 p-2 border-r">
             <ul class="m-0">
-                <li class="ml-0 list-none cursor-pointer lowercase flex items-center" :class="previewPage.slug === page?'font-bold':''" v-for="page in Object.keys(store.project.data.pages)">
-                    <span v-if="previewPage?.blocks" @click="removePage(page)" class="pt-0" title="Remove"><icon icon="ci:off-close" class="text-red-500 text-xl mr-2"/></span>
+                <li class="p-1 ml-0 list-none cursor-pointer lowercase flex items-center" :class="previewPage.slug === page?'font-bold bg-gray-300':''" v-for="page in Object.keys(store.project.data.pages)">
+                    <!-- <span v-if="previewPage?.blocks" @click="removePage(page)" class="pt-0" title="Remove"><icon icon="ci:off-close" class="text-red-500 text-xl mr-2"/></span> -->
                     <span title="Click to preview" @click="setPreviewPage(page)">{{page}}</span>
                 </li>
             </ul>
         </div>
         <div class="w-2/3 pl-1/4 pr-24 flex flex-col items-center justify-center" v-if="previewPage.blocks?.json || previewPage?.html">
             <!-- <div class="flex items-center justify-start w-full p-2 pt-4"><input class="mr-2 w-3/4" type="text" v-model="newPageSlug"/><button @click="updateSlug">Change Slug</button><button @click="cms_context='compose',open=!open">Compose Page</button></div> -->
-            <div class="flex items-center justify-center pr-10" v-if="previewPage?.slug">
+            <div class="flex items-center justify-center pr-10 mt-20 z-2xtop" v-if="previewPage?.slug">
                 <WebpagePreview :context="previewPage.slug"/>
             </div>
             

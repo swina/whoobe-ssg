@@ -17,15 +17,17 @@
                     <div class="flex flex-row justify-around text-2xl">
                         <span @click="noProject=!noProject"><icon icon="ant-design:folder-open-filled" class="text-2xl" title="Open project"/></span>
                         <span @click="saveProject"><icon icon="ic:baseline-save" class="text-2xl" title="Save project"/></span>
-                        <icon icon="bx:current-location" class="text-2xl" title="Set as current project" @click="currentProject()"/>
+                        <a href="http://localhost:8080" target="_preview"><icon icon="iconoir:open-in-window" title="Open Website"/></a>
+                        <!-- <icon icon="bx:current-location" class="text-2xl" title="Set as current project" @click="currentProject()"/> -->
                         <span title="Build website" @click="buildPages">
                             <icon icon="ic:round-build-circle" class="text-2xl" :class="store.project.rebuild?'text-red-600 animate-pulse':'text-green-400'" />
                         </span>
                     </div>
                 </div>
-                <div v-if="store.project.rebuild" class="animate-pulse px-2 py-4 border-b border-gray-300 text-gray-100 bg-purple-500 cursor-pointer text-sm">
+                <div v-if="store.project.rebuild" class="animate-pulse px-2 py-4 border-b border-gray-300 text-gray-100 bg-purple-500 cursor-pointer text-sm" @click="buildPages">
                     <div >Project changed. Rebuild</div>
                 </div>
+                <div v-if="!store.project.rebuild" class="text-xs p-1">Last build: {{ store.project.lastRebuild}}</div>
             </div>
             <div class="w-5/6 flex flex-col border-b text-gray-400 bg-white overflow-x-hidden overflow-y-auto">
                 <div class="flex flex-col p-4 bg-white" v-if="settings.tab==='settings'">
@@ -112,7 +114,7 @@ const options = ref ([
     { tab: 'layout' },
     { tab: 'homepage' },
     { tab: 'pages' },
-    { tab: 'graphQL' },
+    //{ tab: 'graphQL' },
     //{ tab: 'links analyzer' },
     { tab: 'analytics' },
     { tab: 'meta tags' },
@@ -355,7 +357,7 @@ const buildPages = async () => {
             },1000)
         })
         store.project.rebuild = false
-        store.project.rebuildData = new Date()
+        store.project.lastRebuild = new Date()
     },1000)
 }
 
