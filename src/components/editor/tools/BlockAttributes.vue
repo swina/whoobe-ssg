@@ -12,8 +12,8 @@
             </template> -->
 
             <template v-for="(attrib,i) in Object.keys(editor.current.data.attributes)">
-                <div class="w-5/6 flex flex-col items-start mb-1 border-b">
-                <chip class="mr-2 my-2">{{ attrib }}</chip> {{ editor.current.data.attributes[attrib] }}
+                <div class="w-5/6 flex flex-row items-start mb-1 border-b">
+                <chip class="mr-2 my-2">{{ attrib }}</chip> <input class="my-2" v-model="editor.current.data.attributes[attrib]"/>
                 <icon icon="mdi:close" class="absolute text-gray-400 text-xl mr-2 right-0 mt-2" @click="deleteAttribute(attrib,i)"/>
                 </div>
             </template>

@@ -1,8 +1,10 @@
 import { gql } from 'graphql-request';
 
+
+
 export const graphqlConfig = {
     'directus' : {
-        url: 'http://localhost:8055',
+        url: import.meta.env.VITE_APP_DIRECTUS_URL,
         schema:{
             pages: {
                 query: {
@@ -195,6 +197,37 @@ export const graphqlConfig = {
                     fields: ['id'],
                     key: 'id'
                 },
+            }
+        }
+    },
+    'pimcore' : {
+        url: import.meta.env.VITE_APP_PIMCORE_URL,
+        headers: {
+            'X-Api-Key' : import.meta.env.VITE_APP_PIMCORE_API_KEY,
+        },
+        schema : {
+            registrations : {
+                parentId: 6,
+                mutation : {
+                    add : gql`
+                        mutation ($params: UpdateRegistrationsInput, $key:String!, $parentId:Int!){
+                            createRegistrations(input: $params, key:$key, parentId:$parentId){
+                                    success
+                                    message
+                                    output {
+                                        id
+                                        firstname
+                                        lastname
+                                        email
+                                        dob
+                                    }
+                                }
+                        }`,
+                    params: 'formData',
+                    key: 'email',
+                    fields: ['firstname','lastname','dob','phone','city','zip','country','jobposition','company','revenue','carbrand','carmodel','mobility','buyferrari','privacy'],
+                    hidden: [ { field: 'active' , default: true }]
+                }
             }
         }
     }

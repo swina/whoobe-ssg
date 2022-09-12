@@ -51,6 +51,14 @@ export function searchIconify ( search: String ){
     return resolve
 }
 
+export async function getFormData ( id: String ){
+  let form:any = document.querySelector('#' + id)
+  console.log ( form , id )
+  const formData = new FormData(form)
+  console.log ( form , 'Form Data' , formData )
+  return formData
+}
+
 // export function orphans() {
 //     return data.filter(function(item) {
 //       return item.parent === null;

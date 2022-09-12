@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { computed , ref , onMounted , useAttrs , inject} from 'vue'
 import { randomID } from '/@/composables/useActions'
-import { message } from '/@/composables/useUtils';
+import { message  } from '/@/composables/useUtils';
 import { graphQLRequest } from '/@/composables/useLocalApi'
 
 const store = inject ( 'useStore') 
@@ -50,6 +50,7 @@ const classe = computed( ()  => {
 const blockId = ref( randomID() ) //props.block.id)
 onMounted( () => {
     try {
+        
         if ( props.block?.alpine ) {
             //message.console = 'Settings AlpineJS directives'
             let element = document.querySelector ( '#' + blockId.value )
@@ -68,6 +69,5 @@ onMounted( () => {
         message.console = err
     }
 })
-
 
 </script>

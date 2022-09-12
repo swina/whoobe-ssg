@@ -41,6 +41,7 @@ export async function graphQLData ( config:Object ){
     let query = qryConfig.schema[config.model].query
     console.log ( config )
 
+
     if ( config.category ){
         let params = {}
         params['category'] = config.category
@@ -99,6 +100,7 @@ export async function graphQLDirectus ( collection:String ){
     store.directus[collection] = await data[collection]
     log ( data[collection] , store )
 }
+
 
 export async function graphQLTemplateSave (template:Object){
     let configClient = graphqlConfig.directus

@@ -62,6 +62,11 @@ input[type='text'], input[type='email'], input[type='url'], input[type='password
   @apply p-2;
 }
 
+input:focus {
+  outline:none;
+  @apply ring-0;
+}
+
   button {
     @apply border px-4 py-2 bg-blue-500 text-white text-sm rounded-lg;
   }

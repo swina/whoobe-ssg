@@ -280,17 +280,18 @@ export const saveStaticPage = async ( page: any ) => {
             <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer=""></script>
             <!--<script type="module" src="https://cdn.skypack.dev/twind/shim" defer></script>-->
             <meta charset="UTF-8">
-            <link rel="stylesheet" href="/assets/css/output.css">
+            <!--<link rel="stylesheet" href="/assets/css/output.css">-->
             <!--<link rel="stylesheet" href="/assets/css/animations.css">-->
             <link rel="icon" href="/favicon.ico" />
             
             <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
             ${analytics}
         </head>
-        <body>
+        <body hidden>
         ${header}
         ${page.html}
         ${footer}
+        <script type="module" src="/assets/twind.config.js"></script>
         </body>
     </html>`
     

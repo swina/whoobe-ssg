@@ -22,12 +22,12 @@ export const EDITOR = reactive({
     document:Object,    //current template
     colors: createColors(),      //available colors
     blockBorders: {
-        root: 'border-4 border-purple-500' ,
-        rootHover: 'border-4 hover:border-purple-500 border-dashed',
-        block: 'border-2 border-red-500' ,
-        blockHover: 'border-2 hover:border-red-500 border-dashed',
-        element: 'border border-bluegray-700',
-        elementHover: 'border hover:border-bluegray-700 border-dashed'
+        root: 'border-4 border-purple-500 doc-border' ,
+        rootHover: 'border-4 hover:border-purple-500 border-dashed doc-border',
+        block: 'border-2 border-red-500 block-border' ,
+        blockHover: 'border-2 hover:border-red-500 border-dashed block-border',
+        element: 'border border-bluegray-700 block-border',
+        elementHover: 'border hover:border-bluegray-700 border-dashed block-border'
     },
     tool:'',        //Editor tool selected (right toolbar)
     toolGroup:'',   //Tool Group

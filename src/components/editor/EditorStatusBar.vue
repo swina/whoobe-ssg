@@ -3,7 +3,7 @@
         
         Template <input class="mx-2" type="text" v-model="editor.document.name"/>
         <span v-if="IS_DIRECTUS" class="mr-2">
-            Category : <select class="h-6 border-0 font-mono outline-none bg-bluegray-800 text-gray-400" v-model="directusCategory">
+            Category : <select class="h-6 border-0 font-mono outline-none bg-bluegray-800 text-gray-400" v-model="store.document.category">
                 <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
             </select>
         </span>
@@ -88,11 +88,11 @@ const saveTemplate = async () => {
     if ( editor.document?.path ){
         await saveFile ( editor.document )
         store.message.data = 'File saved'
-        if ( IS_DIRECTUS ){
-            editor.document['category'] = directusCategory
-        }
-        const template = await graphQLTemplateSave ( editor.document )
-        console.log ( await template )
+        // if ( IS_DIRECTUS ){
+        //     editor.document['category'] = directusCategory
+        // }
+        // const template = await graphQLTemplateSave ( editor.document )
+        // console.log ( await template )
     }
 }
 

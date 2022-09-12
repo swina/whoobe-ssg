@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 9000
+const port = 9300
 const fs = require('fs-extra')
 const path = require('path')
 const bodyParser = require("body-parser");
@@ -54,6 +54,7 @@ app.use(express.json({limit: '50mb'}));
 app.use(cors())
 
 const ep = process.env.VITE_APP_GRAPHQL_ENDPOINT
+
 const endpoints = ep.split(';')
 const gQLClients = endpoints.map ( ep => {
     let endp = ep.split('@')
@@ -162,16 +163,67 @@ const graphQLConfig = {
                 }
             }
         }
+    },
+    'pimcore' : {
+        url: 'http://localhost:9000/pimcore-graphql-webservices/',
+        headers: {
+            'X-Api-Key' : process.env.VITE_APP_PIMCORE_API_KEY,
+        },
+        
+        schema : {
+            registrations : {
+                parentId: 6,
+                mutation : {
+                    add : gql`
+                        mutation ($params: UpdateRegistrationsInput, $key:String!){
+                            createRegistrations(input: $params, key:$key, parentId:6){
+                                    success
+                                    message
+                                    output {
+                                        id
+                                        firstname
+                                        lastname
+                                        email
+                                        dob
+                                    }
+                                }
+                        }`,
+                    params: 'formData',
+                    key: 'email',
+                    fields: ['firstname','lastname','dob','phone','city','zip','country','jobposition','company','revenue','carbrand','carmodel','mobility','buyferrari','privacy'],
+                    hidden: [ { field: 'active' , default: true }]
+                }
+            }
+        }
     }
 }
 
 const graphqlClient = async ( client ) => {
-    return new GraphQLClient( gQLClients.filter(a=>a.client===client)[0].url )
+    let endpoint = graphQLConfig[client.client].url //gQLClients.filter(a=>a.client===client.client)[0].url
+    client.endpoint ? endpoint += client.endpoint : null
+    if ( graphQLConfig[client.client].headers ){
+        try {
+            return new GraphQLClient( endpoint , { headers : graphQLConfig[client.client].headers })// gQLClients.filter(a=>a.client===client)[0].url )
+        } catch ( err ) {
+            console.log ( err );
+            return false
+        }
+    } else {
+        return new GraphQLClient( endpoint )// gQLClients.filter(a=>a.client===client)[0].url )
+    }
 }
 
 const graphQLQuery = async ( config ) => {
-    let client = await graphqlClient ( config.client )
+    
+    
+    let client = await graphqlClient ( config )
+    let params = { params: config.mutation , key: config.key }
+    console.log ( "Created params: " , params )
     clientGQL = client
+    if ( config.mutation ){
+        const data = await client.request ( graphQLConfig[config.client].schema[config.model].mutation.add , { params: config.mutation , key: config.key })
+        return await data
+    }
     if ( !config?.slug  ){
         const data = await client.request ( graphQLConfig[config.client].schema[config.model].query.list )
         return await data
@@ -179,14 +231,13 @@ const graphQLQuery = async ( config ) => {
         const data = await client.request ( graphQLConfig[config.client].schema[config.model].query.single , { slug : config.slug } )
         return await data
     }
+
 }
 
 
 
 app.post ( '/graphql' , async ( req, res ) => {
-    console.log ( req.body )
     let config = req.body
-    console.log ( config )
     try {
         let data = await graphQLQuery ( config )
         console.log ( await data )
@@ -196,6 +247,32 @@ app.post ( '/graphql' , async ( req, res ) => {
         res.json ( { error: err } )
     }
 }) 
+
+app.post ( '/graphql-form' , async ( req, res ) => {
+    const formData = req.body
+
+    let result = {}
+    if ( formData.config ) {
+        let configuration = formData.config.split(';')
+        let config = {}
+        configuration.forEach ( conf => {
+            config[conf.split(':')[0]] = conf.split(':')[1]
+        })
+        delete formData.config
+        config.mutation = formData
+        config.key = formData.email
+        config.mutation.carBrand = formData.carbrand
+        config.mutation.carModel = formData.carmodel
+        config.mutation.privacy = true
+        config.mutation.active = true
+        delete formData.revenue
+        delete formData.carmodel
+        delete formData.carBrand
+        console.log ( config )
+        result = await graphQLQuery ( config )
+        res.json ( await result )
+    }
+})
 
 app.get ( '/home' , async ( req, res ) => {
     res.json ( { path: path.resolve() } )

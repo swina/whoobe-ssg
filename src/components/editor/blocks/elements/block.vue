@@ -49,7 +49,7 @@
         
         <div class="absolute inset-0" v-if="block.type==='container'" :class="selector" @click="selectBlock(block,$event),contextMenu($event,false),status.current = block,editor.current=block" @contextmenu.prevent="selectBlock(block,$event),contextMenu($event,true),editor.current=block"></div>
     </component>
-    <div v-if="block?.hide" :id="block.id" class="relative font-mono text-base w-full my-2 left-0 border border-dashed border-red-500 h-10 z-modal bg-gray-300 p-1 flex items-center"  @click="block.hide=false,selectBlock(block,$event),editor.current=block">
+    <div v-if="block?.hide" :id="block.id" class="relative font-mono text-base w-full my-2 left-0 block-border border-dashed border-red-500 h-10 z-modal bg-gray-300 p-1 flex items-center" @click="block.hide=false,selectBlock(block,$event),editor.current=block">
         Hidden {{ block.tag }} <span><icon icon="akar-icons:eye" class="absolute right-0 ml-1 -mt-2 text-2xl text-gray-700 hover:text-blue-700" title="View" /></span>
     </div>
 </template>
@@ -98,8 +98,8 @@ const selector = computed( () => {
         borderHover = editor.blockBorders.rootHover //' border-2 hover:border-' + editor.blockBorders.root + ' border-dashed '
     }
     if ( props.block.data?.provider ){
-        borderColor = 'border-2 border-blue-300 '
-        borderHover = 'border-2 hover:border-blue-300 border-dashed '
+        borderColor = 'border-2 border-blue-300 block-border'
+        borderHover = 'border-2 hover:border-blue-300 border-dashed block-border'
     }
     return editor.current?.id && editor.current.id === props.block.id ?
         borderColor  + ' z-' + props.level :

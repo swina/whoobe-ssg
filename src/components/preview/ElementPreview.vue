@@ -2,6 +2,7 @@
     <a v-if="getLink" :href="getLink" :title="getLinkTitle()">
         <component
             v-if="element"
+            :key="randomID"
             :id="`${refID}${element.id}`"
             :ref="element.id"
             :is="component" 
@@ -12,7 +13,7 @@
             v-html="getContent"
             :href="getLink"
             :src="getImage" 
-            :placeholder="element.placeholder" 
+            placeholder="" 
             :alt="element.tag==='image'?element.image?.tag?element.image.tag:'image':''"
             :data-id="element.id"
             :data-icon="element.tag==='iconify' || element.tag === 'icon'?element.data.icon:null"
@@ -22,6 +23,7 @@
     <component
         v-if="element && !getLink"
         :id="element.id"
+        :key="randomID"
         :ref="element.id"
         :is="component" 
         :type="element.type" 
@@ -31,7 +33,7 @@
         v-html="getContent"
         :href="getLink"
         :src="getImage" 
-        :placeholder="element.placeholder" 
+        placeholder="" 
         :alt="element.tag==='image'?element.image?.tag?element.image.tag:'image':''"
         :data-id="element.id"
         :data-icon="element.tag==='iconify' || element.tag === 'icon'?element.data.icon:null"
@@ -42,10 +44,11 @@
 
 <script setup lang="ts">
 import { computed , ref , onMounted, inject } from 'vue'
-import { message , ObjectValueByKey } from '/@/composables/useUtils';
+import { message , ObjectValueByKey , getFormData } from '/@/composables/useUtils';
 import { graphQLRequest  } from '/@/composables/useLocalApi'
 import { assertObjectTypeIndexer } from '@babel/types';
 import { randomID } from '/@/composables/useActions'
+
 
 const store = inject('useStore')
 const refID = randomID().replace('whoobe-','')
@@ -120,6 +123,23 @@ const getLinkTitle = () => {
 
 onMounted( async () => {
     try {
+        let element:any = document.querySelector ( '#' + props.element.id )
+        if ( element.events?.click ){
+            console.log ( 'Parent=>' , element.parent() )
+            getFormData ( props.element.id )
+            // console.log ( props.block.attributes.id )
+            // let form:any = document.querySelector ( '#' + props.block.data.attributes.id )
+            // console.log ( form )
+            // getFormData ( props.block.data.attributes.id )
+            // form.addEventListener('submit', async function(event:any) {
+            //     event.preventDefault();
+            //     const formData = await new FormData(getFormData('#' + blockId.value ))
+            //     console.log ( formData )
+            //     let response:any = await fetch(props.block.events.click,{method:'POST',body: formData })
+            //     console.log ( await response )
+            // })
+            // console.log ( form )
+        }
         if ( props.element?.alpine ) {
             //message.console = 'Settings AlpineJS directives'
             let element = document.querySelector ( '#' + props.element.id )
@@ -128,13 +148,12 @@ onMounted( async () => {
             })
         }
         if ( props.element.data?.attributes ) {
-            
-            let element = document.querySelector ( '#' + refID+props.element.id )
+            let element = document.querySelector(`[data-id="${props.element.id}"]`)
+            //let element = document.querySelector ( '#' + refID+props.element.id )
             await Object.keys ( props.element.data.attributes ).forEach ( attr => {
                 if ( props.data && attr === 'title' ){
                     // let title = attr.replace ( '{element.data.' , '' ).replace('}','')
                     let title = props.element.data.attributes.title.replace ( '{data.' , '' ).replace('}','')
-                    console.log()
                     element.setAttribute ( 'title' ,  props.data[title] )
                 } else {
                     element.setAttribute ( attr , props.element.data.attributes[attr] )
@@ -142,7 +161,6 @@ onMounted( async () => {
             })
         }
     } catch( err ) {
-        console.log ( 'Element ID ' , props.element.id )
         message.console = err + '\nElement ID = ' + props.element.id
     }
 })
@@ -157,4 +175,9 @@ onMounted( async () => {
 //         })
 //     }
 // })
+</script>
+
+<script lang="ts">
+console.log ( document.querySelectorAll('button') ) ;
+
 </script>
